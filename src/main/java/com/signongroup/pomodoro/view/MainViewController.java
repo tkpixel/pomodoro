@@ -5,8 +5,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.shape.Arc;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,10 +19,19 @@ import java.util.ResourceBundle;
 public class MainViewController implements Initializable {
 
     @FXML
-    private Label greetingLabel;
+    private Arc progressArc;
 
     @FXML
-    private Button actionButton;
+    private Label timerLabel;
+
+    @FXML
+    private Label sessionLabel;
+
+    @FXML
+    private Label clearedTodayLabel;
+
+    @FXML
+    private Label nextBreakLabel;
 
     private final MainViewModel viewModel;
 
@@ -33,12 +42,13 @@ public class MainViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // View an ViewModel binden
-        greetingLabel.textProperty().bind(viewModel.greetingProperty());
-    }
+        // Bind Label texts to ViewModel properties
+        timerLabel.textProperty().bind(viewModel.timerTextProperty());
+        sessionLabel.textProperty().bind(viewModel.sessionTextProperty());
+        clearedTodayLabel.textProperty().bind(viewModel.clearedTodayTextProperty());
+        nextBreakLabel.textProperty().bind(viewModel.nextBreakTextProperty());
 
-    @FXML
-    private void onActionButtonClicked() {
-        viewModel.updateGreeting();
+        // Bind Arc length to progress (multiply by -360 as the Arc goes clockwise which is negative in JavaFX)
+        progressArc.lengthProperty().bind(viewModel.timerProgressProperty().multiply(-360));
     }
 }

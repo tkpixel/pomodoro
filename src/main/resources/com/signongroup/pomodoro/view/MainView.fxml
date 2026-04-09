@@ -1,25 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.signongroup.pomodoro.view.MainViewController"
-      alignment="CENTER"
-      spacing="20.0"
-      prefHeight="400.0" prefWidth="600.0">
-    <padding>
-        <Insets top="40" right="40" bottom="40" left="40"/>
-    </padding>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.signongroup.pomodoro.view.MainViewController"
+           styleClass="bg-mesh"
+           prefHeight="800.0" prefWidth="600.0">
 
-    <Label fx:id="greetingLabel"
-           style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <!-- Decorative Elements (Blur effects not perfectly supported in JavaFX out-of-the-box, simulated via background) -->
 
-    <Button fx:id="actionButton"
-            text="Klick mich!"
-            onAction="#onActionButtonClicked"
-            style="-fx-font-size: 14px;"/>
-</VBox>
+    <!-- TopAppBar -->
+    <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0">
+        <padding>
+            <Insets left="24" right="24"/>
+        </padding>
+        <Region prefWidth="24"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" />
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox alignment="CENTER" spacing="8">
+            <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24" iconColor="#ff8f70"/>
+        </HBox>
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox alignment="CENTER" spacing="40" StackPane.alignment="CENTER">
+        <padding>
+            <Insets top="80" bottom="100" left="16" right="16"/>
+        </padding>
+
+        <VBox alignment="CENTER" maxWidth="500">
+            <!-- Header -->
+            <HBox alignment="CENTER" style="-fx-padding: 0 0 40 0;">
+                <Label text="FOCUS" styleClass="font-manrope tracking-widest" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface; -fx-opacity: 0.9; -fx-text-transform: uppercase;"/>
+            </HBox>
+
+            <!-- Dashboard Split Layout -->
+            <HBox alignment="CENTER" spacing="24">
+                <!-- Left: Circular Timer -->
+                <StackPane prefWidth="260" prefHeight="260" minWidth="260" minHeight="260">
+                    <Group>
+                        <!-- Base Circle (rotated -90 deg to start at top) -->
+                        <Arc fx:id="baseArc"
+                             centerX="0" centerY="0" radiusX="117" radiusY="117"
+                             startAngle="90" length="360"
+                             fill="TRANSPARENT" strokeWidth="8"
+                             styleClass="timer-base"/>
+
+                        <!-- Progress Circle -->
+                        <Arc fx:id="progressArc"
+                             centerX="0" centerY="0" radiusX="117" radiusY="117"
+                             startAngle="90" length="-234"
+                             fill="TRANSPARENT" strokeWidth="10"
+                             strokeLineCap="ROUND"
+                             styleClass="progress-glow"/>
+                    </Group>
+
+                    <VBox alignment="CENTER">
+                        <Label fx:id="timerLabel" text="25:00" styleClass="timer-text"/>
+                        <Label text="MINUTES" styleClass="timer-label tracking-widest" style="-fx-padding: 4 0 0 0;"/>
+                    </VBox>
+                </StackPane>
+
+                <!-- Right: Vertically Stacked Data Cards -->
+                <VBox spacing="12" HBox.hgrow="ALWAYS">
+                    <!-- Session Card -->
+                    <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
+                        <StackPane styleClass="card-icon-container active-glow">
+                            <FontIcon iconLiteral="fltfal-layer-20" iconSize="20" iconColor="#ff8f70"/>
+                        </StackPane>
+                        <VBox>
+                            <Label text="SESSION" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
+                            <Label fx:id="sessionLabel" text="1 / 4" styleClass="card-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Tasks Card -->
+                    <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
+                        <StackPane styleClass="card-icon-container active-glow">
+                            <FontIcon iconLiteral="fltfal-checkmark-square-24" iconSize="20" iconColor="#ff8f70"/>
+                        </StackPane>
+                        <VBox>
+                            <Label text="CLEARED TODAY" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
+                            <HBox alignment="BOTTOM_LEFT" spacing="4">
+                                <Label fx:id="clearedTodayLabel" text="00" styleClass="card-value"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Break Card -->
+                    <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
+                        <StackPane styleClass="card-icon-container-break">
+                            <FontIcon iconLiteral="fltral-drink-coffee-20" iconSize="20" iconColor="#adaaaa"/>
+                        </StackPane>
+                        <VBox>
+                            <Label text="NEXT BREAK" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
+                            <Label fx:id="nextBreakLabel" text="05:00" styleClass="card-value-muted"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </VBox>
+
+    <!-- Floating Action Bar -->
+    <HBox alignment="CENTER" spacing="16" StackPane.alignment="BOTTOM_CENTER">
+        <padding>
+            <Insets bottom="40"/>
+        </padding>
+
+        <!-- Main Pill Navigation -->
+        <HBox alignment="CENTER" styleClass="fab-glass" spacing="8" prefHeight="64">
+            <padding>
+                <Insets left="16" right="16"/>
+            </padding>
+            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48">
+                <graphic>
+                    <FontIcon iconLiteral="fltral-arrow-clockwise-20" iconSize="24"/>
+                </graphic>
+            </Button>
+            <Button styleClass="fab-icon-button-active" prefWidth="48" prefHeight="48">
+                <graphic>
+                    <FontIcon iconLiteral="fltfmz-timer-20" iconSize="24"/>
+                </graphic>
+            </Button>
+            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48">
+                <graphic>
+                    <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24"/>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Primary Action Button -->
+        <Button styleClass="play-btn" prefWidth="64" prefHeight="64">
+            <graphic>
+                <FontIcon iconLiteral="fltfmz-play-20" iconSize="36"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+</StackPane>
