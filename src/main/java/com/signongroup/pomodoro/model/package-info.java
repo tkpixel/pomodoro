@@ -39,5 +39,5 @@
  * <p>Services produzieren bzw. konsumieren Model-Objekte; das ViewModel konvertiert
  * sie bei Bedarf in beobachtbare JavaFX-Properties zur Anzeige.</p>
  */
-package com.signongroup.template.model;
+package com.signongroup.pomodoro.model;
 

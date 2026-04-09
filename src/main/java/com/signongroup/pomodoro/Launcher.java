@@ -1,4 +1,4 @@
-package com.signongroup.template;
+package com.signongroup.pomodoro;
 
 /**
  * Non-JavaFX launcher class required for running the application from a fat JAR.
@@ -7,7 +7,7 @@ package com.signongroup.template;
  */
 public class Launcher {
     public static void main(String[] args) {
-        TemplateApplication.main(args);
+        PomodoroApplication.main(args);
     }
 }
 

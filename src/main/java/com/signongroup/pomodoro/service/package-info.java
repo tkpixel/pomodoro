@@ -41,5 +41,5 @@
  * erhaltenen Model-Objekte anschließend selbst in JavaFX-Properties. Damit bleibt
  * der Service vollständig entkoppelt vom JavaFX-Threading-Modell.</p>
  */
-package com.signongroup.template.service;
+package com.signongroup.pomodoro.service;
 

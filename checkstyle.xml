@@ -4,7 +4,7 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <!--
-    Checkstyle configuration for QS-Tool
+    Checkstyle configuration for Pomodoro-Tool
     Based on Google Java Style Guide with adaptations for Java 25
     (records, sealed classes, pattern matching switches)
 -->

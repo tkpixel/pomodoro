@@ -1,4 +1,4 @@
-package com.signongroup.template;
+package com.signongroup.pomodoro;
 
 import atlantafx.base.theme.NordDark;
 import io.micronaut.context.ApplicationContext;
@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-public class TemplateApplication extends Application {
+public class PomodoroApplication extends Application {
 
     @Nullable
     private ApplicationContext context;
@@ -27,7 +27,7 @@ public class TemplateApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/signongroup/template/view/MainView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/signongroup/pomodoro/view/MainView.fxml"));
 
         if (context != null) {
             loader.setControllerFactory(context::getBean);
@@ -40,7 +40,7 @@ public class TemplateApplication extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(customCss);
 
-        primaryStage.setTitle("Template-Tool");
+        primaryStage.setTitle("Pomodoro Timer");
         // TODO
         //  primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Logo.png"))));
 
