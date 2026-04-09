@@ -1,4 +1,4 @@
-package com.signongroup.template.viewmodel;
+package com.signongroup.pomodoro.viewmodel;
 
 import jakarta.inject.Singleton;
 import javafx.beans.property.SimpleStringProperty;

@@ -1,7 +1,7 @@
 /**
- * JPMS-Moduldeskriptor für das Template-Projekt.
+ * JPMS-Moduldeskriptor für das Pomodoro-Projekt.
  */
-module com.signongroup.template {
+module com.signongroup.pomodoro {
 
     // ── JavaFX ────────────────────────────────────────────────────────────────
     requires javafx.controls;
@@ -32,19 +32,19 @@ module com.signongroup.template {
     requires org.slf4j;
 
     // ── Exports (erforderlich damit Micronauts APT die Klassen zur Compile-Zeit sieht) ──
-    exports com.signongroup.template;
-    exports com.signongroup.template.view;
-    exports com.signongroup.template.viewmodel;
-//    exports com.signongroup.template.model;
-//    exports com.signongroup.template.service;
+    exports com.signongroup.pomodoro;
+    exports com.signongroup.pomodoro.view;
+    exports com.signongroup.pomodoro.viewmodel;
+//    exports com.signongroup.pomodoro.model;
+//    exports com.signongroup.pomodoro.service;
 
 
     // ── Reflection-Öffnungen für FXMLLoader ──────────────────────────────────
-    opens com.signongroup.template.view to javafx.fxml, io.micronaut.micronaut_inject;
+    opens com.signongroup.pomodoro.view to javafx.fxml, io.micronaut.micronaut_inject;
 
     // ── Reflection-Öffnungen für Micronaut & JavaFX ───────────────────────────
-    opens com.signongroup.template to javafx.graphics, io.micronaut.micronaut_inject;
-    opens com.signongroup.template.viewmodel to io.micronaut.micronaut_inject;
+    opens com.signongroup.pomodoro to javafx.graphics, io.micronaut.micronaut_inject;
+    opens com.signongroup.pomodoro.viewmodel to io.micronaut.micronaut_inject;
 }
 
 

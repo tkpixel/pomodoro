@@ -1,6 +1,6 @@
-# java-fx-25-template-repo
+# Pomodoro Timer
 
-> Eine produktionsreife Startvorlage für JavaFX-Desktopanwendungen auf Basis von Java 25.
+> Eine Pomodoro-Timer-Anwendung, die auf JavaFX basiert und mit JIRA verbunden ist
 
 
 ## 🛠️ Techstack
@@ -52,7 +52,7 @@ gut geeignet ist, da es JavaFX-Properties zur reaktiven Datenbindung nutzt.
 ### Paketstruktur
 
 ```
-com.signongroup.template
+com.signongroup.pomodoro
 ├── model/        # Domänenobjekte / POJOs
 ├── service/      # Business-Logik, externe Anbindungen
 ├── view/         # FXML-Controller (nur UI-Binding)
@@ -70,7 +70,7 @@ Die Konfiguration liegt unter `src/main/resources/logback.xml`.
 - **Konsole**: Immer aktiv, mit kompaktem Zeitformat (`HH:mm:ss.SSS`).
 - **Datei**: Rolling-Log unter `~/.templateApp/logs/` – täglich rotiert, max. 10 MB pro Datei, 30 Tage History, 1 GB Cap.
 - **Log-Level** ist über die Umgebungsvariable `LOG_LEVEL` konfigurierbar (Standard: `INFO`).
-- Eigene Anwendungsklassen (`com.signongroup.template`) laufen standardmäßig auf `DEBUG`.
+- Eigene Anwendungsklassen (`com.signongroup.pomodoro`) laufen standardmäßig auf `DEBUG`.
 
 ```java
 private static final Logger log = LoggerFactory.getLogger(MyClass.class);
@@ -130,7 +130,7 @@ Konfiguration: `pmd-ruleset.xml`
 
 **Zur Compile-Zeit** werden potenzielle Bugs (ErrorProne) und **`NullPointerException`-Risiken** (NullAway)
 erkannt – bevor der Code überhaupt läuft. NullAway ist so konfiguriert, dass es das komplette
-`com.signongroup.template`-Paket auf Null-Sicherheit prüft.
+`com.signongroup.pomodoro`-Paket auf Null-Sicherheit prüft.
 
 Aktivierung über das Maven-Profil:
 

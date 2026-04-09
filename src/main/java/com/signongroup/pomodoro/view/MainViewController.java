@@ -1,6 +1,6 @@
-package com.signongroup.template.view;
+package com.signongroup.pomodoro.view;
 
-import com.signongroup.template.viewmodel.MainViewModel;
+import com.signongroup.pomodoro.viewmodel.MainViewModel;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import javafx.fxml.FXML;

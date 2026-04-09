@@ -1,14 +1,14 @@
 /**
- * Wurzelpaket der Template-Applikation.
+ * Wurzelpaket der Pomodoro-Applikation.
  *
  * <p>Dieses Paket bildet den Einstiegspunkt der JavaFX-Anwendung und enthält die zentralen
  * Infrastrukturklassen, die den Applikationslebenszyklus steuern:
  *
  * <ul>
- *   <li>{@link com.signongroup.template.Launcher} – reiner JavaFX-Startpunkt, der die
+ *   <li>{@link com.signongroup.pomodoro.Launcher} – reiner JavaFX-Startpunkt, der die
  *       {@link javafx.application.Application#launch(Class, String[]) launch}-Methode aufruft,
  *       damit das Modul-System korrekt funktioniert.</li>
- *   <li>{@link com.signongroup.template.TemplateApplication} – erweitert
+ *   <li>{@link com.signongroup.pomodoro.PomodoroApplication} – erweitert
  *       {@link javafx.application.Application} und übernimmt drei Aufgaben im MVVM-Kontext:
  *       <ol>
  *         <li><strong>Composition Root</strong>: Startet den Micronaut-{@code ApplicationContext}
@@ -26,11 +26,11 @@
  * <h2>MVVM-Schichtübersicht</h2>
  * <pre>
  * ┌──────────────────────────────────────────────────────────────┐
- * │  com.signongroup.template          (Composition Root / App)  │
- * │  com.signongroup.template.view     (View  – FXML + Controller)│
- * │  com.signongroup.template.viewmodel(ViewModel – Zustand/Logik)│
- * │  com.signongroup.template.model    (Model  – Domänenobjekte)  │
- * │  com.signongroup.template.service  (Service – Geschäftslogik) │
+ * │  com.signongroup.pomodoro          (Composition Root / App)  │
+ * │  com.signongroup.pomodoro.view     (View  – FXML + Controller)│
+ * │  com.signongroup.pomodoro.viewmodel(ViewModel – Zustand/Logik)│
+ * │  com.signongroup.pomodoro.model    (Model  – Domänenobjekte)  │
+ * │  com.signongroup.pomodoro.service  (Service – Geschäftslogik) │
  * └──────────────────────────────────────────────────────────────┘
  * </pre>
  *
@@ -38,5 +38,5 @@
  * View → ViewModel → Model/Service. Das Wurzelpaket kennt alle Schichten,
  * jedoch ausschließlich zur Initialisierung.</p>
  */
-package com.signongroup.template;
+package com.signongroup.pomodoro;
 

@@ -45,5 +45,5 @@
  * stellt sicher, dass Zustandsänderungen automatisch in der UI reflektiert werden,
  * ohne dass das ViewModel die View kennen muss.</p>
  */
-package com.signongroup.template.viewmodel;
+package com.signongroup.pomodoro.viewmodel;
 

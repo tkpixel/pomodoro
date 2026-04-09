@@ -11,7 +11,7 @@
  *       wird ausschließlich in {@code *.fxml}-Dateien beschrieben, die vom JavaFX
  *       {@link javafx.fxml.FXMLLoader} geladen werden.</li>
  *   <li><strong>Controller</strong> – Jede FXML-Datei besitzt einen zugehörigen Controller
- *       (z. B. {@link com.signongroup.template.view.MainViewController}), der:
+ *       (z. B. {@link com.signongroup.pomodoro.view.MainViewController}), der:
  *       <ol>
  *         <li>Via {@code @FXML} auf UI-Elemente zugreift.</li>
  *         <li>Properties der View an Properties des ViewModels bindet
@@ -39,5 +39,5 @@
  *       das ViewModel vermittelt.</li>
  * </ul>
  */
-package com.signongroup.template.view;
+package com.signongroup.pomodoro.view;
 

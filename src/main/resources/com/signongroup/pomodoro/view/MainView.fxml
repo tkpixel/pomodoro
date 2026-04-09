@@ -7,7 +7,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.signongroup.template.view.MainViewController"
+      fx:controller="com.signongroup.pomodoro.view.MainViewController"
       alignment="CENTER"
       spacing="20.0"
       prefHeight="400.0" prefWidth="600.0">
