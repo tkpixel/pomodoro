@@ -1,0 +1,53 @@
+<configuration>
+
+    <!-- Properties für Konfigurierbarkeit -->
+    <property name="LOG_PATH" value="${LOG_PATH:-${user.home}/.templateApp/logs}" />
+    <property name="LOG_LEVEL" value="${LOG_LEVEL:-INFO}" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/qs-tool.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Tägliche Rotation, wenn Datei-Endung %d{yyyy-MM-dd} ist -->
+            <fileNamePattern>${LOG_PATH}/qs-tool-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- Max 10MB pro Datei, bevor sie am gleichen Tag rotiert wird -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- Max 30 Tage Historie behalten -->
+            <maxHistory>30</maxHistory>
+            <!-- Gesamtes Log-Verzeichnis darf 1GB nicht überschreiten -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--
+      Root Log-Level.
+    -->
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+
+    <!-- Eigene Anwendungsklassen standardmäßig auf DEBUG für Entwicklung -->
+    <logger name="com.signongroup.template" level="DEBUG" />
+
+    <!--
+      Apache POI generiert sehr viele Log-Meldungen auf DEBUG/TRACE (z.B. XML-Parsing).
+      Diese werden hier explizit auf INFO limitiert.
+    -->
+    <!--    <logger name="org.apache.poi" level="INFO" />-->
+
+    <!-- Untergeordnete Bibliotheken, die ebenfalls spammig sein können -->
+    <!--    <logger name="org.apache.xmlbeans" level="INFO" />-->
+    <!--    <logger name="org.apache.xml.security" level="INFO" />-->
+    <!--    <logger name="org.apache.fop" level="INFO" />-->
+    <!--    <logger name="org.apache.pdfbox" level="INFO" />-->
+
+</configuration>

@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TemplateApplication" type="MicronautRunConfigurationType" factoryName="Micronaut" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="com.signongroup.template.TemplateApplication" />
+    <module name="template" />
+    <option name="VM_PARAMETERS" value="--enable-native-access=javafx.graphics" />
+    <option name="alternativeJrePath" />
+    <option name="alternativeJrePathEnabled" value="false" />
+    <option name="mainClass" value="com.signongroup.template.TemplateApplication" />
+    <option name="passParentEnvs" value="true" />
+    <option name="programParameters" value="" />
+    <option name="vmParameters" value="--enable-native-access=javafx.graphics" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

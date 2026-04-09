@@ -1,0 +1,69 @@
+/* ===================================================================== */
+/* SIGNON CORPORATE DESIGN - ATLANTAFX OVERRIDE                          */
+/* ===================================================================== */
+
+.root {
+    /* ----------------------------------------------------------------- */
+    /* 1. EIGENE CD-FARBEN (Als Basis-Variablen definieren)              */
+    /* ----------------------------------------------------------------- */
+
+    /* Primär - Orange */
+    -primary-color-signon-orange:       #F08A16;
+    -primary-color-signon-orange-dark:  #9E550F;
+    -primary-color-signon-orange-light: #FFA448;
+
+    /* Sekundär - Blau */
+    -secundary-color-signon-blue:         #21BBEB;
+    -secundary-color-signon-blue-dark:    #00799E;
+    -secundary-color-signon-blue-light:   #7EE6F0;
+
+    /* Sekundär - Grün */
+    -secundary-color-signon-green:        #30C29E;
+    -secundary-color-signon-green-dark:   #177E64;
+    -secundary-color-signon-green-light:  #80F9DB;
+
+    /* Sekundär - Lila */
+    -secundary-color-signon-purple:       #5370FB;
+    -secundary-color-signon-purple-dark:  #394A9A;
+    -secundary-color-signon-purple-light: #94A5F8;
+
+    /* Grau */
+    -color-signon-gray:         #828282;
+    -color-signon-gray-dark:    #585858;
+    -color-signon-gray-light:   #F4F4F4;
+
+    /* ----------------------------------------------------------------- */
+    /* 2. ATLANTAFX MAPPING (Zuweisung auf Framework-Variablen)          */
+    /* ----------------------------------------------------------------- */
+
+    /* --- TODO schauen ob die Zuweisung so passt ggf. Custom Elemente erstellen --- */
+
+    /* === ACCENT (Hauptfarbe für primäre Buttons, Tabs, Fokus etc.) === */
+    -color-accent-emphasis:     -primary-color-signon-orange;
+    -color-accent-emphasis-alt: -primary-color-signon-orange-dark;   /* Hover-Status (dunkler) */
+    -color-accent-fg:           #FFFFFF;                     /* Textfarbe auf Orange (Weiß) */
+    -color-accent-subtle:       -primary-color-signon-orange-light;  /* Transparente/Helle Hintergründe */
+    -color-accent-muted:        -primary-color-signon-orange-light;
+
+    /* === SUCCESS (Grün für Erfolgsmeldungen, Bestätigungen) === */
+    -color-success-emphasis:    -secundary-color-signon-green;
+    -color-success-emphasis-alt:-secundary-color-signon-green-dark;
+    -color-success-fg:          #FFFFFF;
+    -color-success-subtle:      -secundary-color-signon-green-light;
+    -color-success-muted:       -secundary-color-signon-green-light;
+
+    /* === INFO (Blau für Hinweise, Tooltips, neutrale Infos) === */
+    -color-info-emphasis:       -secundary-color-signon-blue;
+    -color-info-emphasis-alt:   -secundary-color-signon-blue-dark;
+    -color-info-fg:             #FFFFFF;
+    -color-info-subtle:         -secundary-color-signon-blue-light;
+    -color-info-muted:          -secundary-color-signon-blue-light;
+
+    /* === TEXT & BACKGROUNDS (Mapping der Grautöne) === */
+    -color-fg-default:          -color-signon-gray-dark;     /* Haupttext (sehr dunkles Grau) */
+    -color-fg-muted:            -color-signon-gray;          /* Abgeschwächter Text / Labels */
+
+    /* Leichte graue Rahmen und abgesetzte Hintergründe (z.B. Tabellenkopf) */
+    -color-border-subtle:       -color-signon-gray-light;
+    -color-bg-subtle:           -color-signon-gray-light;
+}
