@@ -17,7 +17,7 @@
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <javafx.version>25.0.2</javafx.version>
+        <javafx.version>21.0.2</javafx.version>
         <micronaut.version>4.10.9</micronaut.version>
         <atlantafx.version>2.1.0</atlantafx.version>
         <ikonli.version>12.4.0</ikonli.version>
@@ -60,11 +60,6 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>jfx-incubator-richtext</artifactId>
             <version>${javafx.version}</version>
         </dependency>
 
@@ -173,27 +168,21 @@
         <!--        <version>26.0.2</version>-->
         <!--    </dependency>-->
 
-        <!-- Jackson XML for parsing XML files -->
-        <!--    <dependency>-->
-        <!--        <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--        <artifactId>jackson-core</artifactId>-->
-        <!--        <version>${jackson.version}</version>-->
-        <!--    </dependency>-->
-        <!--    <dependency>-->
-        <!--        <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--        <artifactId>jackson-databind</artifactId>-->
-        <!--        <version>${jackson.version}</version>-->
-        <!--    </dependency>-->
-        <!--    <dependency>-->
-        <!--        <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--        <artifactId>jackson-annotations</artifactId>-->
-        <!--        <version>${jackson-annotations.version}</version>-->
-        <!--    </dependency>-->
-        <!--    <dependency>-->
-        <!--        <groupId>com.fasterxml.jackson.dataformat</groupId>-->
-        <!--        <artifactId>jackson-dataformat-xml</artifactId>-->
-        <!--        <version>${jackson.version}</version>-->
-        <!--    </dependency>-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-annotations.version}</version>
+        </dependency>
 
         <!-- Apache POI for Excel files -->
         <!--    <dependency>-->
@@ -244,7 +233,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.15.0</version>
                 <configuration>
-                    <release>25</release>
+                    <release>21</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>io.micronaut</groupId>
@@ -537,7 +526,7 @@
                         <version>${maven-compiler-plugin.version}</version>
                         <configuration>
                             <fork>true</fork>
-                            <release>25</release>
+                            <release>21</release>
                             <encoding>UTF-8</encoding>
                             <compilerArgs>
                                 <arg>-parameters</arg>

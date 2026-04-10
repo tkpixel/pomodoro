@@ -31,6 +31,9 @@ module com.signongroup.pomodoro {
     // ── Logging ───────────────────────────────────────────────────────────────
     requires org.slf4j;
 
+    requires java.net.http;
+    requires java.prefs;
+
     // ── Exports (erforderlich damit Micronauts APT die Klassen zur Compile-Zeit sieht) ──
     exports com.signongroup.pomodoro;
     exports com.signongroup.pomodoro.view;

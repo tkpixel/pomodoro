@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.signongroup.pomodoro.view.JiraSetupViewController"
+           styleClass="bg-mesh"
+           prefHeight="460.0" prefWidth="570.0">
+
+    <!-- Top Navigation Bar -->
+    <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0">
+        <padding>
+            <Insets left="24" right="24"/>
+        </padding>
+        <Button styleClass="fab-icon-button" onAction="#handleBack" style="-fx-padding: 0;">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <FontIcon iconLiteral="fltral-chevron-left-20" iconSize="24" styleClass="menu-icon"/>
+                    <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase; -fx-cursor: hand;" />
+                </HBox>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox spacing="24" alignment="TOP_LEFT" maxWidth="400">
+        <padding>
+            <Insets top="100" bottom="20"/>
+        </padding>
+
+        <!-- Header: TextFlow for rich typography -->
+        <TextFlow>
+            <Text text="Setup " style="-fx-fill: -fx-on-surface; -fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'System', 'Manrope', sans-serif;" />
+            <Text text="JIRA" style="-fx-fill: -fx-primary; -fx-font-size: 24px; -fx-font-style: italic; -fx-font-family: 'System', 'Manrope', sans-serif;" />
+        </TextFlow>
+
+        <!-- Instructional Callout -->
+        <HBox styleClass="info-box" spacing="12">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+            <FontIcon iconLiteral="fltrmz-info-24" iconSize="20" style="-fx-icon-color: -fx-on-surface-variant;"/>
+            <Label text="Generate an API token from your Atlassian account security settings and paste it below." wrapText="true" style="-fx-text-fill: -fx-on-surface-variant; -fx-font-size: 13px;" />
+        </HBox>
+
+        <!-- Input Form -->
+        <VBox spacing="16">
+            <!-- URL Field -->
+            <VBox spacing="8">
+                <Label text="JIRA INSTANCE URL" styleClass="form-label tracking-widest"/>
+                <TextField fx:id="urlField" promptText="https://your-domain.atlassian.net" styleClass="form-input"/>
+            </VBox>
+
+            <!-- Email Field -->
+            <VBox spacing="8">
+                <Label text="EMAIL ADDRESS" styleClass="form-label tracking-widest"/>
+                <TextField fx:id="emailField" promptText="you@example.com" styleClass="form-input"/>
+            </VBox>
+
+            <!-- API Token Field -->
+            <VBox spacing="8">
+                <Label text="API TOKEN" styleClass="form-label tracking-widest"/>
+                <StackPane alignment="CENTER_RIGHT">
+                    <PasswordField fx:id="tokenFieldMasked" promptText="Paste token here" styleClass="form-input"/>
+                    <TextField fx:id="tokenFieldVisible" promptText="Paste token here" styleClass="form-input" visible="false"/>
+                    <Button styleClass="fab-icon-button" onAction="#toggleTokenVisibility" style="-fx-padding: 0 12 0 0;">
+                        <graphic>
+                            <FontIcon fx:id="visibilityIcon" iconLiteral="fltral-eye-20" iconSize="20" style="-fx-icon-color: -fx-on-surface-variant;"/>
+                        </graphic>
+                    </Button>
+                </StackPane>
+            </VBox>
+        </VBox>
+
+        <!-- Status Message -->
+        <Label fx:id="statusLabel" wrapText="true" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+
+        <!-- Action Button -->
+        <Button fx:id="connectButton" text="Connect &amp; Test" styleClass="primary-button" onAction="#handleConnect" maxWidth="Infinity" />
+
+    </VBox>
+</StackPane>

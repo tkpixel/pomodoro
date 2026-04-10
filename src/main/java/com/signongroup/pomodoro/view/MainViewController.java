@@ -65,10 +65,12 @@ public class MainViewController implements Initializable {
     private Region breakProgressRegion;
 
     private final MainViewModel viewModel;
+    private final WindowManager windowManager;
 
     @Inject
-    public MainViewController(MainViewModel viewModel) {
+    public MainViewController(MainViewModel viewModel, WindowManager windowManager) {
         this.viewModel = viewModel;
+        this.windowManager = windowManager;
     }
 
     @Override
@@ -109,6 +111,11 @@ public class MainViewController implements Initializable {
         if (viewModel.getTimerState() == TimerState.BREAK_RUNNING) {
             viewModel.skipBreak();
         }
+    }
+
+    @FXML
+    public void handleOpenJiraSetup(ActionEvent event) {
+        windowManager.showJiraSetupView();
     }
 
     private void updatePlayPauseIcon(boolean isRunning) {
