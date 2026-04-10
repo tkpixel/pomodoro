@@ -121,8 +121,7 @@
 
 .card-icon-container {
     -fx-background-radius: 9999px;
-    -fx-background-color: rgba(72, 13, 0, 1.0); /* Dark orange/brown tint based on palette (#480d00) */
-    -fx-padding: 10px;
+    -fx-background-color: #36211c; /* A visible dark orange/brown based on design */
     -fx-min-width: 40px;
     -fx-min-height: 40px;
     -fx-max-width: 40px;
@@ -130,15 +129,23 @@
     -fx-alignment: center;
 }
 
+/* Explicitly target the icon inside the container */
+.card-icon-container .ikonli-font-icon {
+    -fx-icon-color: -fx-primary;
+}
+
 .card-icon-container-break {
     -fx-background-radius: 9999px;
-    -fx-background-color: rgba(38, 38, 38, 1.0); /* Dark grey based on palette (#262626) */
-    -fx-padding: 10px;
+    -fx-background-color: -fx-surface-container; /* Matching dark grey from palette */
     -fx-min-width: 40px;
     -fx-min-height: 40px;
     -fx-max-width: 40px;
     -fx-max-height: 40px;
     -fx-alignment: center;
+}
+
+.card-icon-container-break .ikonli-font-icon {
+    -fx-icon-color: -fx-on-surface-variant;
 }
 
 .active-glow {

@@ -44,24 +44,6 @@ public class PomodoroApplication extends Application {
         // TODO
         //  primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Logo.png"))));
 
-        // Get screen dimensions
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        double screenWidth = screenBounds.getWidth();
-        double screenHeight = screenBounds.getHeight();
-
-        // Set window size relative to screen size (70% width, 75% height)
-        double windowWidth = screenWidth * 0.7;
-        double windowHeight = screenHeight * 0.75;
-
-        primaryStage.setWidth(windowWidth);
-        primaryStage.setHeight(windowHeight);
-        primaryStage.setMinWidth(1500.0);
-        primaryStage.setMinHeight(600.0);
-
-        // Center the window on screen
-        primaryStage.setX((screenWidth - windowWidth) / 2);
-        primaryStage.setY((screenHeight - windowHeight) / 2);
-
         primaryStage.setScene(scene);
         primaryStage.show();
     }
