@@ -3,6 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.shape.*?>
+<?import javafx.scene.Group?>
 <?import javafx.geometry.Insets?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
