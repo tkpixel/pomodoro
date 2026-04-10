@@ -1,12 +1,19 @@
 package com.signongroup.pomodoro.view;
 
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
+import com.signongroup.pomodoro.viewmodel.MainViewModel.TimerState;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Arc;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,6 +24,9 @@ import java.util.ResourceBundle;
  */
 @Singleton
 public class MainViewController implements Initializable {
+
+    @FXML
+    private Arc baseArc;
 
     @FXML
     private Arc progressArc;
@@ -32,6 +42,27 @@ public class MainViewController implements Initializable {
 
     @FXML
     private Label nextBreakLabel;
+
+    @FXML
+    private FontIcon playIcon;
+
+    @FXML
+    private javafx.scene.control.Button skipButton;
+
+    @FXML
+    private HBox breakCardContainer;
+
+    @FXML
+    private StackPane breakCardIconContainer;
+
+    @FXML
+    private FontIcon breakIcon;
+
+    @FXML
+    private Label breakTitleLabel;
+
+    @FXML
+    private Region breakProgressRegion;
 
     private final MainViewModel viewModel;
 
@@ -50,5 +81,89 @@ public class MainViewController implements Initializable {
 
         // Bind Arc length to progress (multiply by -360 as the Arc goes clockwise which is negative in JavaFX)
         progressArc.lengthProperty().bind(viewModel.timerProgressProperty().multiply(-360));
+
+        // Bind break progress region width
+        breakProgressRegion.prefWidthProperty().bind(breakCardContainer.widthProperty().multiply(viewModel.breakProgressProperty()));
+
+        // Bind Skip Button visibility and managed properties
+        skipButton.visibleProperty().bind(Bindings.createBooleanBinding(() ->
+                viewModel.getTimerState() == TimerState.BREAK_RUNNING, viewModel.timerStateProperty()));
+        skipButton.managedProperty().bind(skipButton.visibleProperty());
+
+        // Listeners for UI state changes
+        viewModel.isRunningProperty().addListener((obs, oldVal, newVal) -> updatePlayPauseIcon(newVal));
+        viewModel.timerStateProperty().addListener((obs, oldVal, newVal) -> updateUIForState(newVal));
+
+        // Initial setup
+        updatePlayPauseIcon(viewModel.getIsRunning());
+        updateUIForState(viewModel.getTimerState());
+    }
+
+    @FXML
+    public void handlePlayPause(ActionEvent event) {
+        viewModel.toggleTimer();
+    }
+
+    @FXML
+    public void handleDynamicAction(ActionEvent event) {
+        if (viewModel.getTimerState() == TimerState.BREAK_RUNNING) {
+            viewModel.skipBreak();
+        }
+    }
+
+    private void updatePlayPauseIcon(boolean isRunning) {
+        if (isRunning) {
+            playIcon.setIconLiteral("fltfmz-pause-20");
+        } else {
+            playIcon.setIconLiteral("fltfmz-play-20");
+        }
+        playIcon.setIconColor(javafx.scene.paint.Color.web("#000000"));
+    }
+
+    private void updateUIForState(TimerState state) {
+        if (state == TimerState.BREAK_RUNNING) {
+            // Main timer visual changes
+            if (baseArc != null) {
+                baseArc.getStyleClass().add("timer-base-inactive");
+            }
+            progressArc.setVisible(false);
+
+            // Break card visual changes
+            breakCardContainer.getStyleClass().add("break-active-card");
+            breakCardIconContainer.getStyleClass().remove("card-icon-container-break");
+            breakCardIconContainer.getStyleClass().add("card-icon-container-break-active");
+            breakIcon.setIconColor(javafx.scene.paint.Color.web("#000000")); // -fx-on-primary-fixed roughly
+            breakTitleLabel.setText("BREAK ACTIVE");
+            breakTitleLabel.getStyleClass().remove("card-title");
+            breakTitleLabel.setStyle("-fx-text-fill: -fx-primary; -fx-font-size: 9px; -fx-font-weight: bold; -fx-text-transform: uppercase;");
+            nextBreakLabel.getStyleClass().remove("card-value-muted");
+            nextBreakLabel.getStyleClass().add("card-value");
+            breakProgressRegion.setVisible(true);
+        } else {
+            // Main timer visual changes
+            if (baseArc != null) {
+                baseArc.getStyleClass().remove("timer-base-inactive");
+            }
+            progressArc.setVisible(true);
+
+            // Break card visual changes
+            breakCardContainer.getStyleClass().remove("break-active-card");
+            breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active");
+            if (!breakCardIconContainer.getStyleClass().contains("card-icon-container-break")) {
+                breakCardIconContainer.getStyleClass().add("card-icon-container-break");
+            }
+            breakIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa")); // -fx-on-surface-variant roughly
+            breakTitleLabel.setText("NEXT BREAK");
+            breakTitleLabel.setStyle("");
+            if (!breakTitleLabel.getStyleClass().contains("card-title")) {
+                breakTitleLabel.getStyleClass().add("card-title");
+            }
+            breakTitleLabel.setStyle("-fx-text-transform: uppercase;");
+            nextBreakLabel.getStyleClass().remove("card-value");
+            if (!nextBreakLabel.getStyleClass().contains("card-value-muted")) {
+                nextBreakLabel.getStyleClass().add("card-value-muted");
+            }
+            breakProgressRegion.setVisible(false);
+        }
     }
 }

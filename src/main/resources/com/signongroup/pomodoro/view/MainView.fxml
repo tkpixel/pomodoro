@@ -11,7 +11,7 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.signongroup.pomodoro.view.MainViewController"
            styleClass="bg-mesh"
-           prefHeight="800.0" prefWidth="600.0">
+           prefHeight="460.0" prefWidth="570.0">
 
     <!-- Decorative Elements (Blur effects not perfectly supported in JavaFX out-of-the-box, simulated via background) -->
 
@@ -25,7 +25,7 @@
         <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" />
         <Region HBox.hgrow="ALWAYS"/>
         <HBox alignment="CENTER" spacing="8">
-            <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24" iconColor="#ff8f70"/>
+            <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24" styleClass="menu-icon"/>
         </HBox>
     </HBox>
 
@@ -62,7 +62,7 @@
                              styleClass="progress-glow"/>
                     </Group>
 
-                    <VBox alignment="CENTER">
+                    <VBox alignment="CENTER" spacing="-15">
                         <Label fx:id="timerLabel" text="25:00" styleClass="timer-text"/>
                         <Label text="MINUTES" styleClass="timer-label tracking-widest" style="-fx-padding: 4 0 0 0; -fx-text-fill: -fx-primary;"/>
                     </VBox>
@@ -72,10 +72,10 @@
                 <VBox spacing="12" HBox.hgrow="ALWAYS">
                     <!-- Session Card -->
                     <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
-                        <StackPane styleClass="card-icon-container active-glow">
-                            <FontIcon iconLiteral="fltfal-layer-20" iconSize="20" iconColor="#ff8f70"/>
+                        <StackPane styleClass="card-icon-container">
+                            <FontIcon iconLiteral="fltfal-layer-20" iconSize="20"/>
                         </StackPane>
-                        <VBox>
+                        <VBox alignment="CENTER_LEFT">
                             <Label text="SESSION" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
                             <Label fx:id="sessionLabel" text="1 / 4" styleClass="card-value"/>
                         </VBox>
@@ -83,10 +83,10 @@
 
                     <!-- Tasks Card -->
                     <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
-                        <StackPane styleClass="card-icon-container active-glow">
-                            <FontIcon iconLiteral="fltfal-checkmark-square-24" iconSize="20" iconColor="#ff8f70"/>
+                        <StackPane styleClass="card-icon-container">
+                            <FontIcon iconLiteral="fltfal-checkmark-square-24" iconSize="20"/>
                         </StackPane>
-                        <VBox>
+                        <VBox alignment="CENTER_LEFT">
                             <Label text="CLEARED TODAY" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
                             <HBox alignment="BOTTOM_LEFT" spacing="4">
                                 <Label fx:id="clearedTodayLabel" text="00" styleClass="card-value"/>
@@ -95,28 +95,31 @@
                     </HBox>
 
                     <!-- Break Card -->
-                    <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
-                        <StackPane styleClass="card-icon-container-break">
-                            <FontIcon iconLiteral="fltral-drink-coffee-20" iconSize="20" iconColor="#adaaaa"/>
-                        </StackPane>
-                        <VBox>
-                            <Label text="NEXT BREAK" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
-                            <Label fx:id="nextBreakLabel" text="05:00" styleClass="card-value-muted"/>
-                        </VBox>
-                    </HBox>
+                    <StackPane>
+                        <HBox fx:id="breakCardContainer" styleClass="card" alignment="CENTER_LEFT" spacing="12">
+                            <StackPane fx:id="breakCardIconContainer" styleClass="card-icon-container-break">
+                                <FontIcon fx:id="breakIcon" iconLiteral="fltral-drink-coffee-20" iconSize="20"/>
+                            </StackPane>
+                            <VBox alignment="CENTER_LEFT">
+                                <Label fx:id="breakTitleLabel" text="NEXT BREAK" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
+                                <Label fx:id="nextBreakLabel" text="05:00" styleClass="card-value-muted"/>
+                            </VBox>
+                        </HBox>
+                        <Region fx:id="breakProgressRegion" StackPane.alignment="BOTTOM_RIGHT" maxHeight="4" style="-fx-background-color: -fx-primary;" styleClass="progress-glow" visible="false"/>
+                    </StackPane>
                 </VBox>
             </HBox>
         </VBox>
     </VBox>
 
     <!-- Floating Action Bar -->
-    <HBox alignment="CENTER" spacing="16" StackPane.alignment="BOTTOM_CENTER" maxHeight="-Infinity">
+    <HBox alignment="CENTER" spacing="10" StackPane.alignment="BOTTOM_CENTER" maxHeight="-Infinity">
         <padding>
-            <Insets bottom="40"/>
+            <Insets bottom="20"/>
         </padding>
 
         <!-- Main Pill Navigation -->
-        <HBox alignment="CENTER" styleClass="fab-glass" spacing="8" prefHeight="64">
+        <HBox alignment="CENTER" styleClass="fab-glass" spacing="8" prefHeight="60">
             <padding>
                 <Insets left="16" right="16"/>
             </padding>
@@ -132,15 +135,20 @@
             </Button>
             <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48">
                 <graphic>
-                    <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24"/>
+                    <FontIcon iconLiteral="fltral-checkmark-square-24" iconSize="24"/>
+                </graphic>
+            </Button>
+            <Button fx:id="skipButton" styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleDynamicAction">
+                <graphic>
+                    <FontIcon iconLiteral="fltrmz-next-24" iconSize="24"/>
                 </graphic>
             </Button>
         </HBox>
 
         <!-- Primary Action Button -->
-        <Button styleClass="play-btn" prefWidth="64" prefHeight="64">
+        <Button styleClass="play-btn" prefWidth="64" prefHeight="64" onAction="#handlePlayPause">
             <graphic>
-                <FontIcon iconLiteral="fltfmz-play-20" iconSize="36" iconColor="#101010"/>
+                <FontIcon fx:id="playIcon" iconLiteral="fltfmz-play-20" iconSize="36" iconColor="#101010"/>
             </graphic>
         </Button>
     </HBox>

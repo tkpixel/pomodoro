@@ -121,8 +121,7 @@
 
 .card-icon-container {
     -fx-background-radius: 9999px;
-    -fx-background-color: rgba(255, 143, 112, 0.1);
-    -fx-padding: 10px;
+    -fx-background-color: #36211c; /* A visible dark orange/brown based on design */
     -fx-min-width: 40px;
     -fx-min-height: 40px;
     -fx-max-width: 40px;
@@ -130,15 +129,23 @@
     -fx-alignment: center;
 }
 
+/* Explicitly target the icon inside the container */
+.card-icon-container .ikonli-font-icon {
+    -fx-icon-color: -fx-primary;
+}
+
 .card-icon-container-break {
     -fx-background-radius: 9999px;
-    -fx-background-color: -fx-surface-container;
-    -fx-padding: 10px;
+    -fx-background-color: -fx-surface-container; /* Matching dark grey from palette */
     -fx-min-width: 40px;
     -fx-min-height: 40px;
     -fx-max-width: 40px;
     -fx-max-height: 40px;
     -fx-alignment: center;
+}
+
+.card-icon-container-break .ikonli-font-icon {
+    -fx-icon-color: -fx-on-surface-variant;
 }
 
 .active-glow {
@@ -153,14 +160,46 @@
 
 .card-value {
     -fx-font-family: "System", "Manrope", sans-serif;
-    -fx-font-size: 18px;
+    -fx-font-size: 24px;
     -fx-font-weight: 800;
     -fx-text-fill: -fx-on-surface;
 }
 
 .card-value-muted {
     -fx-font-family: "System", "Manrope", sans-serif;
-    -fx-font-size: 18px;
+    -fx-font-size: 24px;
     -fx-font-weight: 800;
     -fx-text-fill: rgba(173, 170, 170, 0.7); /* on-surface-variant/70 */
+}
+
+/* Break Active Card glowing style */
+.break-active-card {
+    -fx-border-color: rgba(255, 143, 112, 0.3);
+}
+
+.card-icon-container-break-active {
+    -fx-background-radius: 9999px;
+    -fx-background-color: -fx-primary;
+    -fx-padding: 10px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(255, 143, 112, 0.4), 12, 0, 0, 0);
+}
+
+/* Inactive Timer Base */
+.timer-base-inactive {
+    -fx-stroke: rgba(38, 38, 38, 0.5); /* slightly dimmed surface-container-highest */
+}
+
+/* Menu Icon */
+.menu-icon {
+    -fx-icon-color: -fx-primary;
+}
+
+/* Gradient Play Button explicit icon color for contrast */
+.play-btn .ikonli-font-icon {
+    -fx-icon-color: #000000;
 }
