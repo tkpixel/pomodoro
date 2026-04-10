@@ -17,7 +17,7 @@ public class MainViewModel {
     private final StringProperty sessionText = new SimpleStringProperty("1 / 4");
     private final StringProperty clearedTodayText = new SimpleStringProperty("00");
     private final StringProperty nextBreakText = new SimpleStringProperty("05:00");
-    private final DoubleProperty timerProgress = new SimpleDoubleProperty(0.65); // 65% progress to match visual
+    private final DoubleProperty timerProgress = new SimpleDoubleProperty(1.0); // 100% progress for the initial Start state
 
     public StringProperty timerTextProperty() {
         return timerText;
