@@ -164,3 +164,25 @@
     -fx-font-weight: 800;
     -fx-text-fill: rgba(173, 170, 170, 0.7); /* on-surface-variant/70 */
 }
+
+/* Break Active Card glowing style */
+.break-active-card {
+    -fx-border-color: rgba(255, 143, 112, 0.3);
+}
+
+.card-icon-container-break-active {
+    -fx-background-radius: 9999px;
+    -fx-background-color: -fx-primary;
+    -fx-padding: 10px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(255, 143, 112, 0.4), 12, 0, 0, 0);
+}
+
+/* Inactive Timer Base */
+.timer-base-inactive {
+    -fx-stroke: rgba(38, 38, 38, 0.5); /* slightly dimmed surface-container-highest */
+}

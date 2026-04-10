@@ -95,15 +95,18 @@
                     </HBox>
 
                     <!-- Break Card -->
-                    <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
-                        <StackPane styleClass="card-icon-container-break">
-                            <FontIcon iconLiteral="fltral-drink-coffee-20" iconSize="20" iconColor="#adaaaa"/>
-                        </StackPane>
-                        <VBox>
-                            <Label text="NEXT BREAK" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
-                            <Label fx:id="nextBreakLabel" text="05:00" styleClass="card-value-muted"/>
-                        </VBox>
-                    </HBox>
+                    <StackPane>
+                        <HBox fx:id="breakCardContainer" styleClass="card" alignment="CENTER_LEFT" spacing="12">
+                            <StackPane fx:id="breakCardIconContainer" styleClass="card-icon-container-break">
+                                <FontIcon fx:id="breakIcon" iconLiteral="fltral-drink-coffee-20" iconSize="20" iconColor="#adaaaa"/>
+                            </StackPane>
+                            <VBox>
+                                <Label fx:id="breakTitleLabel" text="NEXT BREAK" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
+                                <Label fx:id="nextBreakLabel" text="05:00" styleClass="card-value-muted"/>
+                            </VBox>
+                        </HBox>
+                        <Region fx:id="breakProgressRegion" StackPane.alignment="BOTTOM_RIGHT" maxHeight="4" style="-fx-background-color: -fx-primary;" styleClass="progress-glow" visible="false"/>
+                    </StackPane>
                 </VBox>
             </HBox>
         </VBox>
@@ -132,15 +135,20 @@
             </Button>
             <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48">
                 <graphic>
-                    <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24"/>
+                    <FontIcon iconLiteral="fltral-checkmark-square-24" iconSize="24"/>
+                </graphic>
+            </Button>
+            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleDynamicAction">
+                <graphic>
+                    <FontIcon fx:id="dynamicActionIcon" iconLiteral="fltrmz-task-list-24" iconSize="24"/>
                 </graphic>
             </Button>
         </HBox>
 
         <!-- Primary Action Button -->
-        <Button styleClass="play-btn" prefWidth="64" prefHeight="64">
+        <Button styleClass="play-btn" prefWidth="64" prefHeight="64" onAction="#handlePlayPause">
             <graphic>
-                <FontIcon iconLiteral="fltfmz-play-20" iconSize="36" iconColor="#101010"/>
+                <FontIcon fx:id="playIcon" iconLiteral="fltfmz-play-20" iconSize="36" iconColor="#101010"/>
             </graphic>
         </Button>
     </HBox>
