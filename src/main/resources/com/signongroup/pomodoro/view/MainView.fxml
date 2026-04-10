@@ -75,7 +75,7 @@
                         <StackPane styleClass="card-icon-container active-glow">
                             <FontIcon iconLiteral="fltfal-layer-20" iconSize="20" iconColor="#ff8f70"/>
                         </StackPane>
-                        <VBox>
+                        <VBox alignment="CENTER_LEFT">
                             <Label text="SESSION" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
                             <Label fx:id="sessionLabel" text="1 / 4" styleClass="card-value"/>
                         </VBox>
@@ -86,7 +86,7 @@
                         <StackPane styleClass="card-icon-container active-glow">
                             <FontIcon iconLiteral="fltfal-checkmark-square-24" iconSize="20" iconColor="#ff8f70"/>
                         </StackPane>
-                        <VBox>
+                        <VBox alignment="CENTER_LEFT">
                             <Label text="CLEARED TODAY" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
                             <HBox alignment="BOTTOM_LEFT" spacing="4">
                                 <Label fx:id="clearedTodayLabel" text="00" styleClass="card-value"/>
@@ -100,7 +100,7 @@
                             <StackPane fx:id="breakCardIconContainer" styleClass="card-icon-container-break">
                                 <FontIcon fx:id="breakIcon" iconLiteral="fltral-drink-coffee-20" iconSize="20" iconColor="#adaaaa"/>
                             </StackPane>
-                            <VBox>
+                            <VBox alignment="CENTER_LEFT">
                                 <Label fx:id="breakTitleLabel" text="NEXT BREAK" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
                                 <Label fx:id="nextBreakLabel" text="05:00" styleClass="card-value-muted"/>
                             </VBox>
