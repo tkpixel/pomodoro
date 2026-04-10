@@ -47,7 +47,7 @@ public class MainViewController implements Initializable {
     private FontIcon playIcon;
 
     @FXML
-    private FontIcon dynamicActionIcon;
+    private javafx.scene.control.Button skipButton;
 
     @FXML
     private HBox breakCardContainer;
@@ -85,6 +85,11 @@ public class MainViewController implements Initializable {
         // Bind break progress region width
         breakProgressRegion.prefWidthProperty().bind(breakCardContainer.widthProperty().multiply(viewModel.breakProgressProperty()));
 
+        // Bind Skip Button visibility and managed properties
+        skipButton.visibleProperty().bind(Bindings.createBooleanBinding(() ->
+                viewModel.getTimerState() == TimerState.BREAK_RUNNING, viewModel.timerStateProperty()));
+        skipButton.managedProperty().bind(skipButton.visibleProperty());
+
         // Listeners for UI state changes
         viewModel.isRunningProperty().addListener((obs, oldVal, newVal) -> updatePlayPauseIcon(newVal));
         viewModel.timerStateProperty().addListener((obs, oldVal, newVal) -> updateUIForState(newVal));
@@ -112,6 +117,7 @@ public class MainViewController implements Initializable {
         } else {
             playIcon.setIconLiteral("fltfmz-play-20");
         }
+        playIcon.setIconColor(javafx.scene.paint.Color.web("#000000"));
     }
 
     private void updateUIForState(TimerState state) {
@@ -133,9 +139,6 @@ public class MainViewController implements Initializable {
             nextBreakLabel.getStyleClass().remove("card-value-muted");
             nextBreakLabel.getStyleClass().add("card-value");
             breakProgressRegion.setVisible(true);
-
-            // Toolbar visual changes
-            dynamicActionIcon.setIconLiteral("fltrmz-next-24");
         } else {
             // Main timer visual changes
             if (baseArc != null) {
@@ -161,9 +164,6 @@ public class MainViewController implements Initializable {
                 nextBreakLabel.getStyleClass().add("card-value-muted");
             }
             breakProgressRegion.setVisible(false);
-
-            // Toolbar visual changes
-            dynamicActionIcon.setIconLiteral("fltrmz-task-list-24");
         }
     }
 }
