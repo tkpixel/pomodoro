@@ -1,69 +1,166 @@
 /* ===================================================================== */
-/* SIGNON CORPORATE DESIGN - ATLANTAFX OVERRIDE                          */
+/* MONOLITH DESIGN - ATLANTAFX OVERRIDE                                  */
 /* ===================================================================== */
 
 .root {
-    /* ----------------------------------------------------------------- */
-    /* 1. EIGENE CD-FARBEN (Als Basis-Variablen definieren)              */
-    /* ----------------------------------------------------------------- */
+    /* Base Colors from HTML */
+    -fx-surface: #0e0e0e;
+    -fx-surface-container-low: #131313;
+    -fx-surface-container: #1a1919;
+    -fx-surface-container-high: #201f1f;
+    -fx-surface-container-highest: #262626;
 
-    /* Primär - Orange */
-    -primary-color-signon-orange:       #F08A16;
-    -primary-color-signon-orange-dark:  #9E550F;
-    -primary-color-signon-orange-light: #FFA448;
+    -fx-on-surface: #ffffff;
+    -fx-on-surface-variant: #adaaaa;
 
-    /* Sekundär - Blau */
-    -secundary-color-signon-blue:         #21BBEB;
-    -secundary-color-signon-blue-dark:    #00799E;
-    -secundary-color-signon-blue-light:   #7EE6F0;
+    -fx-primary: #ff8f70;
+    -fx-on-primary-fixed: #000000;
+    -fx-primary-container: #ff7852;
 
-    /* Sekundär - Grün */
-    -secundary-color-signon-green:        #30C29E;
-    -secundary-color-signon-green-dark:   #177E64;
-    -secundary-color-signon-green-light:  #80F9DB;
+    /* Backgrounds */
+    -fx-background-color: -fx-surface;
 
-    /* Sekundär - Lila */
-    -secundary-color-signon-purple:       #5370FB;
-    -secundary-color-signon-purple-dark:  #394A9A;
-    -secundary-color-signon-purple-light: #94A5F8;
+    /* Typograpy overrides matching the design */
+    -fx-font-family: "Inter", sans-serif;
+}
 
-    /* Grau */
-    -color-signon-gray:         #828282;
-    -color-signon-gray-dark:    #585858;
-    -color-signon-gray-light:   #F4F4F4;
+/* Base Mesh Background - recreated with generic CSS */
+.bg-mesh {
+    -fx-background-color: -fx-surface;
+    /* JavaFX does not support radial-gradients easily in a layered way like HTML.
+       We keep it simple dark for now, as glass bars cover most edges. */
+}
 
-    /* ----------------------------------------------------------------- */
-    /* 2. ATLANTAFX MAPPING (Zuweisung auf Framework-Variablen)          */
-    /* ----------------------------------------------------------------- */
+/* Glass Morphism */
+.glass-bar {
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+}
 
-    /* --- TODO schauen ob die Zuweisung so passt ggf. Custom Elemente erstellen --- */
+.fab-glass {
+    -fx-background-color: rgba(32, 31, 31, 0.9); /* surface-container-high approx */
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-radius: 9999px;
+    -fx-background-radius: 9999px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 8);
+}
 
-    /* === ACCENT (Hauptfarbe für primäre Buttons, Tabs, Fokus etc.) === */
-    -color-accent-emphasis:     -primary-color-signon-orange;
-    -color-accent-emphasis-alt: -primary-color-signon-orange-dark;   /* Hover-Status (dunkler) */
-    -color-accent-fg:           #FFFFFF;                     /* Textfarbe auf Orange (Weiß) */
-    -color-accent-subtle:       -primary-color-signon-orange-light;  /* Transparente/Helle Hintergründe */
-    -color-accent-muted:        -primary-color-signon-orange-light;
+.fab-icon-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-on-surface-variant;
+    -fx-cursor: hand;
+}
 
-    /* === SUCCESS (Grün für Erfolgsmeldungen, Bestätigungen) === */
-    -color-success-emphasis:    -secundary-color-signon-green;
-    -color-success-emphasis-alt:-secundary-color-signon-green-dark;
-    -color-success-fg:          #FFFFFF;
-    -color-success-subtle:      -secundary-color-signon-green-light;
-    -color-success-muted:       -secundary-color-signon-green-light;
+.fab-icon-button:hover {
+    -fx-text-fill: #ffffff;
+}
 
-    /* === INFO (Blau für Hinweise, Tooltips, neutrale Infos) === */
-    -color-info-emphasis:       -secundary-color-signon-blue;
-    -color-info-emphasis-alt:   -secundary-color-signon-blue-dark;
-    -color-info-fg:             #FFFFFF;
-    -color-info-subtle:         -secundary-color-signon-blue-light;
-    -color-info-muted:          -secundary-color-signon-blue-light;
+.fab-icon-button-active {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-primary;
+}
 
-    /* === TEXT & BACKGROUNDS (Mapping der Grautöne) === */
-    -color-fg-default:          -color-signon-gray-dark;     /* Haupttext (sehr dunkles Grau) */
-    -color-fg-muted:            -color-signon-gray;          /* Abgeschwächter Text / Labels */
+/* Gradient Play Button */
+.play-btn {
+    -fx-background-color: linear-gradient(to bottom right, -fx-primary, -fx-primary-container);
+    -fx-background-radius: 16px;
+    -fx-text-fill: -fx-on-primary-fixed;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 8);
+    -fx-cursor: hand;
+}
 
-    /* Leichte graue Rahmen und abgesetzte Hintergründe (z.B. Tabellenkopf) */
-    -color-border-subtle:       -color-signon-gray-light;
-    -color-bg-subtle:           -color-signon-gray-light;
+.play-btn:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.play-btn:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Typography styles */
+.font-manrope {
+    -fx-font-family: "System", "Manrope", sans-serif;
+}
+
+.tracking-widest {
+    -fx-letter-spacing: 0.2em; /* Emulated via inline style or custom if supported */
+}
+
+/* Progress Glow */
+.progress-glow {
+    -fx-stroke: -fx-primary;
+    -fx-effect: dropshadow(gaussian, rgba(255, 143, 112, 0.3), 15, 0, 0, 0);
+}
+
+.timer-base {
+    -fx-stroke: -fx-surface-container-highest;
+}
+
+.timer-text {
+    -fx-font-family: "System", "Manrope", sans-serif;
+    -fx-font-size: 56px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #ffffff;
+}
+
+.timer-label {
+    -fx-font-size: 8px;
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+}
+
+/* Right Side Cards */
+.card {
+    -fx-background-color: rgba(19, 19, 19, 0.6); /* surface-container-low */
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 12px;
+}
+
+.card-icon-container {
+    -fx-background-radius: 9999px;
+    -fx-background-color: rgba(255, 143, 112, 0.1);
+    -fx-padding: 10px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-alignment: center;
+}
+
+.card-icon-container-break {
+    -fx-background-radius: 9999px;
+    -fx-background-color: -fx-surface-container;
+    -fx-padding: 10px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-alignment: center;
+}
+
+.active-glow {
+    -fx-effect: dropshadow(gaussian, rgba(255, 143, 112, 0.2), 8, 0, 0, 0);
+}
+
+.card-title {
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-on-surface-variant;
+}
+
+.card-value {
+    -fx-font-family: "System", "Manrope", sans-serif;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -fx-on-surface;
+}
+
+.card-value-muted {
+    -fx-font-family: "System", "Manrope", sans-serif;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: rgba(173, 170, 170, 0.7); /* on-surface-variant/70 */
 }
