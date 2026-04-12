@@ -64,6 +64,9 @@ public class MainViewController implements Initializable {
     @FXML
     private Region breakProgressRegion;
 
+    @FXML
+    private SettingsOverlayViewController settingsOverlayController;
+
     private final MainViewModel viewModel;
     private final WindowManager windowManager;
 
@@ -116,6 +119,13 @@ public class MainViewController implements Initializable {
     @FXML
     public void handleOpenJiraSetup(ActionEvent event) {
         windowManager.showJiraSetupView();
+    }
+
+    @FXML
+    public void handleOpenSettings(ActionEvent event) {
+        if (settingsOverlayController != null) {
+            settingsOverlayController.open();
+        }
     }
 
     private void updatePlayPauseIcon(boolean isRunning) {

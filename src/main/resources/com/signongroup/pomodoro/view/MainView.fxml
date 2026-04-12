@@ -114,7 +114,7 @@
                     <FontIcon iconLiteral="fltral-arrow-clockwise-20" iconSize="24"/>
                 </graphic>
             </Button>
-            <Button styleClass="fab-icon-button-active" prefWidth="48" prefHeight="48">
+            <Button styleClass="fab-icon-button-active" prefWidth="48" prefHeight="48" onAction="#handleOpenSettings">
                 <graphic>
                     <FontIcon iconLiteral="fltfmz-timer-20" iconSize="24"/>
                 </graphic>
@@ -156,5 +156,8 @@
             </Button>
         </HBox>
     </HBox>
+
+    <!-- Settings Overlay -->
+    <fx:include fx:id="settingsOverlay" source="SettingsOverlayView.fxml"/>
 
 </StackPane>

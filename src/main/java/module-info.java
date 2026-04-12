@@ -33,12 +33,14 @@ module com.signongroup.pomodoro {
 
     requires java.net.http;
     requires java.prefs;
+    requires com.fasterxml.jackson.annotation;
+    requires com.fasterxml.jackson.databind;
 
     // ── Exports (erforderlich damit Micronauts APT die Klassen zur Compile-Zeit sieht) ──
     exports com.signongroup.pomodoro;
     exports com.signongroup.pomodoro.view;
     exports com.signongroup.pomodoro.viewmodel;
-//    exports com.signongroup.pomodoro.model;
+    exports com.signongroup.pomodoro.model;
     exports com.signongroup.pomodoro.service;
 
 
@@ -49,6 +51,7 @@ module com.signongroup.pomodoro {
     opens com.signongroup.pomodoro to javafx.graphics, io.micronaut.micronaut_inject;
     opens com.signongroup.pomodoro.viewmodel to io.micronaut.micronaut_inject;
     opens com.signongroup.pomodoro.service to io.micronaut.micronaut_inject;
+    opens com.signongroup.pomodoro.model to io.micronaut.micronaut_inject, com.fasterxml.jackson.databind;
 }
 
 
