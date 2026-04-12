@@ -31,12 +31,15 @@ module com.signongroup.pomodoro {
     // ── Logging ───────────────────────────────────────────────────────────────
     requires org.slf4j;
 
+    requires java.net.http;
+    requires java.prefs;
+
     // ── Exports (erforderlich damit Micronauts APT die Klassen zur Compile-Zeit sieht) ──
     exports com.signongroup.pomodoro;
     exports com.signongroup.pomodoro.view;
     exports com.signongroup.pomodoro.viewmodel;
 //    exports com.signongroup.pomodoro.model;
-//    exports com.signongroup.pomodoro.service;
+    exports com.signongroup.pomodoro.service;
 
 
     // ── Reflection-Öffnungen für FXMLLoader ──────────────────────────────────
@@ -45,6 +48,7 @@ module com.signongroup.pomodoro {
     // ── Reflection-Öffnungen für Micronaut & JavaFX ───────────────────────────
     opens com.signongroup.pomodoro to javafx.graphics, io.micronaut.micronaut_inject;
     opens com.signongroup.pomodoro.viewmodel to io.micronaut.micronaut_inject;
+    opens com.signongroup.pomodoro.service to io.micronaut.micronaut_inject;
 }
 
 

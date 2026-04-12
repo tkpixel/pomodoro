@@ -2,8 +2,8 @@ package com.signongroup.pomodoro.view;
 
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
 import com.signongroup.pomodoro.viewmodel.MainViewModel.TimerState;
+import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
  * Controller für die Hauptansicht (MVVM-Pattern).
  * Micronaut injiziert das ViewModel via @Inject.
  */
-@Singleton
+@Prototype
 public class MainViewController implements Initializable {
 
     @FXML
@@ -65,10 +65,12 @@ public class MainViewController implements Initializable {
     private Region breakProgressRegion;
 
     private final MainViewModel viewModel;
+    private final WindowManager windowManager;
 
     @Inject
-    public MainViewController(MainViewModel viewModel) {
+    public MainViewController(MainViewModel viewModel, WindowManager windowManager) {
         this.viewModel = viewModel;
+        this.windowManager = windowManager;
     }
 
     @Override
@@ -109,6 +111,11 @@ public class MainViewController implements Initializable {
         if (viewModel.getTimerState() == TimerState.BREAK_RUNNING) {
             viewModel.skipBreak();
         }
+    }
+
+    @FXML
+    public void handleOpenJiraSetup(ActionEvent event) {
+        windowManager.showJiraSetupView();
     }
 
     private void updatePlayPauseIcon(boolean isRunning) {

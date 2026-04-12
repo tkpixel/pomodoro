@@ -40,6 +40,11 @@ public class PomodoroApplication extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(customCss);
 
+        if (context != null) {
+            com.signongroup.pomodoro.view.WindowManager windowManager = context.getBean(com.signongroup.pomodoro.view.WindowManager.class);
+            windowManager.init(primaryStage, scene);
+        }
+
         primaryStage.setTitle("Pomodoro Timer");
         // TODO
         //  primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Logo.png"))));

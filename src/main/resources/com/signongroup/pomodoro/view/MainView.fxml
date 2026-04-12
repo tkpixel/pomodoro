@@ -15,22 +15,8 @@
 
     <!-- Decorative Elements (Blur effects not perfectly supported in JavaFX out-of-the-box, simulated via background) -->
 
-    <!-- TopAppBar -->
-    <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0">
-        <padding>
-            <Insets left="24" right="24"/>
-        </padding>
-        <Region prefWidth="24"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" />
-        <Region HBox.hgrow="ALWAYS"/>
-        <HBox alignment="CENTER" spacing="8">
-            <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24" styleClass="menu-icon"/>
-        </HBox>
-    </HBox>
-
     <!-- Main Content -->
-    <VBox alignment="CENTER" spacing="40" StackPane.alignment="CENTER">
+    <VBox alignment="CENTER" spacing="40" StackPane.alignment="CENTER" pickOnBounds="false">
         <padding>
             <Insets top="80" bottom="100" left="16" right="16"/>
         </padding>
@@ -151,6 +137,24 @@
                 <FontIcon fx:id="playIcon" iconLiteral="fltfmz-play-20" iconSize="36" iconColor="#101010"/>
             </graphic>
         </Button>
+    </HBox>
+
+    <!-- TopAppBar LAST = highest Z-order = always clickable -->
+    <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0">
+        <padding>
+            <Insets left="24" right="24"/>
+        </padding>
+        <Region prefWidth="24"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" />
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox alignment="CENTER" spacing="8">
+            <Button styleClass="fab-icon-button" onAction="#handleOpenJiraSetup">
+                <graphic>
+                    <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24" styleClass="menu-icon"/>
+                </graphic>
+            </Button>
+        </HBox>
     </HBox>
 
 </StackPane>
