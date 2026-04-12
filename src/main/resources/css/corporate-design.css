@@ -207,17 +207,14 @@
 /* Jira Setup View specific styles */
 .info-box {
     -fx-background-color: #131313; /* surface-container-low */
-    -fx-border-color: transparent transparent transparent -fx-primary;
-    -fx-border-width: 0 0 0 4px;
     -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
 }
 
 .form-label {
     -fx-font-family: "System", "Manrope", sans-serif;
     -fx-font-size: 10px;
     -fx-font-weight: bold;
-    -fx-text-fill: -fx-on-surface-variant;
+    -fx-text-fill: #8a8a8a;
     -fx-text-transform: uppercase;
 }
 

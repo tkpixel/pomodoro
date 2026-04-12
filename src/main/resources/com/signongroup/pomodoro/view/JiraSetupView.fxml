@@ -13,21 +13,6 @@
            styleClass="bg-mesh"
            prefHeight="460.0" prefWidth="570.0">
 
-    <!-- Top Navigation Bar -->
-    <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0">
-        <padding>
-            <Insets left="24" right="24"/>
-        </padding>
-        <Button styleClass="fab-icon-button" onAction="#handleBack" style="-fx-padding: 0;">
-            <graphic>
-                <HBox alignment="CENTER_LEFT" spacing="8">
-                    <FontIcon iconLiteral="fltral-chevron-left-20" iconSize="24" styleClass="menu-icon"/>
-                    <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase; -fx-cursor: hand;" />
-                </HBox>
-            </graphic>
-        </Button>
-    </HBox>
-
     <!-- Main Content -->
     <VBox spacing="24" alignment="TOP_LEFT" maxWidth="400">
         <padding>
@@ -36,8 +21,8 @@
 
         <!-- Header: TextFlow for rich typography -->
         <TextFlow>
-            <Text text="Setup " style="-fx-fill: -fx-on-surface; -fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'System', 'Manrope', sans-serif;" />
-            <Text text="JIRA" style="-fx-fill: -fx-primary; -fx-font-size: 24px; -fx-font-style: italic; -fx-font-family: 'System', 'Manrope', sans-serif;" />
+            <Text text="Setup " style="-fx-fill: -fx-on-surface; -fx-font-size: 24px; -fx-font-weight: 900; -fx-font-family: 'System', 'Manrope', sans-serif;" />
+            <Text text="JIRA" style="-fx-fill: #FF6B4A; -fx-font-size: 24px; -fx-font-style: italic; -fx-font-weight: bold; -fx-font-family: 'System', 'Manrope', sans-serif;" />
         </TextFlow>
 
         <!-- Instructional Callout -->
@@ -45,8 +30,9 @@
             <padding>
                 <Insets top="16" right="16" bottom="16" left="16"/>
             </padding>
+            <Region minWidth="4" maxWidth="4" style="-fx-background-color: #FF6B4A; -fx-background-radius: 4px;"/>
             <FontIcon iconLiteral="fltrmz-info-24" iconSize="20" style="-fx-icon-color: -fx-on-surface-variant;"/>
-            <Label text="Generate an API token from your Atlassian account security settings and paste it below." wrapText="true" style="-fx-text-fill: -fx-on-surface-variant; -fx-font-size: 13px;" />
+            <Label text="Generate an API token in your Atlassian account settings to enable task syncing. This connection remains encrypted within the Monolith core." wrapText="true" style="-fx-text-fill: -fx-on-surface-variant; -fx-font-size: 13px;" />
         </HBox>
 
         <!-- Input Form -->
@@ -85,4 +71,18 @@
         <Button fx:id="connectButton" text="Connect &amp; Test" styleClass="primary-button" onAction="#handleConnect" maxWidth="Infinity" />
 
     </VBox>
+
+    <!-- Top Navigation Bar (Highest Z-Order) -->
+    <StackPane prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0" pickOnBounds="false">
+        <padding>
+            <Insets left="24" right="24"/>
+        </padding>
+        <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" StackPane.alignment="CENTER" />
+        <Button styleClass="fab-icon-button" onAction="#handleBack" StackPane.alignment="CENTER_LEFT" style="-fx-padding: 0;">
+            <graphic>
+                <FontIcon iconLiteral="fltral-chevron-left-20" iconSize="24" styleClass="menu-icon"/>
+            </graphic>
+        </Button>
+    </StackPane>
+
 </StackPane>

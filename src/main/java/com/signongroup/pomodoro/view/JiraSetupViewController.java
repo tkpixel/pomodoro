@@ -63,7 +63,7 @@ public class JiraSetupViewController implements Initializable {
 
         viewModel.isSuccessProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                statusLabel.setStyle("-fx-text-fill: -fx-success-emphasis; -fx-font-size: 13px; -fx-font-weight: bold;");
+                statusLabel.setStyle("-fx-text-fill: -fx-primary; -fx-font-size: 13px; -fx-font-weight: bold;");
             } else {
                 statusLabel.setStyle("-fx-text-fill: -fx-danger-emphasis; -fx-font-size: 13px; -fx-font-weight: bold;");
             }
