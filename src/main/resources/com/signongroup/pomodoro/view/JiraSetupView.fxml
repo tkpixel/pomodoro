@@ -31,7 +31,7 @@
                 <Insets top="16" right="16" bottom="16" left="16"/>
             </padding>
             <Region minWidth="4" maxWidth="4" style="-fx-background-color: #FF6B4A; -fx-background-radius: 4px;"/>
-            <FontIcon iconLiteral="fltrmz-info-24" iconSize="20" style="-fx-icon-color: -fx-on-surface-variant;"/>
+
             <Label text="Generate an API token in your Atlassian account settings to enable task syncing. This connection remains encrypted within the Monolith core." wrapText="true" style="-fx-text-fill: -fx-on-surface-variant; -fx-font-size: 13px;" />
         </HBox>
 
@@ -57,7 +57,7 @@
                     <TextField fx:id="tokenFieldVisible" promptText="Paste token here" styleClass="form-input" visible="false"/>
                     <Button styleClass="fab-icon-button" onAction="#toggleTokenVisibility" style="-fx-padding: 0 12 0 0;">
                         <graphic>
-                            <FontIcon fx:id="visibilityIcon" iconLiteral="fltral-eye-20" iconSize="20" style="-fx-icon-color: -fx-on-surface-variant;"/>
+                            <FontIcon fx:id="visibilityIcon" iconLiteral="fltfal-eye-show-20" iconSize="20" style="-fx-icon-color: -fx-on-surface-variant;"/>
                         </graphic>
                     </Button>
                 </StackPane>

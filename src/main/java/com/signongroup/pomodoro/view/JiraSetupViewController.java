@@ -91,11 +91,11 @@ public class JiraSetupViewController implements Initializable {
         if (isPasswordVisible) {
             tokenFieldMasked.setVisible(false);
             tokenFieldVisible.setVisible(true);
-            visibilityIcon.setIconLiteral("fltral-eye-off-20");
+            visibilityIcon.setIconLiteral("fltfal-eye-hide-20");
         } else {
             tokenFieldMasked.setVisible(true);
             tokenFieldVisible.setVisible(false);
-            visibilityIcon.setIconLiteral("fltral-eye-20");
+            visibilityIcon.setIconLiteral("fltfal-eye-show-20");
         }
     }
 }
