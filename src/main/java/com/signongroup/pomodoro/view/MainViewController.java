@@ -2,8 +2,8 @@ package com.signongroup.pomodoro.view;
 
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
 import com.signongroup.pomodoro.viewmodel.MainViewModel.TimerState;
+import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
  * Controller für die Hauptansicht (MVVM-Pattern).
  * Micronaut injiziert das ViewModel via @Inject.
  */
-@Singleton
+@Prototype
 public class MainViewController implements Initializable {
 
     @FXML

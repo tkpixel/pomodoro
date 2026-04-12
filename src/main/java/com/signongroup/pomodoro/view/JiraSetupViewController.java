@@ -1,8 +1,8 @@
 package com.signongroup.pomodoro.view;
 
 import com.signongroup.pomodoro.viewmodel.JiraSetupViewModel;
+import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +16,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-@Singleton
+@Prototype
 public class JiraSetupViewController implements Initializable {
 
     @FXML

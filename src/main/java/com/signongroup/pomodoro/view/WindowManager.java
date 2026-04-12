@@ -11,9 +11,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class WindowManager {
+
+    private static final Logger log = LoggerFactory.getLogger(WindowManager.class);
 
     private Stage primaryStage;
     private final ApplicationContext context;
@@ -38,7 +42,10 @@ public class WindowManager {
     }
 
     private void switchView(String fxmlPath) {
-        if (scene == null) return;
+        if (scene == null) {
+            log.error("switchView called but scene is null – was WindowManager.init() called?");
+            return;
+        }
         try {
             URL resource = getClass().getResource(fxmlPath);
             if (resource == null) {
@@ -48,8 +55,8 @@ public class WindowManager {
             loader.setControllerFactory(context::getBean);
             Parent root = loader.load();
             scene.setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("Failed to load view: {}", fxmlPath, e);
             throw new RuntimeException("Failed to load view: " + fxmlPath, e);
         }
     }
