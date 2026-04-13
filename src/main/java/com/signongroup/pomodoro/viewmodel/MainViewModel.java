@@ -24,7 +24,8 @@ public class MainViewModel {
     public enum TimerState {
         READY,
         FOCUS_RUNNING,
-        BREAK_RUNNING
+        BREAK_SHORT,
+        BREAK_LONG
     }
 
     private final StringProperty timerText = new SimpleStringProperty("25:00");
@@ -96,24 +97,25 @@ public class MainViewModel {
         pauseTimer();
         if (timerState.get() == TimerState.FOCUS_RUNNING) {
             clearedToday++;
-            if (currentSession < maxSessions) {
-                currentSession++;
-                timeRemainingSeconds = shortBreakSeconds;
-            } else {
+            if (currentSession >= maxSessions) {
                 currentSession = 1;
                 timeRemainingSeconds = longBreakSeconds;
+                timerState.set(TimerState.BREAK_LONG);
+            } else {
+                currentSession++;
+                timeRemainingSeconds = shortBreakSeconds;
+                timerState.set(TimerState.BREAK_SHORT);
             }
-            timerState.set(TimerState.BREAK_RUNNING);
             updateUI();
             startTimer();
-        } else if (timerState.get() == TimerState.BREAK_RUNNING) {
+        } else if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
             resetToReady();
         }
     }
 
     private void updateUI() {
-        if (timerState.get() == TimerState.BREAK_RUNNING) {
-            int maxTime = (currentSession == 1 && clearedToday > 0) ? longBreakSeconds : shortBreakSeconds;
+        if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
+            int maxTime = (timerState.get() == TimerState.BREAK_LONG) ? longBreakSeconds : shortBreakSeconds;
             nextBreakText.set(formatTime(timeRemainingSeconds));
             breakProgress.set((double) timeRemainingSeconds / maxTime);
             timerText.set("00:00");
@@ -157,7 +159,7 @@ public class MainViewModel {
     }
 
     public void skipBreak() {
-        if (timerState.get() == TimerState.BREAK_RUNNING) {
+        if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
             pauseTimer();
             resetToReady();
         }
