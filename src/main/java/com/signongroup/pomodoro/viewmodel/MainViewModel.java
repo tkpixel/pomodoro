@@ -165,6 +165,23 @@ public class MainViewModel {
         }
     }
 
+    public void resetCurrentPhase() {
+        TimerState currentState = timerState.get();
+
+        if (currentState == TimerState.BREAK_RUNNING) {
+            int maxTime = (currentSession == 1 && clearedToday > 0) ? longBreakSeconds : shortBreakSeconds;
+            timeRemainingSeconds = maxTime;
+            breakProgress.set(1.0);
+        } else {
+            timeRemainingSeconds = focusTimeSeconds;
+            timerState.set(TimerState.READY);
+            timerProgress.set(1.0);
+        }
+
+        pauseTimer();
+        updateUI();
+    }
+
     private void resetToReady() {
         timerState.set(TimerState.READY);
         timeRemainingSeconds = focusTimeSeconds;
