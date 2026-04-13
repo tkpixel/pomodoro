@@ -21,7 +21,11 @@
     <VBox fx:id="bottomSheet" styleClass="settings-bottom-sheet" StackPane.alignment="BOTTOM_CENTER" alignment="TOP_CENTER" maxHeight="-Infinity" translateY="1000">
 
         <!-- Handle -->
-        <Region styleClass="settings-handle" />
+        <Region styleClass="settings-handle">
+            <VBox.margin>
+                <Insets bottom="32" />
+            </VBox.margin>
+        </Region>
 
         <!-- Header -->
         <HBox alignment="CENTER_LEFT" styleClass="settings-header">
