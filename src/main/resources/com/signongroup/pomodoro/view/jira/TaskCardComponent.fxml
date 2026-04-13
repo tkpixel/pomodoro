@@ -25,11 +25,16 @@
         <VBox spacing="4" HBox.hgrow="ALWAYS">
             <Label fx:id="taskTitle" wrapText="true" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface;"/>
             <HBox alignment="CENTER_LEFT" spacing="8">
-                <FontIcon fx:id="priorityIcon" iconSize="12"/>
+                <!-- Fallback Priority Icon -->
+                <FontIcon fx:id="priorityIcon" iconSize="12" managed="false" visible="false"/>
+                <!-- Issue Type Icon (Fetched from Jira) -->
+                <StackPane fx:id="issueTypeContainer" style="-fx-background-radius: 2; -fx-background-color: transparent; -fx-padding: 0;">
+                     <javafx.scene.image.ImageView fx:id="issueTypeIcon" fitWidth="14" fitHeight="14" preserveRatio="true"/>
+                </StackPane>
                 <Label fx:id="taskKey" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-font-family: 'Inter';"/>
             </HBox>
         </VBox>
-        <FontIcon fx:id="completedIcon" iconLiteral="fltfmz-checkmark-circle-20" iconSize="20" iconColor="#22c55e" visible="false" managed="false"/>
+        <FontIcon fx:id="completedIcon" iconLiteral="fltfmz-checkmark-circle-20" iconSize="20" style="-fx-icon-color: #22c55e;" visible="false" managed="false"/>
     </HBox>
 
     <!-- Story Points Badge (Shown if no estimate) -->
@@ -37,26 +42,29 @@
          <Label fx:id="storyPointsLabel" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant;"/>
     </HBox>
 
-    <!-- Progress Bar Section (Only for In Progress with Estimation) -->
-    <VBox fx:id="progressContainer" spacing="8" style="-fx-background-color: #131313; -fx-background-radius: 16; -fx-padding: 16;" managed="false" visible="false">
-        <HBox alignment="CENTER_LEFT">
-            <Label text="PROGRESS" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase; -fx-letter-spacing: 0.1em;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="progressPercentage" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant;"/>
-        </HBox>
-        <StackPane alignment="CENTER_LEFT">
-            <Region style="-fx-background-color: #262626; -fx-background-radius: 4; -fx-pref-height: 6;"/>
-            <Region fx:id="progressBarFill" style="-fx-background-color: -fx-primary; -fx-background-radius: 4; -fx-pref-height: 6;"/>
-        </StackPane>
-    </VBox>
+    <!-- Details Container (Expandable) -->
+    <VBox fx:id="detailsContainer" spacing="12" managed="false" visible="false">
+        <!-- Progress Bar Section (Only for In Progress with Estimation) -->
+        <VBox fx:id="progressContainer" spacing="8" style="-fx-background-color: #131313; -fx-background-radius: 16; -fx-padding: 16;" managed="false" visible="false">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="PROGRESS" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase; -fx-letter-spacing: 0.1em;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="progressPercentage" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant;"/>
+            </HBox>
+            <StackPane alignment="CENTER_LEFT">
+                <Region style="-fx-background-color: #262626; -fx-background-radius: 4; -fx-pref-height: 6;"/>
+                <Region fx:id="progressBarFill" style="-fx-background-color: -fx-primary; -fx-background-radius: 4; -fx-pref-height: 6;"/>
+            </StackPane>
+        </VBox>
 
-    <!-- Footer Actions (Play Button) -->
-    <HBox fx:id="actionContainer" alignment="CENTER_LEFT" spacing="10" managed="false" visible="false">
-        <Button fx:id="playButton" style="-fx-background-color: -fx-primary; -fx-background-radius: 20; -fx-min-width: 40; -fx-min-height: 40;" onAction="#handlePlayAction">
-            <graphic>
-                <FontIcon iconLiteral="fltfmz-play-20" iconSize="20" iconColor="#000000"/>
-            </graphic>
-        </Button>
-    </HBox>
+        <!-- Footer Actions (Play Button) -->
+        <HBox fx:id="actionContainer" alignment="CENTER_LEFT" spacing="10" managed="false" visible="false">
+            <Button fx:id="playButton" style="-fx-background-color: -fx-primary; -fx-background-radius: 20; -fx-min-width: 40; -fx-min-height: 40;" onAction="#handlePlayAction">
+                <graphic>
+                    <FontIcon iconLiteral="fltfmz-play-20" iconSize="20" style="-fx-icon-color: #000000;"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
 
 </fx:root>

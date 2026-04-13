@@ -21,7 +21,8 @@ public record JiraTask(
         @JsonProperty("customfield_10014") String epicKey, // Common for Epic Link
         @JsonProperty("customfield_10016") Double storyPoints, // Common for Story Points
         // Also map labels in case Epic isn't available
-        @JsonProperty("labels") java.util.List<String> labels
+        @JsonProperty("labels") java.util.List<String> labels,
+        @JsonProperty("issuetype") IssueType issuetype
     ) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)

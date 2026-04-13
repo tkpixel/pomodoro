@@ -1,5 +1,6 @@
 package com.signongroup.pomodoro.view.jira;
 
+import com.signongroup.pomodoro.model.jira.BoardColumn;
 import com.signongroup.pomodoro.model.jira.JiraBoard;
 import com.signongroup.pomodoro.model.jira.JiraTask;
 import com.signongroup.pomodoro.view.WindowManager;
@@ -7,43 +8,48 @@ import com.signongroup.pomodoro.viewmodel.JiraBoardViewModel;
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
 import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.MenuButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 @Prototype
 public class JiraBoardViewController implements Initializable {
+    private static final Logger log = LoggerFactory.getLogger(JiraBoardViewController.class);
 
     private final JiraBoardViewModel viewModel;
     private final WindowManager windowManager;
     private final MainViewModel mainViewModel;
 
     @FXML private ComboBox<JiraBoard> boardComboBox;
+    @FXML private MenuButton filterMenuButton;
+    @FXML private VBox columnsContainer;
+    @FXML private ImageView boardLogoImage;
+    @FXML private FontIcon boardLogoFallback;
 
-    @FXML private CheckMenuItem filterTodo;
-    @FXML private CheckMenuItem filterInProgress;
-    @FXML private CheckMenuItem filterCompleted;
-
-    @FXML private VBox todoColumn;
-    @FXML private VBox inProgressColumn;
-    @FXML private VBox completedColumn;
-
-    @FXML private Label todoCountLabel;
-    @FXML private Label inProgressCountLabel;
-    @FXML private Label completedCountLabel;
-
-    @FXML private VBox todoList;
-    @FXML private VBox inProgressList;
-    @FXML private VBox completedList;
+    private final Map<String, VBox> columnListMap = new HashMap<>();
 
     @Inject
     public JiraBoardViewController(JiraBoardViewModel viewModel, WindowManager windowManager, MainViewModel mainViewModel) {
@@ -58,10 +64,28 @@ public class JiraBoardViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Initialize ViewModel Data
         viewModel.init();
 
-        // Bind Board ComboBox
+        setupBoardComboBox();
+        loadBoardLogoAsync();
+
+        // Listen for dynamic column changes
+        viewModel.getDynamicColumns().addListener((ListChangeListener.Change<? extends BoardColumn> c) -> {
+            Platform.runLater(this::rebuildColumnsUI);
+        });
+
+        // Listen for task changes in all columns
+        viewModel.getColumnTasksMap().addListener((javafx.collections.MapChangeListener.Change<? extends String, ? extends javafx.collections.ObservableList<JiraTask>> change) -> {
+            if (change.wasAdded()) {
+                String colName = change.getKey();
+                change.getValueAdded().addListener((ListChangeListener.Change<? extends JiraTask> c) -> {
+                     updateTaskListUI(colName, change.getValueAdded());
+                });
+            }
+        });
+    }
+
+    private void setupBoardComboBox() {
         boardComboBox.setItems(viewModel.getBoards());
         boardComboBox.valueProperty().bindBidirectional(viewModel.selectedBoardProperty());
 
@@ -87,35 +111,154 @@ public class JiraBoardViewController implements Initializable {
                 }
             }
         });
-
-        // Bind Filters
-        viewModel.showTodoProperty().bind(filterTodo.selectedProperty());
-        viewModel.showInProgressProperty().bind(filterInProgress.selectedProperty());
-        viewModel.showCompletedProperty().bind(filterCompleted.selectedProperty());
-
-        todoColumn.managedProperty().bind(viewModel.showTodoProperty());
-        todoColumn.visibleProperty().bind(viewModel.showTodoProperty());
-        inProgressColumn.managedProperty().bind(viewModel.showInProgressProperty());
-        inProgressColumn.visibleProperty().bind(viewModel.showInProgressProperty());
-        completedColumn.managedProperty().bind(viewModel.showCompletedProperty());
-        completedColumn.visibleProperty().bind(viewModel.showCompletedProperty());
-
-        // Bind Task Lists
-        todoCountLabel.textProperty().bind(Bindings.size(viewModel.getTodoTasks()).asString());
-        inProgressCountLabel.textProperty().bind(Bindings.size(viewModel.getInProgressTasks()).asString());
-        completedCountLabel.textProperty().bind(Bindings.size(viewModel.getCompletedTasks()).asString());
-
-        viewModel.getTodoTasks().addListener((ListChangeListener.Change<? extends JiraTask> c) -> updateTaskList(todoList, viewModel.getTodoTasks()));
-        viewModel.getInProgressTasks().addListener((ListChangeListener.Change<? extends JiraTask> c) -> updateTaskList(inProgressList, viewModel.getInProgressTasks()));
-        viewModel.getCompletedTasks().addListener((ListChangeListener.Change<? extends JiraTask> c) -> updateTaskList(completedList, viewModel.getCompletedTasks()));
     }
 
-    private void updateTaskList(VBox container, Iterable<? extends JiraTask> tasks) {
-        container.getChildren().clear();
-        for (JiraTask task : tasks) {
-            TaskCardComponent card = new TaskCardComponent(task, windowManager, mainViewModel);
-            container.getChildren().add(card);
+    private void loadBoardLogoAsync() {
+        // Mockup URL for the board logo as requested
+        String url = "https://lh3.googleusercontent.com/aida-public/AB6AXuC01pdNSBWYuG85JnDXU7Qh6kAGhgLRiQ2D4UuqpSBbabtPqw6OwFb4Y9-SG-9IfXwSSO1IXy3uEG-UlTRFPXiNGFGqqC_ADRAG2B4MDa-KhrHG0RcHMmogpethRxs0iTVmhw5hYXU-X5_rkQjV8sWPKCRWTy9YjAAUo7ilPB5G3EVClaOjlaWmy0cf5q9Hei8rBJgeiLD2z-_grKRUOxRTDzFW1X2tylW8zUkQA58CA1pvfdDK-qaWnwkBW_2jmyeeQnreo5jepMQ";
+        Thread imageThread = new Thread(() -> {
+            try {
+                Image image = new Image(url, true);
+                image.progressProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal.doubleValue() == 1.0 && !image.isError()) {
+                        Platform.runLater(() -> {
+                            boardLogoImage.setImage(image);
+                            boardLogoFallback.setVisible(false);
+                            boardLogoFallback.setManaged(false);
+                        });
+                    }
+                });
+            } catch (Exception e) {
+                log.error("Failed to load board logo", e);
+            }
+        });
+        imageThread.setDaemon(true);
+        imageThread.start();
+    }
+
+    private void rebuildColumnsUI() {
+        columnsContainer.getChildren().clear();
+        filterMenuButton.getItems().clear();
+        columnListMap.clear();
+
+        for (BoardColumn column : viewModel.getDynamicColumns()) {
+            String colName = column.name();
+
+            // 1. Build Filter Menu Item
+            CheckMenuItem menuItem = new CheckMenuItem(colName);
+            menuItem.selectedProperty().bindBidirectional(viewModel.getColumnVisibilityProperty(colName));
+            filterMenuButton.getItems().add(menuItem);
+
+            // 2. Build Column Container (VBox)
+            VBox columnVBox = new VBox();
+            columnVBox.setSpacing(20);
+            columnVBox.setMaxWidth(700);
+            columnVBox.managedProperty().bind(viewModel.getColumnVisibilityProperty(colName));
+            columnVBox.visibleProperty().bind(viewModel.getColumnVisibilityProperty(colName));
+
+            // Header
+            HBox header = new HBox();
+            header.setAlignment(Pos.CENTER_LEFT);
+            header.setSpacing(12);
+
+            Circle dot = new Circle(4);
+            dot.setStyle("-fx-fill: " + getColorForColumn(colName) + ";");
+
+            Label title = new Label(colName.toUpperCase());
+            title.setStyle("-fx-font-family: 'Manrope'; -fx-font-weight: bold; -fx-text-fill: " + getColorForColumn(colName) + "; -fx-font-size: 12px; -fx-text-transform: uppercase;");
+
+            Label countBadge = new Label("0");
+            countBadge.setStyle("-fx-background-color: -fx-surface-container-highest; -fx-text-fill: -fx-on-surface-variant; -fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 10;");
+
+            // Bind count
+            if (viewModel.getColumnTasksMap().containsKey(colName)) {
+                 countBadge.textProperty().bind(Bindings.size(viewModel.getColumnTasksMap().get(colName)).asString());
+            }
+
+            header.getChildren().addAll(dot, title, countBadge);
+
+            // Task List Container
+            VBox taskListVBox = new VBox();
+            taskListVBox.setSpacing(16);
+
+            // Setup Drag & Drop Target
+            taskListVBox.setOnDragOver(event -> {
+                if (event.getGestureSource() != taskListVBox && event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+                event.consume();
+            });
+
+            taskListVBox.setOnDragDropped(event -> {
+                boolean success = false;
+                if (event.getDragboard().hasString()) {
+                    String taskKey = event.getDragboard().getString();
+                    handleTaskDrop(taskKey, colName);
+                    success = true;
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            });
+
+            columnListMap.put(colName, taskListVBox);
+
+            columnVBox.getChildren().addAll(header, taskListVBox);
+            columnsContainer.getChildren().add(columnVBox);
+
+            // Initial populate
+            if (viewModel.getColumnTasksMap().containsKey(colName)) {
+                updateTaskListUI(colName, viewModel.getColumnTasksMap().get(colName));
+            }
         }
+    }
+
+    private String getColorForColumn(String colName) {
+        String lower = colName.toLowerCase();
+        if (lower.contains("progress") || lower.contains("doing")) {
+            return "-fx-primary";
+        } else if (lower.contains("done") || lower.contains("completed") || lower.contains("closed")) {
+            return "#22c55e"; // Tailwind green
+        } else {
+            return "#777575"; // Outline variant
+        }
+    }
+
+    private void updateTaskListUI(String colName, Iterable<? extends JiraTask> tasks) {
+        VBox container = columnListMap.get(colName);
+        if (container == null) return;
+
+        Platform.runLater(() -> {
+            container.getChildren().clear();
+            for (JiraTask task : tasks) {
+                TaskCardComponent card = new TaskCardComponent(task, windowManager, mainViewModel);
+                container.getChildren().add(card);
+            }
+        });
+    }
+
+    private void handleTaskDrop(String taskKey, String targetColumnName) {
+        // Find the task object from the map
+        JiraTask draggedTask = null;
+        for (var list : viewModel.getColumnTasksMap().values()) {
+            for (JiraTask t : list) {
+                if (t.key().equals(taskKey)) {
+                    draggedTask = t;
+                    break;
+                }
+            }
+            if (draggedTask != null) break;
+        }
+
+        if (draggedTask != null) {
+            log.info("Moving task {} to {}", taskKey, targetColumnName);
+            viewModel.moveTask(draggedTask, targetColumnName);
+        }
+    }
+
+    @FXML
+    private void handleNewTask() {
+        log.info("New Task button clicked. Stub for dialog.");
+        // Implement dialog stub here if required
     }
 
     @FXML

@@ -2,8 +2,10 @@ package com.signongroup.pomodoro.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.signongroup.pomodoro.model.jira.BoardConfiguration;
 import com.signongroup.pomodoro.model.jira.JiraBoard;
 import com.signongroup.pomodoro.model.jira.JiraTask;
+import com.signongroup.pomodoro.model.jira.JiraTransition;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.net.URI;
@@ -111,6 +113,64 @@ public class JiraBoardService {
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching tasks for board " + boardId, e);
+            }
+        });
+    }
+
+    public CompletableFuture<BoardConfiguration> fetchBoardConfiguration(Long boardId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/agile/1.0/board/" + boardId + "/configuration");
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    return objectMapper.readValue(response.body(), BoardConfiguration.class);
+                } else {
+                    throw new RuntimeException("Failed to fetch board configuration: HTTP " + response.statusCode());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error fetching configuration for board " + boardId, e);
+            }
+        });
+    }
+
+    public CompletableFuture<List<JiraTransition>> fetchTransitions(String issueKey) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/api/3/issue/" + issueKey + "/transitions");
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JsonNode transitionsNode = root.path("transitions");
+                    List<JiraTransition> transitions = new ArrayList<>();
+                    for (JsonNode node : transitionsNode) {
+                        transitions.add(objectMapper.treeToValue(node, JiraTransition.class));
+                    }
+                    return transitions;
+                } else {
+                    throw new RuntimeException("Failed to fetch transitions: HTTP " + response.statusCode());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error fetching transitions for issue " + issueKey, e);
             }
         });
     }

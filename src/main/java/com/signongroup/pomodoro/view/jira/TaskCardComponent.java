@@ -7,6 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -25,10 +30,13 @@ public class TaskCardComponent extends VBox {
     @FXML private Label taskKey;
     @FXML private FontIcon priorityIcon;
     @FXML private FontIcon completedIcon;
+    @FXML private ImageView issueTypeIcon;
+    @FXML private StackPane issueTypeContainer;
 
     @FXML private HBox storyPointsContainer;
     @FXML private Label storyPointsLabel;
 
+    @FXML private VBox detailsContainer;
     @FXML private VBox progressContainer;
     @FXML private Label progressPercentage;
     @FXML private Region progressBarFill;
@@ -39,6 +47,7 @@ public class TaskCardComponent extends VBox {
     private JiraTask task;
     private final WindowManager windowManager;
     private final MainViewModel mainViewModel;
+    private boolean isExpanded = false;
 
     public TaskCardComponent(JiraTask task, WindowManager windowManager, MainViewModel mainViewModel) {
         this.task = task;
@@ -56,10 +65,10 @@ public class TaskCardComponent extends VBox {
             throw new RuntimeException(exception);
         }
 
-        setupHoverEffects();
+        setupInteractivity();
     }
 
-    private void setupHoverEffects() {
+    private void setupInteractivity() {
         this.setOnMouseEntered(e -> {
             if (!isCompleted()) {
                 this.setStyle("-fx-background-color: #1C1C1E; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #494847; -fx-border-radius: 16; -fx-border-width: 1; -fx-cursor: hand;");
@@ -67,8 +76,21 @@ public class TaskCardComponent extends VBox {
         });
         this.setOnMouseExited(e -> {
             if (!isCompleted()) {
-                 this.setStyle("-fx-background-color: #1C1C1E; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: transparent; -fx-border-radius: 16; -fx-border-width: 1; -fx-cursor: default;");
+                 this.setStyle("-fx-background-color: #1C1C1E; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: transparent; -fx-border-radius: 16; -fx-border-width: 1; -fx-cursor: hand;");
             }
+        });
+
+        this.setOnMouseClicked(e -> {
+            isExpanded = !isExpanded;
+            applyStateStyling();
+        });
+
+        this.setOnDragDetected(event -> {
+            Dragboard db = this.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(task.key());
+            db.setContent(content);
+            event.consume();
         });
     }
 
@@ -94,31 +116,49 @@ public class TaskCardComponent extends VBox {
             String name = task.fields().assignee().displayName();
             String initials = getInitials(name);
             assigneeInitials.setText(initials);
-            // We could load avatar URL here if we had an Async Image loader
         } else {
             avatarContainer.setVisible(false);
             avatarContainer.setManaged(false);
         }
 
-        // Priority
-        if (task.fields().priority() != null) {
+        // Issue Type Icon
+        if (task.fields().issuetype() != null && task.fields().issuetype().iconUrl() != null) {
+            try {
+                Image iconImage = new Image(task.fields().issuetype().iconUrl(), true);
+                issueTypeIcon.setImage(iconImage);
+                issueTypeContainer.setVisible(true);
+                issueTypeContainer.setManaged(true);
+                priorityIcon.setVisible(false);
+                priorityIcon.setManaged(false);
+            } catch (Exception e) {
+                 useFallbackPriorityIcon();
+            }
+        } else {
+            useFallbackPriorityIcon();
+        }
+
+        applyStateStyling();
+    }
+
+    private void useFallbackPriorityIcon() {
+        issueTypeContainer.setVisible(false);
+        issueTypeContainer.setManaged(false);
+        priorityIcon.setVisible(true);
+        priorityIcon.setManaged(true);
+        if (task.fields() != null && task.fields().priority() != null) {
             String pName = task.fields().priority().name();
-            priorityIcon.setIconLiteral("fltfmz-warning-20"); // fallback
+            priorityIcon.setIconLiteral("fltfmz-warning-20");
             if (pName != null) {
                 if (pName.equalsIgnoreCase("High") || pName.equalsIgnoreCase("Highest")) {
-                    priorityIcon.setIconColor(javafx.scene.paint.Color.web("#d7383b"));
-                    priorityIcon.setIconLiteral("fltfmz-warning-20");
+                    priorityIcon.setStyle("-fx-icon-color: #d7383b;");
                 } else if (pName.equalsIgnoreCase("Medium")) {
-                    priorityIcon.setIconColor(javafx.scene.paint.Color.web("#ff8f70"));
-                    priorityIcon.setIconLiteral("fltfmz-warning-20");
+                    priorityIcon.setStyle("-fx-icon-color: #ff8f70;");
                 } else {
-                    priorityIcon.setIconColor(javafx.scene.paint.Color.web("#8A8A8A"));
+                    priorityIcon.setStyle("-fx-icon-color: #8A8A8A;");
                     priorityIcon.setIconLiteral("fltfal-arrow-down-20");
                 }
             }
         }
-
-        applyStateStyling();
     }
 
     private boolean isCompleted() {
@@ -137,12 +177,13 @@ public class TaskCardComponent extends VBox {
 
     private void applyStateStyling() {
         if (isCompleted()) {
-            // Grayscale & Strikethrough for completed tasks
             this.setOpacity(0.6);
             taskTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface-variant; -fx-strikethrough: true;");
             taskKey.setStyle("-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-strikethrough: true;");
             completedIcon.setVisible(true);
             completedIcon.setManaged(true);
+            detailsContainer.setVisible(false);
+            detailsContainer.setManaged(false);
             return;
         }
 
@@ -150,33 +191,46 @@ public class TaskCardComponent extends VBox {
         Long spentSeconds = task.fields().timetracking() != null ? task.fields().timetracking().timeSpentSeconds() : null;
         Double storyPoints = task.fields().storyPoints();
 
-        if (isInProgress() && estSeconds != null && estSeconds > 0) {
-            // Show Progress Bar & Play Button
-            progressContainer.setVisible(true);
-            progressContainer.setManaged(true);
-            actionContainer.setVisible(true);
-            actionContainer.setManaged(true);
-
-            long spent = spentSeconds != null ? spentSeconds : 0;
-            double pct = Math.min(1.0, (double) spent / estSeconds);
-            int pctInt = (int) (pct * 100);
-
-            progressPercentage.setText(pctInt + "%");
-
-            // Note: Since JavaFX Region doesn't easily support dynamic percentage width in FXML,
-            // we bind its prefWidth to the container's width multiplied by the percentage.
-            // For a simpler approach, we bind it to a fixed max width (e.g., 200px) or the parent.
-            // Let's bind it after layout or just set a style.
-            progressBarFill.maxWidthProperty().bind(progressContainer.widthProperty().subtract(32).multiply(pct));
-            progressBarFill.minWidthProperty().bind(progressBarFill.maxWidthProperty());
-            progressBarFill.prefWidthProperty().bind(progressBarFill.maxWidthProperty());
-
-        } else if (!isCompleted() && storyPoints != null) {
-            // Show Story points badge
+        // Story Points (always show if available and not expanded to progress)
+        if (storyPoints != null && !isExpanded) {
             storyPointsContainer.setVisible(true);
             storyPointsContainer.setManaged(true);
             storyPointsLabel.setText(String.valueOf(storyPoints) + " SP");
             storyPointsLabel.setGraphic(new FontIcon("fltfal-layer-20"));
+        } else {
+             storyPointsContainer.setVisible(false);
+             storyPointsContainer.setManaged(false);
+        }
+
+        // Expansion details
+        if (isExpanded) {
+            detailsContainer.setVisible(true);
+            detailsContainer.setManaged(true);
+
+            if (estSeconds != null && estSeconds > 0) {
+                progressContainer.setVisible(true);
+                progressContainer.setManaged(true);
+                actionContainer.setVisible(true);
+                actionContainer.setManaged(true);
+
+                long spent = spentSeconds != null ? spentSeconds : 0;
+                double pct = Math.min(1.0, (double) spent / estSeconds);
+                int pctInt = (int) (pct * 100);
+
+                progressPercentage.setText(pctInt + "%");
+
+                progressBarFill.maxWidthProperty().bind(progressContainer.widthProperty().subtract(32).multiply(pct));
+                progressBarFill.minWidthProperty().bind(progressBarFill.maxWidthProperty());
+                progressBarFill.prefWidthProperty().bind(progressBarFill.maxWidthProperty());
+            } else {
+                 progressContainer.setVisible(false);
+                 progressContainer.setManaged(false);
+                 actionContainer.setVisible(false);
+                 actionContainer.setManaged(false);
+            }
+        } else {
+            detailsContainer.setVisible(false);
+            detailsContainer.setManaged(false);
         }
     }
 
@@ -190,11 +244,13 @@ public class TaskCardComponent extends VBox {
         }
     }
 
+    public JiraTask getTask() {
+        return task;
+    }
+
     @FXML
     private void handlePlayAction() {
         if (windowManager != null && mainViewModel != null) {
-             // In a real app we might set the active task in a TaskViewModel or MainViewModel
-             // mainViewModel.setActiveTask(task.key() + " - " + taskTitle.getText());
              windowManager.showMainView();
         }
     }
