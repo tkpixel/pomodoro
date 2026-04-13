@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="PomodoroApplication" type="MicronautRunConfigurationType" factoryName="Micronaut">
     <option name="MAIN_CLASS_NAME" value="com.signongroup.pomodoro.PomodoroApplication" />
-    <module name="template" />
+    <module name="pomodoro" />
     <option name="VM_PARAMETERS" value="--enable-native-access=javafx.graphics" />
     <option name="alternativeJrePath" />
     <option name="alternativeJrePathEnabled" value="false" />
