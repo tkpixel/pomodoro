@@ -168,7 +168,7 @@ public class MainViewModel {
     public void resetCurrentPhase() {
         TimerState currentState = timerState.get();
 
-        if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
+        if (currentState == TimerState.BREAK_SHORT || currentState == TimerState.BREAK_LONG) {
             int maxTime = (currentSession == 1 && clearedToday > 0) ? longBreakSeconds : shortBreakSeconds;
             timeRemainingSeconds = maxTime;
             breakProgress.set(1.0);
