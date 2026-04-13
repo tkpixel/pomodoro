@@ -44,9 +44,11 @@ public class JiraSetupViewPage {
     }
 
     public void clearFields() {
-        robot.clickOn("#urlField").eraseText(100);
-        robot.clickOn("#emailField").eraseText(100);
-        robot.clickOn("#tokenFieldMasked").eraseText(100);
+        robot.interact(() -> {
+            robot.lookup("#urlField").queryAs(TextField.class).setText("");
+            robot.lookup("#emailField").queryAs(TextField.class).setText("");
+            robot.lookup("#tokenFieldMasked").queryAs(PasswordField.class).setText("");
+        });
     }
 
     public String getUrlFieldText() {

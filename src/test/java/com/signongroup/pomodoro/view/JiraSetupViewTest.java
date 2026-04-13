@@ -101,6 +101,6 @@ public class JiraSetupViewTest {
 
         // Verify the visible field matches masked text input logic and is rendered.
         // It should match exactly what we typed, and not have any pre-pended tokens from saved state.
-        assertThat(page.getTokenVisibleText()).endsWith("secret123");
+        assertThat(page.getTokenVisibleText()).isEqualTo("secret123");
     }
 }
