@@ -54,7 +54,8 @@ public class SettingsOverlayViewTest {
     public void setUp(FxRobot robot) {
         MainViewPage mainPage = new MainViewPage(robot);
         mainPage.clickOpenSettings();
-        WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);
+        // The animation takes 300ms. Wait slightly longer for the bottomSheet to fully settle at translateY=0
+        WaitForAsyncUtils.sleep(800, TimeUnit.MILLISECONDS);
         page = new SettingsOverlayViewPage(robot);
     }
 
