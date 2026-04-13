@@ -117,6 +117,11 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
+    public void handleResetPhase(ActionEvent event) {
+        viewModel.resetCurrentPhase();
+    }
+
+    @FXML
     public void handleOpenJiraSetup(ActionEvent event) {
         windowManager.showJiraSetupView();
     }

@@ -109,7 +109,7 @@
             <padding>
                 <Insets left="16" right="16"/>
             </padding>
-            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48">
+            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleResetPhase">
                 <graphic>
                     <FontIcon iconLiteral="fltral-arrow-clockwise-20" iconSize="24"/>
                 </graphic>
