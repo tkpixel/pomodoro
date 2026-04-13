@@ -92,7 +92,7 @@ public class MainViewController implements Initializable {
 
         // Bind Skip Button visibility and managed properties
         skipButton.visibleProperty().bind(Bindings.createBooleanBinding(() ->
-                viewModel.getTimerState() == TimerState.BREAK_RUNNING, viewModel.timerStateProperty()));
+                viewModel.getTimerState() == TimerState.BREAK_SHORT || viewModel.getTimerState() == TimerState.BREAK_LONG, viewModel.timerStateProperty()));
         skipButton.managedProperty().bind(skipButton.visibleProperty());
 
         // Listeners for UI state changes
@@ -111,7 +111,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void handleDynamicAction(ActionEvent event) {
-        if (viewModel.getTimerState() == TimerState.BREAK_RUNNING) {
+        if (viewModel.getTimerState() == TimerState.BREAK_SHORT || viewModel.getTimerState() == TimerState.BREAK_LONG) {
             viewModel.skipBreak();
         }
     }
@@ -138,7 +138,7 @@ public class MainViewController implements Initializable {
     }
 
     private void updateUIForState(TimerState state) {
-        if (state == TimerState.BREAK_RUNNING) {
+        if (state == TimerState.BREAK_SHORT || state == TimerState.BREAK_LONG) {
             // Main timer visual changes
             if (baseArc != null) {
                 baseArc.getStyleClass().add("timer-base-inactive");
@@ -146,13 +146,26 @@ public class MainViewController implements Initializable {
             progressArc.setVisible(false);
 
             // Break card visual changes
-            breakCardContainer.getStyleClass().add("break-active-card");
+            breakCardContainer.getStyleClass().remove("break-active-card");
+            breakCardContainer.getStyleClass().remove("break-active-card-long");
             breakCardIconContainer.getStyleClass().remove("card-icon-container-break");
-            breakCardIconContainer.getStyleClass().add("card-icon-container-break-active");
+            breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active");
+            breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active-long");
+
+            if (state == TimerState.BREAK_LONG) {
+                breakCardContainer.getStyleClass().add("break-active-card-long");
+                breakCardIconContainer.getStyleClass().add("card-icon-container-break-active-long");
+                breakTitleLabel.setText("LONG BREAK ACTIVE");
+                breakTitleLabel.setStyle("-fx-text-fill: #6bbdd0; -fx-font-size: 9px; -fx-font-weight: bold; -fx-text-transform: uppercase;");
+            } else {
+                breakCardContainer.getStyleClass().add("break-active-card");
+                breakCardIconContainer.getStyleClass().add("card-icon-container-break-active");
+                breakTitleLabel.setText("SHORT BREAK ACTIVE");
+                breakTitleLabel.setStyle("-fx-text-fill: -fx-primary; -fx-font-size: 9px; -fx-font-weight: bold; -fx-text-transform: uppercase;");
+            }
+
             breakIcon.setIconColor(javafx.scene.paint.Color.web("#000000")); // -fx-on-primary-fixed roughly
-            breakTitleLabel.setText("BREAK ACTIVE");
             breakTitleLabel.getStyleClass().remove("card-title");
-            breakTitleLabel.setStyle("-fx-text-fill: -fx-primary; -fx-font-size: 9px; -fx-font-weight: bold; -fx-text-transform: uppercase;");
             nextBreakLabel.getStyleClass().remove("card-value-muted");
             nextBreakLabel.getStyleClass().add("card-value");
             breakProgressRegion.setVisible(true);
@@ -165,7 +178,9 @@ public class MainViewController implements Initializable {
 
             // Break card visual changes
             breakCardContainer.getStyleClass().remove("break-active-card");
+            breakCardContainer.getStyleClass().remove("break-active-card-long");
             breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active");
+            breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active-long");
             if (!breakCardIconContainer.getStyleClass().contains("card-icon-container-break")) {
                 breakCardIconContainer.getStyleClass().add("card-icon-container-break");
             }
