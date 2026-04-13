@@ -68,17 +68,21 @@
                     </HBox>
 
                     <!-- Tasks Card -->
-                    <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
-                        <StackPane styleClass="card-icon-container">
-                            <FontIcon iconLiteral="fltfal-checkmark-square-24" iconSize="20"/>
-                        </StackPane>
-                        <VBox alignment="CENTER_LEFT">
-                            <Label text="CLEARED TODAY" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
-                            <HBox alignment="BOTTOM_LEFT" spacing="4">
-                                <Label fx:id="clearedTodayLabel" text="00" styleClass="card-value"/>
+                    <Button styleClass="card" alignment="CENTER_LEFT" onAction="#handleOpenStatistics" maxWidth="Infinity">
+                        <graphic>
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <StackPane styleClass="card-icon-container">
+                                    <FontIcon iconLiteral="fltfal-checkmark-square-24" iconSize="20"/>
+                                </StackPane>
+                                <VBox alignment="CENTER_LEFT">
+                                    <Label text="CLEARED TODAY" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
+                                    <HBox alignment="BOTTOM_LEFT" spacing="4">
+                                        <Label fx:id="clearedTodayLabel" text="00" styleClass="card-value"/>
+                                    </HBox>
+                                </VBox>
                             </HBox>
-                        </VBox>
-                    </HBox>
+                        </graphic>
+                    </Button>
 
                     <!-- Break Card -->
                     <StackPane>
@@ -159,5 +163,8 @@
 
     <!-- Settings Overlay -->
     <fx:include fx:id="settingsOverlay" source="SettingsOverlayView.fxml"/>
+
+    <!-- Statistics Overlay -->
+    <fx:include fx:id="statisticsOverlay" source="StatisticsOverlayView.fxml"/>
 
 </StackPane>
