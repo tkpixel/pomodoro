@@ -46,8 +46,6 @@ public class JiraBoardViewController implements Initializable {
     @FXML private ComboBox<JiraBoard> boardComboBox;
     @FXML private MenuButton filterMenuButton;
     @FXML private VBox columnsContainer;
-    @FXML private ImageView boardLogoImage;
-    @FXML private FontIcon boardLogoFallback;
 
     private final Map<String, VBox> columnListMap = new HashMap<>();
 
@@ -67,7 +65,6 @@ public class JiraBoardViewController implements Initializable {
         viewModel.init();
 
         setupBoardComboBox();
-        loadBoardLogoAsync();
 
         // Listen for dynamic column changes
         viewModel.getDynamicColumns().addListener((ListChangeListener.Change<? extends BoardColumn> c) -> {
@@ -105,35 +102,12 @@ public class JiraBoardViewController implements Initializable {
             protected void updateItem(JiraBoard item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
-                    setText(null);
+                    setText("Select a Board...");
                 } else {
                     setText(item.name());
                 }
             }
         });
-    }
-
-    private void loadBoardLogoAsync() {
-        // Mockup URL for the board logo as requested
-        String url = "https://lh3.googleusercontent.com/aida-public/AB6AXuC01pdNSBWYuG85JnDXU7Qh6kAGhgLRiQ2D4UuqpSBbabtPqw6OwFb4Y9-SG-9IfXwSSO1IXy3uEG-UlTRFPXiNGFGqqC_ADRAG2B4MDa-KhrHG0RcHMmogpethRxs0iTVmhw5hYXU-X5_rkQjV8sWPKCRWTy9YjAAUo7ilPB5G3EVClaOjlaWmy0cf5q9Hei8rBJgeiLD2z-_grKRUOxRTDzFW1X2tylW8zUkQA58CA1pvfdDK-qaWnwkBW_2jmyeeQnreo5jepMQ";
-        Thread imageThread = new Thread(() -> {
-            try {
-                Image image = new Image(url, true);
-                image.progressProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal.doubleValue() == 1.0 && !image.isError()) {
-                        Platform.runLater(() -> {
-                            boardLogoImage.setImage(image);
-                            boardLogoFallback.setVisible(false);
-                            boardLogoFallback.setManaged(false);
-                        });
-                    }
-                });
-            } catch (Exception e) {
-                log.error("Failed to load board logo", e);
-            }
-        });
-        imageThread.setDaemon(true);
-        imageThread.start();
     }
 
     private void rebuildColumnsUI() {

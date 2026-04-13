@@ -13,43 +13,31 @@
            prefHeight="800.0" prefWidth="600.0">
 
     <VBox spacing="0">
-        <!-- TopAppBar -->
-        <HBox alignment="CENTER" prefHeight="80" style="-fx-background-color: #0e0e0e;">
-            <Label text="MONOLITH" style="-fx-font-size: 32px; -fx-font-weight: 900; -fx-text-fill: #ff4500; -fx-text-transform: uppercase; -fx-letter-spacing: 0.1em; -fx-font-family: 'Manrope';"/>
-        </HBox>
+        <!-- Spacing for absolute positioned header -->
+        <Region prefHeight="80.0"/>
 
         <!-- Board Selector & Actions Header -->
-        <VBox spacing="40" style="-fx-padding: 40 40 20 40;">
-            <HBox alignment="BOTTOM_LEFT" spacing="20">
-                <HBox spacing="20" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                    <!-- Placeholder Logo (Ensured it does not break by using StackPane fallback and ImageView) -->
-                    <StackPane prefWidth="64" prefHeight="64" style="-fx-background-color: -fx-surface-container-highest; -fx-background-radius: 16; -fx-overflow: hidden;">
-                         <javafx.scene.image.ImageView fx:id="boardLogoImage" fitWidth="64" fitHeight="64" preserveRatio="true"/>
-                         <FontIcon fx:id="boardLogoFallback" iconLiteral="fltfmz-poll-24" iconSize="32" style="-fx-icon-color: -fx-primary;"/>
-                    </StackPane>
+        <VBox spacing="20" style="-fx-padding: 40 40 20 40;">
+            <VBox spacing="4" alignment="CENTER_LEFT">
+                <Label text="BOARD" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase; -fx-font-family: 'Inter';"/>
+                <!-- ComboBox with custom styled arrow -->
+                <ComboBox fx:id="boardComboBox" promptText="Select a Board..." styleClass="board-combo-box" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'Manrope'; -fx-background-color: transparent; -fx-text-fill: -fx-on-surface; -fx-padding: 0;"/>
+            </VBox>
 
-                    <VBox spacing="4">
-                        <Label text="BOARD" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase; -fx-font-family: 'Inter';"/>
-                        <!-- ComboBox with custom styled arrow -->
-                        <ComboBox fx:id="boardComboBox" styleClass="board-combo-box" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'Manrope'; -fx-background-color: transparent; -fx-text-fill: -fx-on-surface; -fx-padding: 0;"/>
-                    </VBox>
-                </HBox>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <!-- Filter Menu -->
+                <MenuButton fx:id="filterMenuButton" text="Filter" styleClass="filter-menu-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fltfal-filter-20" iconSize="14" style="-fx-icon-color: white;"/>
+                    </graphic>
+                    <!-- Items populated dynamically -->
+                </MenuButton>
 
-                <HBox spacing="12" alignment="CENTER_RIGHT">
-                    <!-- Filter Menu -->
-                    <MenuButton fx:id="filterMenuButton" text="Filter" styleClass="filter-menu-button">
+                <Button text="New Task" onAction="#handleNewTask" style="-fx-background-color: -fx-primary; -fx-text-fill: #480d00; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;">
                         <graphic>
-                            <FontIcon iconLiteral="fltfal-filter-20" iconSize="14" style="-fx-icon-color: white;"/>
-                        </graphic>
-                        <!-- Items populated dynamically -->
-                    </MenuButton>
-
-                    <Button text="New Task" onAction="#handleNewTask" style="-fx-background-color: -fx-primary; -fx-text-fill: #480d00; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;">
-                         <graphic>
-                            <FontIcon iconLiteral="fltfal-add-20" iconSize="14" style="-fx-icon-color: #480d00;"/>
-                        </graphic>
-                    </Button>
-                </HBox>
+                        <FontIcon iconLiteral="fltfal-add-20" iconSize="14" style="-fx-icon-color: #480d00;"/>
+                    </graphic>
+                </Button>
             </HBox>
         </VBox>
 
@@ -63,28 +51,23 @@
             <padding>
                 <Insets left="40" right="40" bottom="80"/>
             </padding>
-            <!-- Changed HBox to VBox for vertical stacking of columns -->
             <VBox fx:id="columnsContainer" spacing="40" alignment="TOP_CENTER" maxWidth="700">
                 <!-- Columns dynamically injected here -->
             </VBox>
         </ScrollPane>
     </VBox>
 
-    <!-- Floating Action Bar / Back button area -->
-    <HBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" StackPane.alignment="BOTTOM_CENTER" pickOnBounds="false">
+    <!-- Top Navigation Bar (Highest Z-Order) -->
+    <StackPane prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0" pickOnBounds="false">
         <padding>
-            <Insets bottom="20"/>
+            <Insets left="24" right="24"/>
         </padding>
-        <HBox alignment="CENTER" styleClass="fab-glass" spacing="8" prefHeight="60" style="-fx-background-radius: 30;">
-            <padding>
-                <Insets left="16" right="16"/>
-            </padding>
-            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleBackToMain">
-                <graphic>
-                    <FontIcon iconLiteral="fltral-arrow-left-20" iconSize="24" style="-fx-icon-color: white;"/>
-                </graphic>
-            </Button>
-        </HBox>
-    </HBox>
+        <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" StackPane.alignment="CENTER" />
+        <Button styleClass="fab-icon-button" onAction="#handleBackToMain" StackPane.alignment="CENTER_LEFT" style="-fx-padding: 0;">
+            <graphic>
+                <FontIcon iconLiteral="fltral-chevron-left-20" iconSize="24" styleClass="menu-icon"/>
+            </graphic>
+        </Button>
+    </StackPane>
 
 </StackPane>
