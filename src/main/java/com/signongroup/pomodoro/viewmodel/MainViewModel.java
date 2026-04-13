@@ -36,21 +36,51 @@ public class MainViewModel {
     private final BooleanProperty isRunning = new SimpleBooleanProperty(false);
     private final ObjectProperty<TimerState> timerState = new SimpleObjectProperty<>(TimerState.READY);
 
-    private int focusTimeSeconds = 25 * 60;
-    private int shortBreakSeconds = 5 * 60;
-    private int longBreakSeconds = 15 * 60;
-    private int maxSessions = 4;
+    private int focusTimeSeconds;
+    private int shortBreakSeconds;
+    private int longBreakSeconds;
+    private int maxSessions;
 
     private int currentSession = 1;
     private int clearedToday = 0;
-    private int timeRemainingSeconds = focusTimeSeconds;
+    private int timeRemainingSeconds;
 
     private Timeline timeline;
+    private final SettingsViewModel settingsViewModel;
 
-    public MainViewModel() {
+    @jakarta.inject.Inject
+    public MainViewModel(SettingsViewModel settingsViewModel) {
+        this.settingsViewModel = settingsViewModel;
+
+        // Initialize from settings
+        updateSettingsFromViewModel();
+
+        // Listen for changes from SettingsViewModel
+        this.settingsViewModel.focusSessionMinutesProperty().addListener((obs, oldVal, newVal) -> {
+            updateSettingsFromViewModel();
+            if (timerState.get() == TimerState.READY) {
+                timeRemainingSeconds = focusTimeSeconds;
+                updateUI();
+            }
+        });
+        this.settingsViewModel.shortBreakMinutesProperty().addListener((obs, oldVal, newVal) -> updateSettingsFromViewModel());
+        this.settingsViewModel.longBreakMinutesProperty().addListener((obs, oldVal, newVal) -> updateSettingsFromViewModel());
+        this.settingsViewModel.maxSessionCountProperty().addListener((obs, oldVal, newVal) -> {
+            updateSettingsFromViewModel();
+            updateUI();
+        });
+
+        timeRemainingSeconds = focusTimeSeconds;
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> tick()));
         timeline.setCycleCount(Animation.INDEFINITE);
         updateUI();
+    }
+
+    private void updateSettingsFromViewModel() {
+        this.focusTimeSeconds = settingsViewModel.focusSessionMinutesProperty().get() * 60;
+        this.shortBreakSeconds = settingsViewModel.shortBreakMinutesProperty().get() * 60;
+        this.longBreakSeconds = settingsViewModel.longBreakMinutesProperty().get() * 60;
+        this.maxSessions = settingsViewModel.maxSessionCountProperty().get();
     }
 
     private void tick() {
