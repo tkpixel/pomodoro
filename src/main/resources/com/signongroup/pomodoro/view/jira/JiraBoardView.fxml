@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.signongroup.pomodoro.view.jira.JiraBoardViewController"
+           styleClass="bg-mesh"
+           prefHeight="800.0" prefWidth="600.0">
+
+    <VBox spacing="0">
+        <!-- Spacing for absolute positioned header -->
+        <Region prefHeight="80.0"/>
+
+        <!-- Board Selector & Actions Header -->
+        <VBox spacing="20" style="-fx-padding: 40 40 20 40;">
+            <VBox spacing="4" alignment="CENTER_LEFT">
+                <Label text="BOARD" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase; -fx-font-family: 'Inter';"/>
+                <!-- ComboBox with custom styled arrow -->
+                <ComboBox fx:id="boardComboBox" promptText="Select a Board..." styleClass="board-combo-box" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'Manrope'; -fx-background-color: transparent; -fx-text-fill: -fx-on-surface; -fx-padding: 0;"/>
+            </VBox>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <!-- Filter Menu -->
+                <MenuButton fx:id="filterMenuButton" text="Filter" styleClass="filter-menu-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fltfal-filter-20" iconSize="14" style="-fx-icon-color: white;"/>
+                    </graphic>
+                    <!-- Items populated dynamically -->
+                </MenuButton>
+
+                <Button text="New Task" onAction="#handleNewTask" style="-fx-background-color: -fx-primary; -fx-text-fill: #480d00; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;">
+                        <graphic>
+                        <FontIcon iconLiteral="fltfal-add-20" iconSize="14" style="-fx-icon-color: #480d00;"/>
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+
+        <!-- Loading Indicator -->
+        <HBox alignment="CENTER" managed="${controller.viewModel.isLoading}">
+            <ProgressIndicator visible="${controller.viewModel.isLoading}"/>
+        </HBox>
+
+        <!-- Task Board Canvas (Scrollable) -->
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="hide-scrollbar">
+            <padding>
+                <Insets left="40" right="40" bottom="80"/>
+            </padding>
+            <VBox fx:id="columnsContainer" spacing="40" alignment="TOP_CENTER" maxWidth="700">
+                <!-- Columns dynamically injected here -->
+            </VBox>
+        </ScrollPane>
+    </VBox>
+
+    <!-- Top Navigation Bar (Highest Z-Order) -->
+    <StackPane prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0" pickOnBounds="false">
+        <padding>
+            <Insets left="24" right="24"/>
+        </padding>
+        <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" StackPane.alignment="CENTER" />
+        <Button styleClass="fab-icon-button" onAction="#handleBackToMain" StackPane.alignment="CENTER_LEFT" style="-fx-padding: 0;">
+            <graphic>
+                <FontIcon iconLiteral="fltral-chevron-left-20" iconSize="24" styleClass="menu-icon"/>
+            </graphic>
+        </Button>
+    </StackPane>
+
+</StackPane>

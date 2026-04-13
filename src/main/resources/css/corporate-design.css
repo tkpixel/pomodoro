@@ -390,3 +390,83 @@
     -fx-scale-x: 0.9;
     -fx-scale-y: 0.9;
 }
+
+/* ===================================================================== */
+/* JIRA BOARD SPECIFIC CSS                                               */
+/* ===================================================================== */
+
+/* ScrollPane hidden scrollbars */
+.hide-scrollbar .scroll-bar {
+    -fx-opacity: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+.hide-scrollbar .scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+/* Custom ComboBox Styling */
+.board-combo-box {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.board-combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-on-surface;
+    -fx-font-family: 'Manrope';
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 0;
+}
+.board-combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 8;
+}
+.board-combo-box .arrow {
+    -fx-background-color: -fx-primary;
+    -fx-shape: "M 0 0 L 5 5 L 10 0"; /* Simple chevron */
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+}
+
+/* Dropdown Popup Styling (Filter & Board) */
+.combo-box-popup .list-view,
+.menu-item {
+    -fx-background-color: -fx-surface-container-highest;
+    -fx-border-color: #494847;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+.combo-box-popup .list-cell,
+.menu-item .label {
+    -fx-text-fill: -fx-on-surface;
+    -fx-font-family: 'Inter';
+    -fx-padding: 8 16;
+}
+.combo-box-popup .list-cell:hover,
+.menu-item:focused {
+    -fx-background-color: -fx-surface-bright;
+    -fx-text-fill: -fx-primary;
+}
+
+.filter-menu-button {
+    -fx-background-color: -fx-surface-container-highest;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-font-family: 'Inter';
+    -fx-padding: 8 16;
+}
+.filter-menu-button:hover {
+    -fx-background-color: #2c2c2c; /* surface-bright */
+}
+.filter-menu-button .label {
+    -fx-text-fill: white;
+}
+.filter-menu-button .arrow-button {
+    -fx-padding: 0;
+}
+.filter-menu-button .arrow {
+    -fx-shape: "M 0 0 L 5 5 L 10 0"; /* Simple chevron */
+    -fx-background-color: -fx-primary;
+}

@@ -41,6 +41,10 @@ public class WindowManager {
         switchView("/com/signongroup/pomodoro/view/JiraSetupView.fxml");
     }
 
+    public void showJiraBoardView() {
+        switchView("/com/signongroup/pomodoro/view/jira/JiraBoardView.fxml");
+    }
+
     private void switchView(String fxmlPath) {
         if (scene == null) {
             log.error("switchView called but scene is null – was WindowManager.init() called?");
@@ -52,6 +56,10 @@ public class WindowManager {
                 throw new IllegalStateException("Cannot find FXML file: " + fxmlPath);
             }
             FXMLLoader loader = new FXMLLoader(resource);
+            // Bulletproof instantiation: Explicitly set the ClassLoader to ensure ServiceLoader
+            // (which Ikonli uses internally) can find the registered IconPack service providers
+            // across the module boundary within this application context.
+            loader.setClassLoader(getClass().getClassLoader());
             loader.setControllerFactory(context::getBean);
             Parent root = loader.load();
             scene.setRoot(root);

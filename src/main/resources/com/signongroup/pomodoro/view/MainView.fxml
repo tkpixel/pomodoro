@@ -123,7 +123,7 @@
                     <FontIcon iconLiteral="fltfmz-timer-20" iconSize="24"/>
                 </graphic>
             </Button>
-            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48">
+            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleOpenJiraBoard">
                 <graphic>
                     <FontIcon iconLiteral="fltral-checkmark-square-24" iconSize="24"/>
                 </graphic>
