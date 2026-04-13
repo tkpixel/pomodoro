@@ -62,7 +62,7 @@ public class TaskCardComponent extends VBox {
     private void setupHoverEffects() {
         this.setOnMouseEntered(e -> {
             if (!isCompleted()) {
-                this.setStyle("-fx-background-color: #1C1C1E; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: -fx-outline-variant; -fx-border-radius: 16; -fx-border-width: 1; -fx-cursor: hand;");
+                this.setStyle("-fx-background-color: #1C1C1E; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #494847; -fx-border-radius: 16; -fx-border-width: 1; -fx-cursor: hand;");
             }
         });
         this.setOnMouseExited(e -> {

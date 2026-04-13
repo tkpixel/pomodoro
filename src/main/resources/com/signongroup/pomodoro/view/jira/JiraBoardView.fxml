@@ -70,7 +70,7 @@
                 <!-- TO DO Column -->
                 <VBox fx:id="todoColumn" spacing="20" HBox.hgrow="ALWAYS" prefWidth="350" maxWidth="400">
                     <HBox alignment="CENTER_LEFT" spacing="12">
-                        <Circle radius="4" style="-fx-fill: -fx-outline;"/>
+                        <Circle radius="4" style="-fx-fill: #777575;"/>
                         <Label text="TO DO" style="-fx-font-family: 'Manrope'; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface-variant; -fx-font-size: 12px; -fx-text-transform: uppercase;"/>
                         <Label fx:id="todoCountLabel" text="0" style="-fx-background-color: -fx-surface-container-highest; -fx-text-fill: -fx-on-surface-variant; -fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 10;"/>
                     </HBox>
