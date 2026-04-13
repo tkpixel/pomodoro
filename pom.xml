@@ -17,7 +17,7 @@
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <javafx.version>21.0.2</javafx.version>
+        <javafx.version>21.0.6</javafx.version>
         <micronaut.version>4.10.9</micronaut.version>
         <atlantafx.version>2.1.0</atlantafx.version>
         <ikonli.version>12.4.0</ikonli.version>
