@@ -41,6 +41,10 @@ public class WindowManager {
         switchView("/com/signongroup/pomodoro/view/JiraSetupView.fxml");
     }
 
+    public void showJiraBoardView() {
+        switchView("/com/signongroup/pomodoro/view/jira/JiraBoardView.fxml");
+    }
+
     private void switchView(String fxmlPath) {
         if (scene == null) {
             log.error("switchView called but scene is null – was WindowManager.init() called?");

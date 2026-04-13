@@ -127,6 +127,11 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
+    public void handleOpenJiraBoard(ActionEvent event) {
+        windowManager.showJiraBoardView();
+    }
+
+    @FXML
     public void handleOpenSettings(ActionEvent event) {
         if (settingsOverlayController != null) {
             settingsOverlayController.open();

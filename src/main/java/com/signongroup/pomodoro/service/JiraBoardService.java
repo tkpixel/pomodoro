@@ -1,0 +1,142 @@
+package com.signongroup.pomodoro.service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.signongroup.pomodoro.model.jira.JiraBoard;
+import com.signongroup.pomodoro.model.jira.JiraTask;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+@Singleton
+public class JiraBoardService {
+
+    private final JiraAuthService authService;
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
+
+    @Inject
+    public JiraBoardService(JiraAuthService authService) {
+        this.authService = authService;
+        this.httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+        this.objectMapper = new ObjectMapper();
+    }
+
+    private String getAuthHeader() {
+        String email = authService.getSavedEmail();
+        String token = authService.getSavedToken();
+        if (email == null || token == null || email.isBlank() || token.isBlank()) {
+            throw new IllegalStateException("Jira credentials not configured.");
+        }
+        String auth = email + ":" + token;
+        return "Basic " + Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String getBaseUrl() {
+        String url = authService.getSavedUrl();
+        if (url == null || url.isBlank()) {
+            throw new IllegalStateException("Jira URL not configured.");
+        }
+        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+    }
+
+    public CompletableFuture<List<JiraBoard>> fetchBoards() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/agile/1.0/board");
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JsonNode values = root.path("values");
+                    List<JiraBoard> boards = new ArrayList<>();
+                    for (JsonNode node : values) {
+                        boards.add(objectMapper.treeToValue(node, JiraBoard.class));
+                    }
+                    return boards;
+                } else {
+                    throw new RuntimeException("Failed to fetch boards: HTTP " + response.statusCode());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error fetching boards", e);
+            }
+        });
+    }
+
+    public CompletableFuture<List<JiraTask>> fetchTasks(Long boardId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/agile/1.0/board/" + boardId + "/issue?maxResults=50");
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    JsonNode issues = root.path("issues");
+                    List<JiraTask> tasks = new ArrayList<>();
+                    for (JsonNode node : issues) {
+                        tasks.add(objectMapper.treeToValue(node, JiraTask.class));
+                    }
+                    return tasks;
+                } else {
+                    throw new RuntimeException("Failed to fetch tasks: HTTP " + response.statusCode());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error fetching tasks for board " + boardId, e);
+            }
+        });
+    }
+
+    public CompletableFuture<Boolean> moveTask(String issueKey, String transitionId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/api/3/issue/" + issueKey + "/transitions");
+
+                String body = "{\"transition\": {\"id\": \"" + transitionId + "\"}}";
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                return response.statusCode() >= 200 && response.statusCode() < 300;
+            } catch (Exception e) {
+                throw new RuntimeException("Error moving task " + issueKey, e);
+            }
+        });
+    }
+}

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.signongroup.pomodoro.view.jira.JiraBoardViewController"
+           styleClass="bg-mesh"
+           prefHeight="800.0" prefWidth="1200.0">
+
+    <VBox spacing="0">
+        <!-- TopAppBar -->
+        <HBox alignment="CENTER" prefHeight="80" style="-fx-background-color: #0e0e0e;">
+            <Label text="MONOLITH" style="-fx-font-size: 32px; -fx-font-weight: 900; -fx-text-fill: #ff4500; -fx-text-transform: uppercase; -fx-letter-spacing: 0.1em; -fx-font-family: 'Manrope';"/>
+        </HBox>
+
+        <!-- Board Selector & Actions Header -->
+        <VBox spacing="40" style="-fx-padding: 40 40 20 40;">
+            <HBox alignment="BOTTOM_LEFT" spacing="20">
+                <HBox spacing="20" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                    <!-- Placeholder Logo -->
+                    <StackPane prefWidth="64" prefHeight="64" style="-fx-background-color: -fx-surface-container-highest; -fx-background-radius: 16;">
+                         <FontIcon iconLiteral="fltfmz-poll-24" iconSize="32" iconColor="-fx-primary"/>
+                    </StackPane>
+
+                    <VBox spacing="4">
+                        <Label text="BOARD" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase; -fx-font-family: 'Inter';"/>
+                        <ComboBox fx:id="boardComboBox" styleClass="board-combo-box" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'Manrope'; -fx-background-color: transparent; -fx-text-fill: -fx-on-surface; -fx-padding: 0;"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="12" alignment="CENTER_RIGHT">
+                    <!-- Filter Menu -->
+                    <MenuButton fx:id="filterMenuButton" text="Filter" style="-fx-background-color: -fx-surface-container-highest; -fx-text-fill: white; -fx-background-radius: 12; -fx-font-family: 'Inter'; -fx-padding: 8 16;">
+                        <graphic>
+                            <FontIcon iconLiteral="fltfal-filter-20" iconSize="14" iconColor="white"/>
+                        </graphic>
+                        <items>
+                            <CheckMenuItem fx:id="filterTodo" text="To Do" selected="true"/>
+                            <CheckMenuItem fx:id="filterInProgress" text="In Progress" selected="true"/>
+                            <CheckMenuItem fx:id="filterCompleted" text="Completed" selected="true"/>
+                        </items>
+                    </MenuButton>
+
+                    <Button text="New Task" style="-fx-background-color: -fx-primary; -fx-text-fill: #480d00; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;">
+                         <graphic>
+                            <FontIcon iconLiteral="fltfal-add-20" iconSize="14" iconColor="#480d00"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </HBox>
+        </VBox>
+
+        <!-- Loading Indicator -->
+        <HBox alignment="CENTER" managed="${controller.viewModel.isLoading}">
+            <ProgressIndicator visible="${controller.viewModel.isLoading}"/>
+        </HBox>
+
+        <!-- Task Board Canvas (Scrollable) -->
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="hide-scrollbar">
+            <padding>
+                <Insets left="40" right="40" bottom="80"/>
+            </padding>
+            <HBox spacing="30" alignment="TOP_LEFT">
+
+                <!-- TO DO Column -->
+                <VBox fx:id="todoColumn" spacing="20" HBox.hgrow="ALWAYS" prefWidth="350" maxWidth="400">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Circle radius="4" fill="-fx-outline"/>
+                        <Label text="TO DO" style="-fx-font-family: 'Manrope'; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface-variant; -fx-font-size: 12px; -fx-text-transform: uppercase;"/>
+                        <Label fx:id="todoCountLabel" text="0" style="-fx-background-color: -fx-surface-container-highest; -fx-text-fill: -fx-on-surface-variant; -fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 10;"/>
+                    </HBox>
+                    <VBox fx:id="todoList" spacing="16"/>
+                </VBox>
+
+                <!-- IN PROGRESS Column -->
+                <VBox fx:id="inProgressColumn" spacing="20" HBox.hgrow="ALWAYS" prefWidth="350" maxWidth="400">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Circle radius="4" fill="-fx-primary"/>
+                        <Label text="IN PROGRESS" style="-fx-font-family: 'Manrope'; -fx-font-weight: bold; -fx-text-fill: -fx-primary; -fx-font-size: 12px; -fx-text-transform: uppercase;"/>
+                        <Label fx:id="inProgressCountLabel" text="0" style="-fx-background-color: #ff8f701a; -fx-text-fill: -fx-primary; -fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 10;"/>
+                    </HBox>
+                    <VBox fx:id="inProgressList" spacing="16"/>
+                </VBox>
+
+                <!-- COMPLETED Column -->
+                <VBox fx:id="completedColumn" spacing="20" HBox.hgrow="ALWAYS" prefWidth="350" maxWidth="400" opacity="0.8">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Circle radius="4" fill="#22c55e"/> <!-- Tailwind Green 500 -->
+                        <Label text="COMPLETED" style="-fx-font-family: 'Manrope'; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface-variant; -fx-font-size: 12px; -fx-text-transform: uppercase;"/>
+                        <Label fx:id="completedCountLabel" text="0" style="-fx-background-color: -fx-surface-container-highest; -fx-text-fill: -fx-on-surface-variant; -fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 10;"/>
+                    </HBox>
+                    <VBox fx:id="completedList" spacing="16"/>
+                </VBox>
+
+            </HBox>
+        </ScrollPane>
+    </VBox>
+
+    <!-- Floating Action Bar / Back button area -->
+    <HBox alignment="BOTTOM_CENTER" maxHeight="-Infinity" StackPane.alignment="BOTTOM_CENTER" pickOnBounds="false">
+        <padding>
+            <Insets bottom="20"/>
+        </padding>
+        <HBox alignment="CENTER" styleClass="fab-glass" spacing="8" prefHeight="60" style="-fx-background-radius: 30;">
+            <padding>
+                <Insets left="16" right="16"/>
+            </padding>
+            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleBackToMain">
+                <graphic>
+                    <FontIcon iconLiteral="fltral-arrow-left-20" iconSize="24" iconColor="white"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </HBox>
+
+</StackPane>
