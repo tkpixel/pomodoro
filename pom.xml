@@ -428,6 +428,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.5</version>
+                <configuration>
+                    <argLine>
+                        @{argLine}
+                        --add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                        --add-opens=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
 
             <!-- License Maven Plugin -->
