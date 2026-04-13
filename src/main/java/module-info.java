@@ -15,6 +15,8 @@ module com.signongroup.pomodoro {
     requires org.kordamp.ikonli.javafx;
     // ── FluentUI-Icons (optional, je nach Bedarf) ─────────────────────────────
     requires org.kordamp.ikonli.fluentui;
+    // Core Ikonli runtime requirement for ServiceLoader to find packs
+    requires org.kordamp.ikonli.core;
 
     // ── Micronaut (DI / IoC) ──────────────────────────────────────────────────
     // Automatic-Module-Namen werden aus dem JAR-Dateinamen abgeleitet:
