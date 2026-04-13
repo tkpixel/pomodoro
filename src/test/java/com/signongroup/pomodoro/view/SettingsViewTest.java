@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(ApplicationExtension.class)
-public class SettingsOverlayViewTest {
+public class SettingsViewTest {
 
     private ApplicationContext context;
-    private SettingsOverlayViewPage page;
+    private SettingsViewPage page;
 
     @Start
     public void start(Stage stage) throws Exception {
@@ -33,9 +33,8 @@ public class SettingsOverlayViewTest {
 
         Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
 
-        // Use MainView because SettingsOverlay is an included component and testing
-        // it standalone might break due to its visibility binding and context.
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/signongroup/pomodoro/view/MainView.fxml"));
+        // Load the new unified Settings view
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/signongroup/pomodoro/view/SettingsView.fxml"));
         loader.setControllerFactory(context::getBean);
 
         Parent root = loader.load();
@@ -52,11 +51,7 @@ public class SettingsOverlayViewTest {
 
     @BeforeEach
     public void setUp(FxRobot robot) {
-        MainViewPage mainPage = new MainViewPage(robot);
-        mainPage.clickOpenSettings();
-        // The animation takes 300ms. Wait slightly longer for the bottomSheet to fully settle at translateY=0
-        WaitForAsyncUtils.sleep(800, TimeUnit.MILLISECONDS);
-        page = new SettingsOverlayViewPage(robot);
+        page = new SettingsViewPage(robot);
     }
 
     @AfterEach
@@ -67,7 +62,7 @@ public class SettingsOverlayViewTest {
     }
 
     @Test
-    public void testHappyPathChangeSettings() {
+    public void testHappyPathChangeDurationSettings() {
         // Initial state check
         String initFocus = page.getFocusSessionValue();
         assertThat(initFocus).isNotBlank();
@@ -89,13 +84,12 @@ public class SettingsOverlayViewTest {
 
     @Test
     public void testEdgeCaseBoundaryLimits() {
-        // Assume default max sessions is 4 and limit is something > 1 but we can test decreasing it to 1
+        // Test boundary limits for max sessions by decreasing a lot
         for (int i = 0; i < 10; i++) {
             page.clickDecMaxSessions();
             WaitForAsyncUtils.sleep(50, TimeUnit.MILLISECONDS);
         }
 
-        // Validate it didn't go below 1 or 0
         int minMaxSessions = Integer.parseInt(page.getMaxSessionsValue());
         assertThat(minMaxSessions).isGreaterThanOrEqualTo(1);
 
@@ -105,7 +99,55 @@ public class SettingsOverlayViewTest {
             WaitForAsyncUtils.sleep(50, TimeUnit.MILLISECONDS);
         }
 
-        int minFocus = Integer.parseInt(page.getFocusSessionValue());
+        // Parsing out "05:00" string
+        String focusStr = page.getFocusSessionValue();
+        int minFocus = Integer.parseInt(focusStr.split(":")[0]);
         assertThat(minFocus).isGreaterThanOrEqualTo(1);
+    }
+
+    @Test
+    public void testHappyPathJiraSetup() {
+        page.clickExpandJira();
+        WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);
+
+        // Erase any saved fields to test empty-disabled state
+        page.clearFields();
+
+        // Initially, the connect button should be disabled because fields are empty
+        assertThat(page.isConnectButtonDisabled()).isTrue();
+
+        page.enterUrl("https://example.atlassian.net");
+        page.enterEmail("test@example.com");
+        page.enterToken("dummy-token");
+
+        // After filling, it should be enabled
+        assertThat(page.isConnectButtonDisabled()).isFalse();
+
+        page.clickConnect();
+
+        WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);
+        assertThat(page.getStatusText()).isNotNull();
+    }
+
+    @Test
+    public void testEdgeCaseTokenVisibility() {
+        page.clickExpandJira();
+        WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);
+
+        page.clearFields();
+        page.enterToken("secret123");
+
+        // Initial visibility icon
+        assertThat(page.getVisibilityIcon().getIconLiteral()).isEqualTo("fltfal-eye-show-20");
+
+        // Toggle visibility
+        page.toggleTokenVisibility();
+        WaitForAsyncUtils.sleep(200, TimeUnit.MILLISECONDS);
+
+        // Visibility icon should be updated
+        assertThat(page.getVisibilityIcon().getIconLiteral()).isEqualTo("fltfal-eye-hide-20");
+
+        // Verify the visible field matches masked text input logic and is rendered.
+        assertThat(page.getTokenVisibleText()).isEqualTo("secret123");
     }
 }

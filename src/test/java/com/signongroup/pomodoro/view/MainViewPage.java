@@ -76,12 +76,7 @@ public class MainViewPage {
         return this;
     }
 
-    public void clickOpenSettings() {
-        // Find the settings button by icon literal since button has no id
-        robot.clickOn(node -> node instanceof FontIcon icon && "fltfmz-timer-20".equals(icon.getIconLiteral()));
-    }
-
-    public void clickOpenJiraSetup() {
+    public void clickOpenSettingsMenu() {
         robot.clickOn(node -> node instanceof FontIcon icon && "fltral-line-horizontal-3-20".equals(icon.getIconLiteral()));
     }
 }
