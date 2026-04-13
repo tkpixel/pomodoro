@@ -55,6 +55,7 @@ public class TaskCardComponent extends VBox {
         this.mainViewModel = mainViewModel;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("TaskCardComponent.fxml"));
+        fxmlLoader.setClassLoader(getClass().getClassLoader());
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 

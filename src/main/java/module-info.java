@@ -18,6 +18,9 @@ module com.signongroup.pomodoro {
     // Core Ikonli runtime requirement for ServiceLoader to find packs
     requires org.kordamp.ikonli.core;
 
+    uses org.kordamp.ikonli.IkonHandler;
+    uses org.kordamp.ikonli.IkonProvider;
+
     // ── Micronaut (DI / IoC) ──────────────────────────────────────────────────
     // Automatic-Module-Namen werden aus dem JAR-Dateinamen abgeleitet:
     // micronaut-core-x.jar → io.micronaut.micronaut_core
