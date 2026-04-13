@@ -34,7 +34,7 @@
                 <Label fx:id="taskKey" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-font-family: 'Inter';"/>
             </HBox>
         </VBox>
-        <FontIcon fx:id="completedIcon" iconLiteral="fltfmz-checkmark-circle-20" iconSize="20" style="-fx-icon-color: #22c55e;" visible="false" managed="false"/>
+        <FontIcon fx:id="completedIcon" iconLiteral="fltral-checkmark-circle-20" iconSize="20" style="-fx-icon-color: #22c55e;" visible="false" managed="false"/>
     </HBox>
 
     <!-- Story Points Badge (Shown if no estimate) -->
