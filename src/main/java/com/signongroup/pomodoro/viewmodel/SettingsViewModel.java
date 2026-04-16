@@ -20,7 +20,7 @@ public class SettingsViewModel {
     private final JiraAuthService jiraAuthService;
 
     // Accordion State
-    private final BooleanProperty isDurationExpanded = new SimpleBooleanProperty(true);
+    private final BooleanProperty isDurationExpanded = new SimpleBooleanProperty(false);
     private final BooleanProperty isJiraExpanded = new SimpleBooleanProperty(false);
 
     // Duration Settings

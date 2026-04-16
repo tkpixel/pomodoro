@@ -51,6 +51,11 @@ public class SettingsViewPage {
         return this;
     }
 
+    public SettingsViewPage clickExpandDuration() {
+        robot.clickOn(node -> node instanceof FontIcon icon && "fltfmz-timer-20".equals(icon.getIconLiteral()));
+        return this;
+    }
+
     public SettingsViewPage clickExpandJira() {
         robot.clickOn(node -> node instanceof FontIcon icon && "fltfal-arrow-sync-20".equals(icon.getIconLiteral()));
         return this;

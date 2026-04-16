@@ -4,6 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
@@ -11,30 +13,15 @@
            styleClass="bg-mesh"
            prefHeight="884.0" prefWidth="570.0">
 
-    <!-- Top Navigation Bar (Highest Z-Order) -->
-    <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0" pickOnBounds="false">
-        <padding>
-            <Insets left="24" right="24"/>
-        </padding>
-        <Button styleClass="fab-icon-button" onAction="#handleBack" style="-fx-padding: 0;">
-            <graphic>
-                <FontIcon iconLiteral="fltral-arrow-left-20" iconSize="24" styleClass="menu-icon"/>
-            </graphic>
-        </Button>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" />
-        <Region HBox.hgrow="ALWAYS"/>
-        <!-- Spacer for symmetry -->
-        <Region prefWidth="24"/>
-    </HBox>
-
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-padding: 0;" hbarPolicy="NEVER">
         <VBox spacing="16" alignment="TOP_LEFT" maxWidth="600" style="-fx-padding: 120 24 160 24;">
 
             <!-- Page Title & Intro -->
             <VBox spacing="8" style="-fx-margin-bottom: 48;">
-                <Label text="System Configuration" style="-fx-font-size: 10px; -fx-text-transform: uppercase; -fx-text-fill: -fx-primary; -fx-font-weight: bold; -fx-letter-spacing: 0.3em;"/>
-                <Label text="Settings" styleClass="font-manrope" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: -fx-on-background;"/>
+                <TextFlow>
+                    <Text text="System Configuration " style="-fx-fill: -fx-on-surface; -fx-font-size: 24px; -fx-font-weight: 900; -fx-font-family: 'System', 'Manrope', sans-serif;" />
+                    <Text text="SETTINGS" style="-fx-fill: #FF6B4A; -fx-font-size: 24px; -fx-font-style: italic; -fx-font-weight: bold; -fx-font-family: 'System', 'Manrope', sans-serif;" />
+                </TextFlow>
                 <Label text="Fine-tune your temporal workflow and external integrations through the kinetic interface." wrapText="true" style="-fx-text-fill: -fx-on-surface-variant; -fx-font-size: 14px; -fx-max-width: 400;"/>
             </VBox>
 
@@ -216,5 +203,22 @@
 
         </VBox>
     </ScrollPane>
+
+    <!-- Top Navigation Bar (Highest Z-Order) -->
+    <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0" pickOnBounds="false">
+        <padding>
+            <Insets left="24" right="24"/>
+        </padding>
+        <Button styleClass="fab-icon-button" onAction="#handleBack" style="-fx-padding: 0;">
+            <graphic>
+                <FontIcon iconLiteral="fltral-arrow-left-20" iconSize="24" styleClass="menu-icon"/>
+            </graphic>
+        </Button>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" />
+        <Region HBox.hgrow="ALWAYS"/>
+        <!-- Spacer for symmetry -->
+        <Region prefWidth="24"/>
+    </HBox>
 
 </StackPane>

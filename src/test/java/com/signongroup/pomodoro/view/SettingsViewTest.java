@@ -63,6 +63,9 @@ public class SettingsViewTest {
 
     @Test
     public void testHappyPathChangeDurationSettings() {
+        page.clickExpandDuration();
+        WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);
+
         // Initial state check
         String initFocus = page.getFocusSessionValue();
         assertThat(initFocus).isNotBlank();
@@ -84,6 +87,9 @@ public class SettingsViewTest {
 
     @Test
     public void testEdgeCaseBoundaryLimits() {
+        page.clickExpandDuration();
+        WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);
+
         // Test boundary limits for max sessions by decreasing a lot
         for (int i = 0; i < 10; i++) {
             page.clickDecMaxSessions();

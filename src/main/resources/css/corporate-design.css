@@ -17,6 +17,11 @@
     -fx-on-primary-fixed: #000000;
     -fx-primary-container: #ff7852;
 
+    -fx-background: #0e0e0e;
+    -fx-on-background: #ffffff;
+    -fx-outline: #777575;
+    -fx-outline-variant: #494847;
+
     /* Backgrounds */
     -fx-background-color: -fx-surface;
 
