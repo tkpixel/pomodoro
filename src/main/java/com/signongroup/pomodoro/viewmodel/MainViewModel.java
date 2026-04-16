@@ -1,9 +1,8 @@
 package com.signongroup.pomodoro.viewmodel;
 
+import com.signongroup.pomodoro.service.TimerService;
 import jakarta.inject.Singleton;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -12,7 +11,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.util.Duration;
 
 /**
  * ViewModel für die Hauptansicht (MVVM-Pattern).
@@ -46,12 +44,15 @@ public class MainViewModel {
     private int clearedToday = 0;
     private int timeRemainingSeconds;
 
-    private Timeline timeline;
+    private final TimerService timerService;
     private final SettingsViewModel settingsViewModel;
 
     @jakarta.inject.Inject
-    public MainViewModel(SettingsViewModel settingsViewModel) {
+    public MainViewModel(SettingsViewModel settingsViewModel, TimerService timerService) {
         this.settingsViewModel = settingsViewModel;
+        this.timerService = timerService;
+
+        this.timerService.setTickCallback(() -> Platform.runLater(this::tick));
 
         // Initialize from settings
         updateSettingsFromViewModel();
@@ -72,8 +73,6 @@ public class MainViewModel {
         });
 
         timeRemainingSeconds = focusTimeSeconds;
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> tick()));
-        timeline.setCycleCount(Animation.INDEFINITE);
         updateUI();
     }
 
@@ -142,12 +141,12 @@ public class MainViewModel {
             timerState.set(TimerState.FOCUS_RUNNING);
         }
         isRunning.set(true);
-        timeline.play();
+        timerService.start();
     }
 
     public void pauseTimer() {
         isRunning.set(false);
-        timeline.pause();
+        timerService.pause();
     }
 
     public void toggleTimer() {

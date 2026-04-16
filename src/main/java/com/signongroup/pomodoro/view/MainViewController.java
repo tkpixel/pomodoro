@@ -111,9 +111,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void handleDynamicAction(ActionEvent event) {
-        if (viewModel.getTimerState() == TimerState.BREAK_SHORT || viewModel.getTimerState() == TimerState.BREAK_LONG) {
-            viewModel.skipBreak();
-        }
+        viewModel.skipBreak();
     }
 
     @FXML
@@ -162,16 +160,18 @@ public class MainViewController implements Initializable {
             breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active");
             breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active-long");
 
+            breakTitleLabel.getStyleClass().removeAll("break-title-long", "break-title-short", "break-title-default");
+
             if (state == TimerState.BREAK_LONG) {
                 breakCardContainer.getStyleClass().add("break-active-card-long");
                 breakCardIconContainer.getStyleClass().add("card-icon-container-break-active-long");
                 breakTitleLabel.setText("LONG BREAK ACTIVE");
-                breakTitleLabel.setStyle("-fx-text-fill: #6bbdd0; -fx-font-size: 9px; -fx-font-weight: bold; -fx-text-transform: uppercase;");
+                breakTitleLabel.getStyleClass().add("break-title-long");
             } else {
                 breakCardContainer.getStyleClass().add("break-active-card");
                 breakCardIconContainer.getStyleClass().add("card-icon-container-break-active");
                 breakTitleLabel.setText("SHORT BREAK ACTIVE");
-                breakTitleLabel.setStyle("-fx-text-fill: -fx-primary; -fx-font-size: 9px; -fx-font-weight: bold; -fx-text-transform: uppercase;");
+                breakTitleLabel.getStyleClass().add("break-title-short");
             }
 
             breakIcon.setIconColor(javafx.scene.paint.Color.web("#000000")); // -fx-on-primary-fixed roughly
@@ -196,11 +196,11 @@ public class MainViewController implements Initializable {
             }
             breakIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa")); // -fx-on-surface-variant roughly
             breakTitleLabel.setText("NEXT BREAK");
-            breakTitleLabel.setStyle("");
+            breakTitleLabel.getStyleClass().removeAll("break-title-long", "break-title-short");
+            breakTitleLabel.getStyleClass().add("break-title-default");
             if (!breakTitleLabel.getStyleClass().contains("card-title")) {
                 breakTitleLabel.getStyleClass().add("card-title");
             }
-            breakTitleLabel.setStyle("-fx-text-transform: uppercase;");
             nextBreakLabel.getStyleClass().remove("card-value");
             if (!nextBreakLabel.getStyleClass().contains("card-value-muted")) {
                 nextBreakLabel.getStyleClass().add("card-value-muted");

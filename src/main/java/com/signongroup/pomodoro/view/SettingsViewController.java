@@ -3,7 +3,6 @@ package com.signongroup.pomodoro.view;
 import com.signongroup.pomodoro.viewmodel.SettingsViewModel;
 import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
-import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -99,17 +98,15 @@ public class SettingsViewController implements Initializable {
         statusLabel.textProperty().bind(viewModel.statusMessageProperty());
 
         viewModel.isSuccessProperty().addListener((obs, oldVal, newVal) -> {
+            statusLabel.getStyleClass().removeAll("status-success", "status-error");
             if (newVal) {
-                statusLabel.setStyle("-fx-text-fill: -fx-primary; -fx-font-size: 13px; -fx-font-weight: bold;");
+                statusLabel.getStyleClass().add("status-success");
             } else {
-                statusLabel.setStyle("-fx-text-fill: #ff716c; -fx-font-size: 13px; -fx-font-weight: bold;");
+                statusLabel.getStyleClass().add("status-error");
             }
         });
 
-        connectButton.disableProperty().bind(Bindings.createBooleanBinding(
-            () -> urlField.getText().isEmpty() || emailField.getText().isEmpty() || tokenFieldMasked.getText().isEmpty() || viewModel.isConnectingProperty().get(),
-            urlField.textProperty(), emailField.textProperty(), tokenFieldMasked.textProperty(), viewModel.isConnectingProperty()
-        ));
+        connectButton.disableProperty().bind(viewModel.canConnectProperty().not());
     }
 
     private void updateDurationHeaderStyle(boolean isExpanded) {
@@ -133,14 +130,16 @@ public class SettingsViewController implements Initializable {
     }
 
     private void updateAutoStartToggleUI(boolean isOn) {
+        autoStartToggleThumb.getParent().getStyleClass().removeAll("toggle-track-on", "toggle-track-off");
+        autoStartToggleThumb.getStyleClass().removeAll("toggle-thumb-on", "toggle-thumb-off");
         if (isOn) {
-            autoStartToggleThumb.getParent().setStyle("-fx-background-color: #ff8f70; -fx-background-radius: 9999px;");
-            autoStartToggleThumb.setStyle("-fx-background-color: #000000; -fx-background-radius: 9999px;");
+            autoStartToggleThumb.getParent().getStyleClass().add("toggle-track-on");
+            autoStartToggleThumb.getStyleClass().add("toggle-thumb-on");
             // Simple alignment push to the right for JavaFX StackPane
             javafx.scene.layout.StackPane.setAlignment(autoStartToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
         } else {
-            autoStartToggleThumb.getParent().setStyle("-fx-background-color: #494847; -fx-background-radius: 9999px;");
-            autoStartToggleThumb.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 9999px;");
+            autoStartToggleThumb.getParent().getStyleClass().add("toggle-track-off");
+            autoStartToggleThumb.getStyleClass().add("toggle-thumb-off");
             javafx.scene.layout.StackPane.setAlignment(autoStartToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
         }
     }

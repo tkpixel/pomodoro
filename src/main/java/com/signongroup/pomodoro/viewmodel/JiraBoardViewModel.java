@@ -5,7 +5,7 @@ import com.signongroup.pomodoro.model.jira.JiraBoard;
 import com.signongroup.pomodoro.model.jira.JiraTask;
 import com.signongroup.pomodoro.model.jira.JiraTransition;
 import com.signongroup.pomodoro.service.JiraBoardService;
-import com.signongroup.pomodoro.service.SecretManager;
+import com.signongroup.pomodoro.service.UserPreferencesService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import javafx.application.Platform;
@@ -28,26 +28,29 @@ public class JiraBoardViewModel {
     private static final Logger log = LoggerFactory.getLogger(JiraBoardViewModel.class);
 
     private final JiraBoardService jiraBoardService;
-    private final SecretManager secretManager;
+    private final UserPreferencesService userPreferencesService;
 
     private final ObservableList<JiraBoard> boards = FXCollections.observableArrayList();
     private final ObjectProperty<JiraBoard> selectedBoard = new SimpleObjectProperty<>();
 
     // Dynamic Columns and Tasks
     private final ObservableList<BoardColumn> dynamicColumns = FXCollections.observableArrayList();
-    private final ObservableMap<String, ObservableList<JiraTask>> columnTasksMap = FXCollections.observableHashMap();
+    private final ObservableMap<String, ObservableList<TaskCardViewModel>> columnTasksMap = FXCollections.observableHashMap();
     private final ObservableMap<String, BooleanProperty> columnVisibilityMap = FXCollections.observableHashMap();
+
+    // Internal state to hold real JiraTask models for actions
+    private final java.util.Map<String, JiraTask> taskKeyToModelMap = new java.util.HashMap<>();
 
     private final BooleanProperty isLoading = new SimpleBooleanProperty(false);
 
     @Inject
-    public JiraBoardViewModel(JiraBoardService jiraBoardService, SecretManager secretManager) {
+    public JiraBoardViewModel(JiraBoardService jiraBoardService, UserPreferencesService userPreferencesService) {
         this.jiraBoardService = jiraBoardService;
-        this.secretManager = secretManager;
+        this.userPreferencesService = userPreferencesService;
 
         selectedBoard.addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                secretManager.savePlaintext("jira_selected_board_id", String.valueOf(newVal.id()));
+                userPreferencesService.saveLastBoardId(String.valueOf(newVal.id()));
                 fetchBoardConfigurationAndTasks(newVal.id());
             } else {
                 clearData();
@@ -64,7 +67,7 @@ public class JiraBoardViewModel {
         jiraBoardService.fetchBoards().thenAccept(fetchedBoards -> Platform.runLater(() -> {
             boards.setAll(fetchedBoards);
 
-            String savedBoardIdStr = secretManager.getPlaintext("jira_selected_board_id");
+            String savedBoardIdStr = userPreferencesService.getLastBoardId();
             if (savedBoardIdStr != null && !savedBoardIdStr.isBlank()) {
                 try {
                     Long savedBoardId = Long.parseLong(savedBoardIdStr);
@@ -119,12 +122,15 @@ public class JiraBoardViewModel {
 
     private void distributeTasks(List<JiraTask> tasks) {
         // Use temporary lists to batch-add tasks, preventing O(N) UI updates per list
-        java.util.Map<String, List<JiraTask>> tempTaskMap = new java.util.HashMap<>();
+        java.util.Map<String, List<TaskCardViewModel>> tempTaskMap = new java.util.HashMap<>();
         for (String colName : columnTasksMap.keySet()) {
             tempTaskMap.put(colName, new ArrayList<>());
         }
 
+        taskKeyToModelMap.clear();
+
         for (JiraTask task : tasks) {
+            taskKeyToModelMap.put(task.key(), task);
             String targetColumnName = null;
             if (task.fields() != null && task.fields().status() != null) {
                 String statusId = task.fields().status().id();
@@ -141,16 +147,16 @@ public class JiraBoardViewModel {
                 }
             }
             if (targetColumnName != null && tempTaskMap.containsKey(targetColumnName)) {
-                tempTaskMap.get(targetColumnName).add(task);
+                tempTaskMap.get(targetColumnName).add(new TaskCardViewModel(task));
             } else if (!dynamicColumns.isEmpty()) {
                 // Fallback to first column
-                tempTaskMap.get(dynamicColumns.get(0).name()).add(task);
+                tempTaskMap.get(dynamicColumns.get(0).name()).add(new TaskCardViewModel(task));
             }
         }
 
         // Apply batched updates to the ObservableLists
-        for (java.util.Map.Entry<String, List<JiraTask>> entry : tempTaskMap.entrySet()) {
-            ObservableList<JiraTask> observableList = columnTasksMap.get(entry.getKey());
+        for (java.util.Map.Entry<String, List<TaskCardViewModel>> entry : tempTaskMap.entrySet()) {
+            ObservableList<TaskCardViewModel> observableList = columnTasksMap.get(entry.getKey());
             if (observableList != null) {
                 observableList.setAll(entry.getValue());
             }
@@ -161,6 +167,7 @@ public class JiraBoardViewModel {
         dynamicColumns.clear();
         columnTasksMap.clear();
         columnVisibilityMap.clear();
+        taskKeyToModelMap.clear();
     }
 
     public void refreshTasks() {
@@ -169,7 +176,16 @@ public class JiraBoardViewModel {
         }
     }
 
-    public void moveTask(JiraTask task, String targetColumnName) {
+    public void handleTaskDrop(String taskKey, String targetColumnName) {
+        JiraTask draggedTask = taskKeyToModelMap.get(taskKey);
+
+        if (draggedTask != null) {
+            log.info("Moving task {} to {}", taskKey, targetColumnName);
+            moveTask(draggedTask, targetColumnName);
+        }
+    }
+
+    private void moveTask(JiraTask task, String targetColumnName) {
         // Find the target column statuses
         BoardColumn targetColumn = null;
         for (BoardColumn col : dynamicColumns) {
@@ -218,6 +234,17 @@ public class JiraBoardViewModel {
         });
     }
 
+    public String getColorForColumn(String colName) {
+        String lower = colName.toLowerCase();
+        if (lower.contains("progress") || lower.contains("doing")) {
+            return "-fx-primary";
+        } else if (lower.contains("done") || lower.contains("completed") || lower.contains("closed")) {
+            return "#22c55e"; // Tailwind green
+        } else {
+            return "#777575"; // Outline variant
+        }
+    }
+
     // Getters and Properties
     public ObservableList<JiraBoard> getBoards() { return boards; }
     public ObjectProperty<JiraBoard> selectedBoardProperty() { return selectedBoard; }
@@ -225,7 +252,7 @@ public class JiraBoardViewModel {
     public void setSelectedBoard(JiraBoard board) { this.selectedBoard.set(board); }
 
     public ObservableList<BoardColumn> getDynamicColumns() { return dynamicColumns; }
-    public ObservableMap<String, ObservableList<JiraTask>> getColumnTasksMap() { return columnTasksMap; }
+    public ObservableMap<String, ObservableList<TaskCardViewModel>> getColumnTasksMap() { return columnTasksMap; }
     public BooleanProperty getColumnVisibilityProperty(String columnName) { return columnVisibilityMap.get(columnName); }
 
     public BooleanProperty isLoadingProperty() { return isLoading; }

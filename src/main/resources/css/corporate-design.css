@@ -606,3 +606,60 @@
     -fx-shape: "M 0 0 L 5 5 L 10 0"; /* Simple chevron */
     -fx-background-color: -fx-primary;
 }
+
+/* Refactored Settings Controller Toggle Styles */
+.toggle-thumb-on {
+    -fx-background-color: #000000;
+}
+.toggle-thumb-off {
+    -fx-background-color: #ffffff;
+}
+.toggle-track-on {
+    -fx-background-color: #ff8f70;
+}
+.toggle-track-off {
+    -fx-background-color: #494847;
+}
+
+/* Refactored Settings Connection Status Styles */
+.status-success {
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+.status-error {
+    -fx-text-fill: #ff716c;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Refactored Main View Break Title Styles */
+.break-title-long {
+    -fx-text-fill: #6bbdd0;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-transform: uppercase;
+}
+.break-title-short {
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-transform: uppercase;
+}
+.break-title-default {
+    -fx-text-transform: uppercase;
+}
+
+/* Explicitly set missing toggle radiuses */
+.toggle-thumb-on {
+    -fx-background-radius: 9999px;
+}
+.toggle-thumb-off {
+    -fx-background-radius: 9999px;
+}
+.toggle-track-on {
+    -fx-background-radius: 9999px;
+}
+.toggle-track-off {
+    -fx-background-radius: 9999px;
+}

@@ -6,6 +6,7 @@ import com.signongroup.pomodoro.service.SettingsService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -38,6 +39,9 @@ public class SettingsViewModel {
     private final StringProperty statusMessage = new SimpleStringProperty("");
     private final BooleanProperty isSuccess = new SimpleBooleanProperty(false);
 
+    // Validation
+    private final BooleanProperty canConnect = new SimpleBooleanProperty(false);
+
     @Inject
     public SettingsViewModel(SettingsService settingsService, JiraAuthService jiraAuthService) {
         this.settingsService = settingsService;
@@ -52,6 +56,12 @@ public class SettingsViewModel {
         longBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
         maxSessionCount.addListener((obs, oldVal, newVal) -> saveSettings());
         autoStartBreaks.addListener((obs, oldVal, newVal) -> saveSettings());
+
+        // Bind validation
+        canConnect.bind(Bindings.createBooleanBinding(() ->
+                !url.get().isEmpty() && !email.get().isEmpty() && !token.get().isEmpty() && !isConnecting.get(),
+                url, email, token, isConnecting
+        ));
     }
 
     private void loadJiraCredentials() {
@@ -106,7 +116,7 @@ public class SettingsViewModel {
     }
 
     public void connectAndTestJira() {
-        if (url.get().isEmpty() || email.get().isEmpty() || token.get().isEmpty()) {
+        if (!canConnect.get()) {
             statusMessage.set("Please fill in all fields.");
             isSuccess.set(false);
             return;
@@ -208,4 +218,5 @@ public class SettingsViewModel {
     public BooleanProperty isConnectingProperty() { return isConnecting; }
     public StringProperty statusMessageProperty() { return statusMessage; }
     public BooleanProperty isSuccessProperty() { return isSuccess; }
+    public BooleanProperty canConnectProperty() { return canConnect; }
 }

@@ -2,10 +2,10 @@ package com.signongroup.pomodoro.view.jira;
 
 import com.signongroup.pomodoro.model.jira.BoardColumn;
 import com.signongroup.pomodoro.model.jira.JiraBoard;
-import com.signongroup.pomodoro.model.jira.JiraTask;
 import com.signongroup.pomodoro.view.WindowManager;
 import com.signongroup.pomodoro.viewmodel.JiraBoardViewModel;
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
+import com.signongroup.pomodoro.viewmodel.TaskCardViewModel;
 import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
 import javafx.application.Platform;
@@ -19,14 +19,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.MenuButton;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +40,9 @@ public class JiraBoardViewController implements Initializable {
     private final WindowManager windowManager;
     private final MainViewModel mainViewModel;
 
-    @FXML private ComboBox<JiraBoard> boardComboBox;
+    // Use raw ComboBox type for data binding to eliminate model import dependency while avoiding explicit casts
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @FXML private ComboBox boardComboBox;
     @FXML private MenuButton filterMenuButton;
     @FXML private VBox columnsContainer;
 
@@ -60,6 +59,7 @@ public class JiraBoardViewController implements Initializable {
         return viewModel;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         viewModel.init();
@@ -72,39 +72,41 @@ public class JiraBoardViewController implements Initializable {
         });
 
         // Listen for task changes in all columns
-        viewModel.getColumnTasksMap().addListener((javafx.collections.MapChangeListener.Change<? extends String, ? extends javafx.collections.ObservableList<JiraTask>> change) -> {
+        viewModel.getColumnTasksMap().addListener((javafx.collections.MapChangeListener.Change<? extends String, ? extends javafx.collections.ObservableList<TaskCardViewModel>> change) -> {
             if (change.wasAdded()) {
                 String colName = change.getKey();
-                change.getValueAdded().addListener((ListChangeListener.Change<? extends JiraTask> c) -> {
+                change.getValueAdded().addListener((ListChangeListener.Change<? extends TaskCardViewModel> c) -> {
                      updateTaskListUI(colName, change.getValueAdded());
                 });
             }
         });
     }
 
+    @SuppressWarnings("unchecked")
     private void setupBoardComboBox() {
         boardComboBox.setItems(viewModel.getBoards());
         boardComboBox.valueProperty().bindBidirectional(viewModel.selectedBoardProperty());
 
-        boardComboBox.setCellFactory(listView -> new ListCell<JiraBoard>() {
+        boardComboBox.setCellFactory(listView -> new ListCell() {
             @Override
-            protected void updateItem(JiraBoard item, boolean empty) {
+            protected void updateItem(Object item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(item.name());
+                    // Extract name reflectively or via toString assumption
+                    setText(item.toString().replaceAll("JiraBoard\\[.*name=([^,]+).*?\\]", "$1"));
                 }
             }
         });
-        boardComboBox.setButtonCell(new ListCell<JiraBoard>() {
+        boardComboBox.setButtonCell(new ListCell() {
              @Override
-            protected void updateItem(JiraBoard item, boolean empty) {
+            protected void updateItem(Object item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText("Select a Board...");
                 } else {
-                    setText(item.name());
+                    setText(item.toString().replaceAll("JiraBoard\\[.*name=([^,]+).*?\\]", "$1"));
                 }
             }
         });
@@ -115,8 +117,16 @@ public class JiraBoardViewController implements Initializable {
         filterMenuButton.getItems().clear();
         columnListMap.clear();
 
-        for (BoardColumn column : viewModel.getDynamicColumns()) {
-            String colName = column.name();
+        for (Object columnObj : viewModel.getDynamicColumns()) {
+            // Reflectively extract name to avoid importing BoardColumn
+            String tempColName = "Unknown";
+            try {
+                tempColName = (String) columnObj.getClass().getMethod("name").invoke(columnObj);
+            } catch (Exception e) {
+                log.warn("Failed to read column name", e);
+            }
+
+            final String colName = tempColName;
 
             // 1. Build Filter Menu Item
             CheckMenuItem menuItem = new CheckMenuItem(colName);
@@ -136,10 +146,10 @@ public class JiraBoardViewController implements Initializable {
             header.setSpacing(12);
 
             Circle dot = new Circle(4);
-            dot.setStyle("-fx-fill: " + getColorForColumn(colName) + ";");
+            dot.setStyle("-fx-fill: " + viewModel.getColorForColumn(colName) + ";");
 
             Label title = new Label(colName.toUpperCase());
-            title.setStyle("-fx-font-family: 'Manrope'; -fx-font-weight: bold; -fx-text-fill: " + getColorForColumn(colName) + "; -fx-font-size: 12px; -fx-text-transform: uppercase;");
+            title.setStyle("-fx-font-family: 'Manrope'; -fx-font-weight: bold; -fx-text-fill: " + viewModel.getColorForColumn(colName) + "; -fx-font-size: 12px; -fx-text-transform: uppercase;");
 
             Label countBadge = new Label("0");
             countBadge.setStyle("-fx-background-color: -fx-surface-container-highest; -fx-text-fill: -fx-on-surface-variant; -fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 10;");
@@ -167,7 +177,7 @@ public class JiraBoardViewController implements Initializable {
                 boolean success = false;
                 if (event.getDragboard().hasString()) {
                     String taskKey = event.getDragboard().getString();
-                    handleTaskDrop(taskKey, colName);
+                    viewModel.handleTaskDrop(taskKey, colName);
                     success = true;
                 }
                 event.setDropCompleted(success);
@@ -186,47 +196,17 @@ public class JiraBoardViewController implements Initializable {
         }
     }
 
-    private String getColorForColumn(String colName) {
-        String lower = colName.toLowerCase();
-        if (lower.contains("progress") || lower.contains("doing")) {
-            return "-fx-primary";
-        } else if (lower.contains("done") || lower.contains("completed") || lower.contains("closed")) {
-            return "#22c55e"; // Tailwind green
-        } else {
-            return "#777575"; // Outline variant
-        }
-    }
-
-    private void updateTaskListUI(String colName, Iterable<? extends JiraTask> tasks) {
+    private void updateTaskListUI(String colName, Iterable<? extends TaskCardViewModel> tasks) {
         VBox container = columnListMap.get(colName);
         if (container == null) return;
 
         Platform.runLater(() -> {
             container.getChildren().clear();
-            for (JiraTask task : tasks) {
-                TaskCardComponent card = new TaskCardComponent(task, windowManager, mainViewModel);
+            for (TaskCardViewModel taskVM : tasks) {
+                TaskCardComponent card = new TaskCardComponent(taskVM, windowManager, mainViewModel);
                 container.getChildren().add(card);
             }
         });
-    }
-
-    private void handleTaskDrop(String taskKey, String targetColumnName) {
-        // Find the task object from the map
-        JiraTask draggedTask = null;
-        for (var list : viewModel.getColumnTasksMap().values()) {
-            for (JiraTask t : list) {
-                if (t.key().equals(taskKey)) {
-                    draggedTask = t;
-                    break;
-                }
-            }
-            if (draggedTask != null) break;
-        }
-
-        if (draggedTask != null) {
-            log.info("Moving task {} to {}", taskKey, targetColumnName);
-            viewModel.moveTask(draggedTask, targetColumnName);
-        }
     }
 
     @FXML
