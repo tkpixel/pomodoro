@@ -663,3 +663,61 @@
 .toggle-track-off {
     -fx-background-radius: 9999px;
 }
+
+/* Replacing specific classes with PseudoClass mapping */
+
+.toggle-track:on {
+    -fx-background-color: #ff8f70;
+}
+.toggle-track {
+    -fx-background-color: #494847;
+}
+.toggle-thumb:on {
+    -fx-background-color: #000000;
+}
+.toggle-thumb {
+    -fx-background-color: #ffffff;
+}
+
+.timer-base {
+    -fx-stroke: rgba(255, 255, 255, 0.1);
+}
+.timer-base:active {
+    -fx-stroke: -fx-surface-container-highest;
+}
+
+.card-icon-container-break {
+    -fx-background-color: transparent;
+}
+.card-icon-container-break:break-short {
+    -fx-background-color: -fx-primary;
+}
+.card-icon-container-break:break-long {
+    -fx-background-color: #6bbdd0;
+}
+
+.card:break-short {
+    -fx-border-color: -fx-primary transparent transparent transparent;
+    -fx-border-width: 2px 0 0 0;
+}
+.card:break-long {
+    -fx-border-color: #6bbdd0 transparent transparent transparent;
+    -fx-border-width: 2px 0 0 0;
+}
+
+.card-title:break-short {
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+.card-title:break-long {
+    -fx-text-fill: #6bbdd0;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+
+.card-value-muted:active {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}

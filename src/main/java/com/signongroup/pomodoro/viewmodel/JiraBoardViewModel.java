@@ -30,11 +30,12 @@ public class JiraBoardViewModel {
     private final JiraBoardService jiraBoardService;
     private final UserPreferencesService userPreferencesService;
 
-    private final ObservableList<JiraBoard> boards = FXCollections.observableArrayList();
-    private final ObjectProperty<JiraBoard> selectedBoard = new SimpleObjectProperty<>();
+    private final ObservableList<BoardViewModel> boards = FXCollections.observableArrayList();
+    private final ObjectProperty<BoardViewModel> selectedBoard = new SimpleObjectProperty<>();
 
     // Dynamic Columns and Tasks
-    private final ObservableList<BoardColumn> dynamicColumns = FXCollections.observableArrayList();
+    private final ObservableList<String> dynamicColumnNames = FXCollections.observableArrayList();
+    private final List<BoardColumn> rawColumns = new ArrayList<>(); // Internal storage for workflow
     private final ObservableMap<String, ObservableList<TaskCardViewModel>> columnTasksMap = FXCollections.observableHashMap();
     private final ObservableMap<String, BooleanProperty> columnVisibilityMap = FXCollections.observableHashMap();
 
@@ -65,13 +66,17 @@ public class JiraBoardViewModel {
     private void fetchBoards() {
         isLoading.set(true);
         jiraBoardService.fetchBoards().thenAccept(fetchedBoards -> Platform.runLater(() -> {
-            boards.setAll(fetchedBoards);
+            List<BoardViewModel> boardVms = new ArrayList<>();
+            for(JiraBoard b : fetchedBoards) {
+                boardVms.add(new BoardViewModel(b.id(), b.name()));
+            }
+            boards.setAll(boardVms);
 
             String savedBoardIdStr = userPreferencesService.getLastBoardId();
             if (savedBoardIdStr != null && !savedBoardIdStr.isBlank()) {
                 try {
                     Long savedBoardId = Long.parseLong(savedBoardIdStr);
-                    Optional<JiraBoard> boardToSelect = boards.stream()
+                    Optional<BoardViewModel> boardToSelect = boards.stream()
                             .filter(b -> b.id().equals(savedBoardId))
                             .findFirst();
                     if (boardToSelect.isPresent()) {
@@ -99,14 +104,16 @@ public class JiraBoardViewModel {
             Platform.runLater(() -> {
                 columnTasksMap.clear();
                 columnVisibilityMap.clear();
+                dynamicColumnNames.clear();
+                rawColumns.clear();
+
                 if (config.columnConfig() != null && config.columnConfig().columns() != null) {
+                    rawColumns.addAll(config.columnConfig().columns());
                     for (BoardColumn col : config.columnConfig().columns()) {
                         columnTasksMap.put(col.name(), FXCollections.observableArrayList());
                         columnVisibilityMap.put(col.name(), new SimpleBooleanProperty(true));
+                        dynamicColumnNames.add(col.name());
                     }
-                    dynamicColumns.setAll(config.columnConfig().columns());
-                } else {
-                    dynamicColumns.clear();
                 }
             });
             return jiraBoardService.fetchTasks(boardId);
@@ -134,7 +141,7 @@ public class JiraBoardViewModel {
             String targetColumnName = null;
             if (task.fields() != null && task.fields().status() != null) {
                 String statusId = task.fields().status().id();
-                for (BoardColumn col : dynamicColumns) {
+                for (BoardColumn col : rawColumns) {
                     if (col.statuses() != null) {
                         for (BoardColumn.StatusMapping mapping : col.statuses()) {
                             if (statusId.equals(mapping.id())) {
@@ -148,9 +155,9 @@ public class JiraBoardViewModel {
             }
             if (targetColumnName != null && tempTaskMap.containsKey(targetColumnName)) {
                 tempTaskMap.get(targetColumnName).add(new TaskCardViewModel(task));
-            } else if (!dynamicColumns.isEmpty()) {
+            } else if (!rawColumns.isEmpty()) {
                 // Fallback to first column
-                tempTaskMap.get(dynamicColumns.get(0).name()).add(new TaskCardViewModel(task));
+                tempTaskMap.get(rawColumns.get(0).name()).add(new TaskCardViewModel(task));
             }
         }
 
@@ -164,7 +171,8 @@ public class JiraBoardViewModel {
     }
 
     private void clearData() {
-        dynamicColumns.clear();
+        dynamicColumnNames.clear();
+        rawColumns.clear();
         columnTasksMap.clear();
         columnVisibilityMap.clear();
         taskKeyToModelMap.clear();
@@ -188,7 +196,7 @@ public class JiraBoardViewModel {
     private void moveTask(JiraTask task, String targetColumnName) {
         // Find the target column statuses
         BoardColumn targetColumn = null;
-        for (BoardColumn col : dynamicColumns) {
+        for (BoardColumn col : rawColumns) {
             if (col.name().equals(targetColumnName)) {
                 targetColumn = col;
                 break;
@@ -246,12 +254,12 @@ public class JiraBoardViewModel {
     }
 
     // Getters and Properties
-    public ObservableList<JiraBoard> getBoards() { return boards; }
-    public ObjectProperty<JiraBoard> selectedBoardProperty() { return selectedBoard; }
-    public JiraBoard getSelectedBoard() { return selectedBoard.get(); }
-    public void setSelectedBoard(JiraBoard board) { this.selectedBoard.set(board); }
+    public ObservableList<BoardViewModel> getBoards() { return boards; }
+    public ObjectProperty<BoardViewModel> selectedBoardProperty() { return selectedBoard; }
+    public BoardViewModel getSelectedBoard() { return selectedBoard.get(); }
+    public void setSelectedBoard(BoardViewModel board) { this.selectedBoard.set(board); }
 
-    public ObservableList<BoardColumn> getDynamicColumns() { return dynamicColumns; }
+    public ObservableList<String> getDynamicColumnNames() { return dynamicColumnNames; }
     public ObservableMap<String, ObservableList<TaskCardViewModel>> getColumnTasksMap() { return columnTasksMap; }
     public BooleanProperty getColumnVisibilityProperty(String columnName) { return columnVisibilityMap.get(columnName); }
 

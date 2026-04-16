@@ -12,7 +12,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.css.PseudoClass;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
@@ -20,6 +22,8 @@ import java.util.ResourceBundle;
 
 @Prototype
 public class SettingsViewController implements Initializable {
+
+    private static final PseudoClass PSEUDO_CLASS_ON = PseudoClass.getPseudoClass("on");
 
     // --- Window Dependencies ---
     private final SettingsViewModel viewModel;
@@ -38,6 +42,7 @@ public class SettingsViewController implements Initializable {
     @FXML private Label shortBreakLabel;
     @FXML private Label longBreakLabel;
     @FXML private Label maxSessionsLabel;
+    @FXML private StackPane autoStartToggleTrack;
     @FXML private Region autoStartToggleThumb;
 
     // --- Jira Settings UI Elements ---
@@ -130,16 +135,11 @@ public class SettingsViewController implements Initializable {
     }
 
     private void updateAutoStartToggleUI(boolean isOn) {
-        autoStartToggleThumb.getParent().getStyleClass().removeAll("toggle-track-on", "toggle-track-off");
-        autoStartToggleThumb.getStyleClass().removeAll("toggle-thumb-on", "toggle-thumb-off");
+        autoStartToggleTrack.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        autoStartToggleThumb.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
         if (isOn) {
-            autoStartToggleThumb.getParent().getStyleClass().add("toggle-track-on");
-            autoStartToggleThumb.getStyleClass().add("toggle-thumb-on");
-            // Simple alignment push to the right for JavaFX StackPane
             javafx.scene.layout.StackPane.setAlignment(autoStartToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
         } else {
-            autoStartToggleThumb.getParent().getStyleClass().add("toggle-track-off");
-            autoStartToggleThumb.getStyleClass().add("toggle-thumb-off");
             javafx.scene.layout.StackPane.setAlignment(autoStartToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
         }
     }

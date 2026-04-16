@@ -7,9 +7,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.image.Image;
 
 public class TaskCardViewModel {
 
@@ -21,7 +18,7 @@ public class TaskCardViewModel {
     private final StringProperty assigneeInitials = new SimpleStringProperty();
     private final StringProperty priorityIconLiteral = new SimpleStringProperty();
     private final StringProperty priorityIconColor = new SimpleStringProperty();
-    private final ObjectProperty<Image> issueTypeIcon = new SimpleObjectProperty<>();
+    private final StringProperty issueTypeIconUrl = new SimpleStringProperty();
     private final StringProperty storyPoints = new SimpleStringProperty();
     private final BooleanProperty isCompleted = new SimpleBooleanProperty();
     private final BooleanProperty isInProgress = new SimpleBooleanProperty();
@@ -59,14 +56,8 @@ public class TaskCardViewModel {
         }
 
         if (task.fields().issuetype() != null && task.fields().issuetype().iconUrl() != null) {
-            try {
-                Image iconImage = new Image(task.fields().issuetype().iconUrl(), true);
-                issueTypeIcon.set(iconImage);
-                hasIssueTypeIcon.set(true);
-            } catch (Exception e) {
-                hasIssueTypeIcon.set(false);
-                setFallbackPriorityIcon();
-            }
+            issueTypeIconUrl.set(task.fields().issuetype().iconUrl());
+            hasIssueTypeIcon.set(true);
         } else {
             hasIssueTypeIcon.set(false);
             setFallbackPriorityIcon();
@@ -146,7 +137,7 @@ public class TaskCardViewModel {
     public StringProperty assigneeInitialsProperty() { return assigneeInitials; }
     public StringProperty priorityIconLiteralProperty() { return priorityIconLiteral; }
     public StringProperty priorityIconColorProperty() { return priorityIconColor; }
-    public ObjectProperty<Image> issueTypeIconProperty() { return issueTypeIcon; }
+    public StringProperty issueTypeIconUrlProperty() { return issueTypeIconUrl; }
     public StringProperty storyPointsProperty() { return storyPoints; }
     public BooleanProperty isCompletedProperty() { return isCompleted; }
     public BooleanProperty isInProgressProperty() { return isInProgress; }

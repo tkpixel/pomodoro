@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -109,7 +110,21 @@ public class TaskCardComponent extends VBox {
         avatarContainer.managedProperty().bind(viewModel.hasAssigneeProperty());
 
         // Issue Type Icon
-        issueTypeIcon.imageProperty().bind(viewModel.issueTypeIconProperty());
+        viewModel.issueTypeIconUrlProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isEmpty()) {
+                try {
+                    issueTypeIcon.setImage(new Image(newVal, true));
+                } catch (Exception ignored) { }
+            } else {
+                issueTypeIcon.setImage(null);
+            }
+        });
+        if (viewModel.issueTypeIconUrlProperty().get() != null && !viewModel.issueTypeIconUrlProperty().get().isEmpty()) {
+            try {
+                issueTypeIcon.setImage(new Image(viewModel.issueTypeIconUrlProperty().get(), true));
+            } catch (Exception ignored) { }
+        }
+
         issueTypeContainer.visibleProperty().bind(viewModel.hasIssueTypeIconProperty());
         issueTypeContainer.managedProperty().bind(viewModel.hasIssueTypeIconProperty());
 
@@ -200,7 +215,10 @@ public class TaskCardComponent extends VBox {
 
     @FXML
     private void handlePlayAction() {
-        if (windowManager != null && mainViewModel != null) {
+        if (mainViewModel != null) {
+             mainViewModel.setActiveTask(viewModel);
+        }
+        if (windowManager != null) {
              windowManager.showMainView();
         }
     }

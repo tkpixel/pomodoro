@@ -1,8 +1,7 @@
 package com.signongroup.pomodoro.view.jira;
 
-import com.signongroup.pomodoro.model.jira.BoardColumn;
-import com.signongroup.pomodoro.model.jira.JiraBoard;
 import com.signongroup.pomodoro.view.WindowManager;
+import com.signongroup.pomodoro.viewmodel.BoardViewModel;
 import com.signongroup.pomodoro.viewmodel.JiraBoardViewModel;
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
 import com.signongroup.pomodoro.viewmodel.TaskCardViewModel;
@@ -19,7 +18,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.MenuButton;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -40,9 +38,7 @@ public class JiraBoardViewController implements Initializable {
     private final WindowManager windowManager;
     private final MainViewModel mainViewModel;
 
-    // Use raw ComboBox type for data binding to eliminate model import dependency while avoiding explicit casts
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    @FXML private ComboBox boardComboBox;
+    @FXML private ComboBox<BoardViewModel> boardComboBox;
     @FXML private MenuButton filterMenuButton;
     @FXML private VBox columnsContainer;
 
@@ -59,7 +55,6 @@ public class JiraBoardViewController implements Initializable {
         return viewModel;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         viewModel.init();
@@ -67,7 +62,7 @@ public class JiraBoardViewController implements Initializable {
         setupBoardComboBox();
 
         // Listen for dynamic column changes
-        viewModel.getDynamicColumns().addListener((ListChangeListener.Change<? extends BoardColumn> c) -> {
+        viewModel.getDynamicColumnNames().addListener((ListChangeListener.Change<? extends String> c) -> {
             Platform.runLater(this::rebuildColumnsUI);
         });
 
@@ -82,31 +77,29 @@ public class JiraBoardViewController implements Initializable {
         });
     }
 
-    @SuppressWarnings("unchecked")
     private void setupBoardComboBox() {
         boardComboBox.setItems(viewModel.getBoards());
         boardComboBox.valueProperty().bindBidirectional(viewModel.selectedBoardProperty());
 
-        boardComboBox.setCellFactory(listView -> new ListCell() {
+        boardComboBox.setCellFactory(listView -> new ListCell<BoardViewModel>() {
             @Override
-            protected void updateItem(Object item, boolean empty) {
+            protected void updateItem(BoardViewModel item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    // Extract name reflectively or via toString assumption
-                    setText(item.toString().replaceAll("JiraBoard\\[.*name=([^,]+).*?\\]", "$1"));
+                    setText(item.name());
                 }
             }
         });
-        boardComboBox.setButtonCell(new ListCell() {
+        boardComboBox.setButtonCell(new ListCell<BoardViewModel>() {
              @Override
-            protected void updateItem(Object item, boolean empty) {
+            protected void updateItem(BoardViewModel item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText("Select a Board...");
                 } else {
-                    setText(item.toString().replaceAll("JiraBoard\\[.*name=([^,]+).*?\\]", "$1"));
+                    setText(item.name());
                 }
             }
         });
@@ -117,17 +110,7 @@ public class JiraBoardViewController implements Initializable {
         filterMenuButton.getItems().clear();
         columnListMap.clear();
 
-        for (Object columnObj : viewModel.getDynamicColumns()) {
-            // Reflectively extract name to avoid importing BoardColumn
-            String tempColName = "Unknown";
-            try {
-                tempColName = (String) columnObj.getClass().getMethod("name").invoke(columnObj);
-            } catch (Exception e) {
-                log.warn("Failed to read column name", e);
-            }
-
-            final String colName = tempColName;
-
+        for (String colName : viewModel.getDynamicColumnNames()) {
             // 1. Build Filter Menu Item
             CheckMenuItem menuItem = new CheckMenuItem(colName);
             menuItem.selectedProperty().bindBidirectional(viewModel.getColumnVisibilityProperty(colName));

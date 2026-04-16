@@ -35,6 +35,9 @@ public class MainViewModel {
     private final BooleanProperty isRunning = new SimpleBooleanProperty(false);
     private final ObjectProperty<TimerState> timerState = new SimpleObjectProperty<>(TimerState.READY);
 
+    // Functional Play action active task reference
+    private final ObjectProperty<TaskCardViewModel> activeTask = new SimpleObjectProperty<>();
+
     private int focusTimeSeconds;
     private int shortBreakSeconds;
     private int longBreakSeconds;
@@ -185,6 +188,20 @@ public class MainViewModel {
         timerState.set(TimerState.READY);
         timeRemainingSeconds = focusTimeSeconds;
         updateUI();
+    }
+
+    // --- Active Task Routing ---
+
+    public void setActiveTask(TaskCardViewModel task) {
+        this.activeTask.set(task);
+    }
+
+    public ObjectProperty<TaskCardViewModel> activeTaskProperty() {
+        return activeTask;
+    }
+
+    public TaskCardViewModel getActiveTask() {
+        return activeTask.get();
     }
 
     // --- Getters & Setters / Properties ---
