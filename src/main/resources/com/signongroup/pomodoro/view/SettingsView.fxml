@@ -211,7 +211,7 @@
         </padding>
         <Button styleClass="fab-icon-button" onAction="#handleBack" style="-fx-padding: 0;">
             <graphic>
-                <FontIcon iconLiteral="fltral-arrow-left-20" iconSize="24" styleClass="menu-icon"/>
+                <FontIcon iconLiteral="fltral-chevron-left-20" iconSize="24" styleClass="menu-icon"/>
             </graphic>
         </Button>
         <Region HBox.hgrow="ALWAYS"/>

@@ -12,9 +12,9 @@
            styleClass="bg-mesh"
            prefHeight="800.0" prefWidth="600.0">
 
-    <VBox spacing="0">
+    <VBox spacing="0" StackPane.alignment="TOP_CENTER">
         <!-- Spacing for absolute positioned header -->
-        <Region prefHeight="80.0"/>
+        <Region minHeight="80.0" prefHeight="80.0"/>
 
         <!-- Board Selector & Actions Header -->
         <VBox spacing="20" style="-fx-padding: 40 40 20 40;">

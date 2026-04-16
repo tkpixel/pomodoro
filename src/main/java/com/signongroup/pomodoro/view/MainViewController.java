@@ -132,13 +132,6 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    public void handleOpenSettings(ActionEvent event) {
-        if (settingsOverlayController != null) {
-            settingsOverlayController.open();
-        }
-    }
-
-    @FXML
     public void handleOpenStatistics(ActionEvent event) {
         if (statisticsOverlayController != null) {
             statisticsOverlayController.open();
