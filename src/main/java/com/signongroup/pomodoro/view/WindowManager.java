@@ -37,8 +37,8 @@ public class WindowManager {
         switchView("/com/signongroup/pomodoro/view/MainView.fxml");
     }
 
-    public void showJiraSetupView() {
-        switchView("/com/signongroup/pomodoro/view/JiraSetupView.fxml");
+    public void showSettingsView() {
+        switchView("/com/signongroup/pomodoro/view/SettingsView.fxml");
     }
 
     public void showJiraBoardView() {

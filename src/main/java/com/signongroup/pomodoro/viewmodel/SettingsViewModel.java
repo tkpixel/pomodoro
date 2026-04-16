@@ -1,32 +1,74 @@
 package com.signongroup.pomodoro.viewmodel;
 
 import com.signongroup.pomodoro.model.DurationSettings;
+import com.signongroup.pomodoro.service.JiraAuthService;
 import com.signongroup.pomodoro.service.SettingsService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 @Singleton
 public class SettingsViewModel {
 
     private final SettingsService settingsService;
+    private final JiraAuthService jiraAuthService;
 
+    // Accordion State
+    private final BooleanProperty isDurationExpanded = new SimpleBooleanProperty(false);
+    private final BooleanProperty isJiraExpanded = new SimpleBooleanProperty(false);
+
+    // Duration Settings
     private final IntegerProperty focusSessionMinutes = new SimpleIntegerProperty();
     private final IntegerProperty shortBreakMinutes = new SimpleIntegerProperty();
     private final IntegerProperty longBreakMinutes = new SimpleIntegerProperty();
     private final IntegerProperty maxSessionCount = new SimpleIntegerProperty();
+    private final BooleanProperty autoStartBreaks = new SimpleBooleanProperty();
+
+    // Jira Connection Settings
+    private final StringProperty url = new SimpleStringProperty("");
+    private final StringProperty email = new SimpleStringProperty("");
+    private final StringProperty token = new SimpleStringProperty("");
+    private final BooleanProperty isConnecting = new SimpleBooleanProperty(false);
+    private final StringProperty statusMessage = new SimpleStringProperty("");
+    private final BooleanProperty isSuccess = new SimpleBooleanProperty(false);
 
     @Inject
-    public SettingsViewModel(SettingsService settingsService) {
+    public SettingsViewModel(SettingsService settingsService, JiraAuthService jiraAuthService) {
         this.settingsService = settingsService;
+        this.jiraAuthService = jiraAuthService;
+
         loadSettings();
+        loadJiraCredentials();
 
         // Add listeners to auto-save when properties change
         focusSessionMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
         shortBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
         longBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
         maxSessionCount.addListener((obs, oldVal, newVal) -> saveSettings());
+        autoStartBreaks.addListener((obs, oldVal, newVal) -> saveSettings());
+    }
+
+    private void loadJiraCredentials() {
+        String savedUrl = jiraAuthService.getSavedUrl();
+        if (savedUrl != null && !savedUrl.isEmpty()) {
+            url.set(savedUrl);
+        }
+
+        String savedEmail = jiraAuthService.getSavedEmail();
+        if (savedEmail != null && !savedEmail.isEmpty()) {
+            email.set(savedEmail);
+        }
+
+        String savedToken = jiraAuthService.getSavedToken();
+        if (savedToken != null && !savedToken.isEmpty()) {
+            token.set(savedToken);
+        }
     }
 
     private void loadSettings() {
@@ -35,6 +77,7 @@ public class SettingsViewModel {
         shortBreakMinutes.set(settings.shortBreakMinutes());
         longBreakMinutes.set(settings.longBreakMinutes());
         maxSessionCount.set(settings.maxSessionCount());
+        autoStartBreaks.set(settings.autoStartBreaks());
     }
 
     private void saveSettings() {
@@ -42,9 +85,46 @@ public class SettingsViewModel {
                 focusSessionMinutes.get(),
                 shortBreakMinutes.get(),
                 longBreakMinutes.get(),
-                maxSessionCount.get()
+                maxSessionCount.get(),
+                autoStartBreaks.get()
         );
         settingsService.saveSettings(settings);
+    }
+
+    public void toggleDurationExpanded() {
+        isDurationExpanded.set(!isDurationExpanded.get());
+        if (isDurationExpanded.get()) {
+            isJiraExpanded.set(false);
+        }
+    }
+
+    public void toggleJiraExpanded() {
+        isJiraExpanded.set(!isJiraExpanded.get());
+        if (isJiraExpanded.get()) {
+            isDurationExpanded.set(false);
+        }
+    }
+
+    public void connectAndTestJira() {
+        if (url.get().isEmpty() || email.get().isEmpty() || token.get().isEmpty()) {
+            statusMessage.set("Please fill in all fields.");
+            isSuccess.set(false);
+            return;
+        }
+
+        isConnecting.set(true);
+        statusMessage.set("Connecting...");
+
+        jiraAuthService.testConnection(url.get(), email.get(), token.get())
+                .thenAccept(success -> Platform.runLater(() -> {
+                    isConnecting.set(false);
+                    isSuccess.set(success);
+                    if (success) {
+                        statusMessage.set("Successfully connected to Jira!");
+                    } else {
+                        statusMessage.set("Connection failed. Check credentials.");
+                    }
+                }));
     }
 
     // --- Commands ---
@@ -99,6 +179,9 @@ public class SettingsViewModel {
 
     // --- Getters for Properties ---
 
+    public BooleanProperty isDurationExpandedProperty() { return isDurationExpanded; }
+    public BooleanProperty isJiraExpandedProperty() { return isJiraExpanded; }
+
     public IntegerProperty focusSessionMinutesProperty() {
         return focusSessionMinutes;
     }
@@ -114,4 +197,15 @@ public class SettingsViewModel {
     public IntegerProperty maxSessionCountProperty() {
         return maxSessionCount;
     }
+
+    public BooleanProperty autoStartBreaksProperty() {
+        return autoStartBreaks;
+    }
+
+    public StringProperty urlProperty() { return url; }
+    public StringProperty emailProperty() { return email; }
+    public StringProperty tokenProperty() { return token; }
+    public BooleanProperty isConnectingProperty() { return isConnecting; }
+    public StringProperty statusMessageProperty() { return statusMessage; }
+    public BooleanProperty isSuccessProperty() { return isSuccess; }
 }

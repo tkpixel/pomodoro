@@ -65,9 +65,6 @@ public class MainViewController implements Initializable {
     private Region breakProgressRegion;
 
     @FXML
-    private SettingsOverlayViewController settingsOverlayController;
-
-    @FXML
     private StatisticsOverlayViewController statisticsOverlayController;
 
     private final MainViewModel viewModel;
@@ -125,20 +122,13 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    public void handleOpenJiraSetup(ActionEvent event) {
-        windowManager.showJiraSetupView();
+    public void handleOpenSettingsMenu(ActionEvent event) {
+        windowManager.showSettingsView();
     }
 
     @FXML
     public void handleOpenJiraBoard(ActionEvent event) {
         windowManager.showJiraBoardView();
-    }
-
-    @FXML
-    public void handleOpenSettings(ActionEvent event) {
-        if (settingsOverlayController != null) {
-            settingsOverlayController.open();
-        }
     }
 
     @FXML
