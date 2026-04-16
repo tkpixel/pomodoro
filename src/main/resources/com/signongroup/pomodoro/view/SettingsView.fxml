@@ -129,7 +129,7 @@
                                 <Label text="SEQUENTIAL SESSION FLOW" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
                             </VBox>
                             <Region HBox.hgrow="ALWAYS"/>
-                            <StackPane fx:id="autoStartTogglePane" onMouseClicked="#toggleAutoStart" styleClass="toggle-track" prefWidth="48" prefHeight="24">
+                            <StackPane fx:id="autoStartToggleTrack" onMouseClicked="#toggleAutoStart" styleClass="toggle-track" prefWidth="48" prefHeight="24">
                                 <Region fx:id="autoStartToggleThumb" styleClass="toggle-thumb" StackPane.alignment="CENTER_LEFT" maxWidth="16" maxHeight="16"/>
                             </StackPane>
                         </HBox>

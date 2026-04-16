@@ -5,6 +5,7 @@ import com.signongroup.pomodoro.viewmodel.MainViewModel.TimerState;
 import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
 import javafx.beans.binding.Bindings;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,6 +25,10 @@ import java.util.ResourceBundle;
  */
 @Prototype
 public class MainViewController implements Initializable {
+
+    private static final PseudoClass BREAK_SHORT_PSEUDO_CLASS = PseudoClass.getPseudoClass("break-short");
+    private static final PseudoClass BREAK_LONG_PSEUDO_CLASS = PseudoClass.getPseudoClass("break-long");
+    private static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
 
     @FXML
     private Arc baseArc;
@@ -97,6 +102,20 @@ public class MainViewController implements Initializable {
 
         // Listeners for UI state changes
         viewModel.isRunningProperty().addListener((obs, oldVal, newVal) -> updatePlayPauseIcon(newVal));
+
+        // Reactive Declarative Styling bindings
+        progressArc.visibleProperty().bind(Bindings.createBooleanBinding(() ->
+                viewModel.getTimerState() != TimerState.BREAK_SHORT && viewModel.getTimerState() != TimerState.BREAK_LONG, viewModel.timerStateProperty()));
+
+        breakProgressRegion.visibleProperty().bind(Bindings.createBooleanBinding(() ->
+                viewModel.getTimerState() == TimerState.BREAK_SHORT || viewModel.getTimerState() == TimerState.BREAK_LONG, viewModel.timerStateProperty()));
+
+        breakTitleLabel.textProperty().bind(Bindings.createStringBinding(() -> {
+            if (viewModel.getTimerState() == TimerState.BREAK_LONG) return "LONG BREAK ACTIVE";
+            if (viewModel.getTimerState() == TimerState.BREAK_SHORT) return "SHORT BREAK ACTIVE";
+            return "NEXT BREAK";
+        }, viewModel.timerStateProperty()));
+
         viewModel.timerStateProperty().addListener((obs, oldVal, newVal) -> updateUIForState(newVal));
 
         // Initial setup
@@ -111,9 +130,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void handleDynamicAction(ActionEvent event) {
-        if (viewModel.getTimerState() == TimerState.BREAK_SHORT || viewModel.getTimerState() == TimerState.BREAK_LONG) {
-            viewModel.skipBreak();
-        }
+        viewModel.skipBreak();
     }
 
     @FXML
@@ -148,64 +165,26 @@ public class MainViewController implements Initializable {
     }
 
     private void updateUIForState(TimerState state) {
-        if (state == TimerState.BREAK_SHORT || state == TimerState.BREAK_LONG) {
-            // Main timer visual changes
-            if (baseArc != null) {
-                baseArc.getStyleClass().add("timer-base-inactive");
-            }
-            progressArc.setVisible(false);
+        boolean isBreakShort = state == TimerState.BREAK_SHORT;
+        boolean isBreakLong = state == TimerState.BREAK_LONG;
+        boolean isActiveBreak = isBreakShort || isBreakLong;
 
-            // Break card visual changes
-            breakCardContainer.getStyleClass().remove("break-active-card");
-            breakCardContainer.getStyleClass().remove("break-active-card-long");
-            breakCardIconContainer.getStyleClass().remove("card-icon-container-break");
-            breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active");
-            breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active-long");
+        if (baseArc != null) {
+            baseArc.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, !isActiveBreak);
+        }
 
-            if (state == TimerState.BREAK_LONG) {
-                breakCardContainer.getStyleClass().add("break-active-card-long");
-                breakCardIconContainer.getStyleClass().add("card-icon-container-break-active-long");
-                breakTitleLabel.setText("LONG BREAK ACTIVE");
-                breakTitleLabel.setStyle("-fx-text-fill: #6bbdd0; -fx-font-size: 9px; -fx-font-weight: bold; -fx-text-transform: uppercase;");
-            } else {
-                breakCardContainer.getStyleClass().add("break-active-card");
-                breakCardIconContainer.getStyleClass().add("card-icon-container-break-active");
-                breakTitleLabel.setText("SHORT BREAK ACTIVE");
-                breakTitleLabel.setStyle("-fx-text-fill: -fx-primary; -fx-font-size: 9px; -fx-font-weight: bold; -fx-text-transform: uppercase;");
-            }
+        breakCardContainer.pseudoClassStateChanged(BREAK_SHORT_PSEUDO_CLASS, isBreakShort);
+        breakCardContainer.pseudoClassStateChanged(BREAK_LONG_PSEUDO_CLASS, isBreakLong);
+        breakCardIconContainer.pseudoClassStateChanged(BREAK_SHORT_PSEUDO_CLASS, isBreakShort);
+        breakCardIconContainer.pseudoClassStateChanged(BREAK_LONG_PSEUDO_CLASS, isBreakLong);
+        breakTitleLabel.pseudoClassStateChanged(BREAK_SHORT_PSEUDO_CLASS, isBreakShort);
+        breakTitleLabel.pseudoClassStateChanged(BREAK_LONG_PSEUDO_CLASS, isBreakLong);
+        nextBreakLabel.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, isActiveBreak);
 
+        if (isActiveBreak) {
             breakIcon.setIconColor(javafx.scene.paint.Color.web("#000000")); // -fx-on-primary-fixed roughly
-            breakTitleLabel.getStyleClass().remove("card-title");
-            nextBreakLabel.getStyleClass().remove("card-value-muted");
-            nextBreakLabel.getStyleClass().add("card-value");
-            breakProgressRegion.setVisible(true);
         } else {
-            // Main timer visual changes
-            if (baseArc != null) {
-                baseArc.getStyleClass().remove("timer-base-inactive");
-            }
-            progressArc.setVisible(true);
-
-            // Break card visual changes
-            breakCardContainer.getStyleClass().remove("break-active-card");
-            breakCardContainer.getStyleClass().remove("break-active-card-long");
-            breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active");
-            breakCardIconContainer.getStyleClass().remove("card-icon-container-break-active-long");
-            if (!breakCardIconContainer.getStyleClass().contains("card-icon-container-break")) {
-                breakCardIconContainer.getStyleClass().add("card-icon-container-break");
-            }
             breakIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa")); // -fx-on-surface-variant roughly
-            breakTitleLabel.setText("NEXT BREAK");
-            breakTitleLabel.setStyle("");
-            if (!breakTitleLabel.getStyleClass().contains("card-title")) {
-                breakTitleLabel.getStyleClass().add("card-title");
-            }
-            breakTitleLabel.setStyle("-fx-text-transform: uppercase;");
-            nextBreakLabel.getStyleClass().remove("card-value");
-            if (!nextBreakLabel.getStyleClass().contains("card-value-muted")) {
-                nextBreakLabel.getStyleClass().add("card-value-muted");
-            }
-            breakProgressRegion.setVisible(false);
         }
     }
 }

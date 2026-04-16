@@ -606,3 +606,118 @@
     -fx-shape: "M 0 0 L 5 5 L 10 0"; /* Simple chevron */
     -fx-background-color: -fx-primary;
 }
+
+/* Refactored Settings Controller Toggle Styles */
+.toggle-thumb-on {
+    -fx-background-color: #000000;
+}
+.toggle-thumb-off {
+    -fx-background-color: #ffffff;
+}
+.toggle-track-on {
+    -fx-background-color: #ff8f70;
+}
+.toggle-track-off {
+    -fx-background-color: #494847;
+}
+
+/* Refactored Settings Connection Status Styles */
+.status-success {
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+.status-error {
+    -fx-text-fill: #ff716c;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Refactored Main View Break Title Styles */
+.break-title-long {
+    -fx-text-fill: #6bbdd0;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-transform: uppercase;
+}
+.break-title-short {
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-transform: uppercase;
+}
+.break-title-default {
+    -fx-text-transform: uppercase;
+}
+
+/* Explicitly set missing toggle radiuses */
+.toggle-thumb-on {
+    -fx-background-radius: 9999px;
+}
+.toggle-thumb-off {
+    -fx-background-radius: 9999px;
+}
+.toggle-track-on {
+    -fx-background-radius: 9999px;
+}
+.toggle-track-off {
+    -fx-background-radius: 9999px;
+}
+
+/* Replacing specific classes with PseudoClass mapping */
+
+.toggle-track:on {
+    -fx-background-color: #ff8f70;
+}
+.toggle-track {
+    -fx-background-color: #494847;
+}
+.toggle-thumb:on {
+    -fx-background-color: #000000;
+}
+.toggle-thumb {
+    -fx-background-color: #ffffff;
+}
+
+.timer-base {
+    -fx-stroke: rgba(255, 255, 255, 0.1);
+}
+.timer-base:active {
+    -fx-stroke: -fx-surface-container-highest;
+}
+
+.card-icon-container-break {
+    -fx-background-color: transparent;
+}
+.card-icon-container-break:break-short {
+    -fx-background-color: -fx-primary;
+}
+.card-icon-container-break:break-long {
+    -fx-background-color: #6bbdd0;
+}
+
+.card:break-short {
+    -fx-border-color: -fx-primary transparent transparent transparent;
+    -fx-border-width: 2px 0 0 0;
+}
+.card:break-long {
+    -fx-border-color: #6bbdd0 transparent transparent transparent;
+    -fx-border-width: 2px 0 0 0;
+}
+
+.card-title:break-short {
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+.card-title:break-long {
+    -fx-text-fill: #6bbdd0;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+
+.card-value-muted:active {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}

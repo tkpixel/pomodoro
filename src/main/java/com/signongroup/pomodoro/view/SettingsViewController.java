@@ -3,7 +3,6 @@ package com.signongroup.pomodoro.view;
 import com.signongroup.pomodoro.viewmodel.SettingsViewModel;
 import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
-import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +12,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.css.PseudoClass;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
@@ -21,6 +22,8 @@ import java.util.ResourceBundle;
 
 @Prototype
 public class SettingsViewController implements Initializable {
+
+    private static final PseudoClass PSEUDO_CLASS_ON = PseudoClass.getPseudoClass("on");
 
     // --- Window Dependencies ---
     private final SettingsViewModel viewModel;
@@ -39,6 +42,7 @@ public class SettingsViewController implements Initializable {
     @FXML private Label shortBreakLabel;
     @FXML private Label longBreakLabel;
     @FXML private Label maxSessionsLabel;
+    @FXML private StackPane autoStartToggleTrack;
     @FXML private Region autoStartToggleThumb;
 
     // --- Jira Settings UI Elements ---
@@ -99,17 +103,15 @@ public class SettingsViewController implements Initializable {
         statusLabel.textProperty().bind(viewModel.statusMessageProperty());
 
         viewModel.isSuccessProperty().addListener((obs, oldVal, newVal) -> {
+            statusLabel.getStyleClass().removeAll("status-success", "status-error");
             if (newVal) {
-                statusLabel.setStyle("-fx-text-fill: -fx-primary; -fx-font-size: 13px; -fx-font-weight: bold;");
+                statusLabel.getStyleClass().add("status-success");
             } else {
-                statusLabel.setStyle("-fx-text-fill: #ff716c; -fx-font-size: 13px; -fx-font-weight: bold;");
+                statusLabel.getStyleClass().add("status-error");
             }
         });
 
-        connectButton.disableProperty().bind(Bindings.createBooleanBinding(
-            () -> urlField.getText().isEmpty() || emailField.getText().isEmpty() || tokenFieldMasked.getText().isEmpty() || viewModel.isConnectingProperty().get(),
-            urlField.textProperty(), emailField.textProperty(), tokenFieldMasked.textProperty(), viewModel.isConnectingProperty()
-        ));
+        connectButton.disableProperty().bind(viewModel.canConnectProperty().not());
     }
 
     private void updateDurationHeaderStyle(boolean isExpanded) {
@@ -133,14 +135,11 @@ public class SettingsViewController implements Initializable {
     }
 
     private void updateAutoStartToggleUI(boolean isOn) {
+        autoStartToggleTrack.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        autoStartToggleThumb.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
         if (isOn) {
-            autoStartToggleThumb.getParent().setStyle("-fx-background-color: #ff8f70; -fx-background-radius: 9999px;");
-            autoStartToggleThumb.setStyle("-fx-background-color: #000000; -fx-background-radius: 9999px;");
-            // Simple alignment push to the right for JavaFX StackPane
             javafx.scene.layout.StackPane.setAlignment(autoStartToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
         } else {
-            autoStartToggleThumb.getParent().setStyle("-fx-background-color: #494847; -fx-background-radius: 9999px;");
-            autoStartToggleThumb.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 9999px;");
             javafx.scene.layout.StackPane.setAlignment(autoStartToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
         }
     }

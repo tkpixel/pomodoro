@@ -1,8 +1,8 @@
 package com.signongroup.pomodoro.view.jira;
 
-import com.signongroup.pomodoro.model.jira.JiraTask;
 import com.signongroup.pomodoro.view.WindowManager;
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
+import com.signongroup.pomodoro.viewmodel.TaskCardViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -44,13 +44,13 @@ public class TaskCardComponent extends VBox {
     @FXML private HBox actionContainer;
     @FXML private Button playButton;
 
-    private JiraTask task;
+    private final TaskCardViewModel viewModel;
     private final WindowManager windowManager;
     private final MainViewModel mainViewModel;
     private boolean isExpanded = false;
 
-    public TaskCardComponent(JiraTask task, WindowManager windowManager, MainViewModel mainViewModel) {
-        this.task = task;
+    public TaskCardComponent(TaskCardViewModel viewModel, WindowManager windowManager, MainViewModel mainViewModel) {
+        this.viewModel = viewModel;
         this.windowManager = windowManager;
         this.mainViewModel = mainViewModel;
 
@@ -71,12 +71,12 @@ public class TaskCardComponent extends VBox {
 
     private void setupInteractivity() {
         this.setOnMouseEntered(e -> {
-            if (!isCompleted()) {
+            if (!viewModel.isCompletedProperty().get()) {
                 this.setStyle("-fx-background-color: #1C1C1E; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: #494847; -fx-border-radius: 16; -fx-border-width: 1; -fx-cursor: hand;");
             }
         });
         this.setOnMouseExited(e -> {
-            if (!isCompleted()) {
+            if (!viewModel.isCompletedProperty().get()) {
                  this.setStyle("-fx-background-color: #1C1C1E; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: transparent; -fx-border-radius: 16; -fx-border-width: 1; -fx-cursor: hand;");
             }
         });
@@ -89,95 +89,72 @@ public class TaskCardComponent extends VBox {
         this.setOnDragDetected(event -> {
             Dragboard db = this.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
-            content.putString(task.key());
+            content.putString(viewModel.taskKeyProperty().get());
             db.setContent(content);
             event.consume();
         });
     }
 
     private void bindData() {
-        if (task == null || task.fields() == null) return;
-
-        taskTitle.setText(task.fields().summary() != null ? task.fields().summary() : "Untitled Task");
-        taskKey.setText(task.key());
+        taskTitle.textProperty().bind(viewModel.titleProperty());
+        taskKey.textProperty().bind(viewModel.taskKeyProperty());
 
         // Epic
-        String epic = task.fields().epicKey();
-        if (epic != null && !epic.isBlank()) {
-            epicBadge.setText(epic);
-            epicBadge.setVisible(true);
-            epicBadge.setManaged(true);
-        } else {
-            epicBadge.setVisible(false);
-            epicBadge.setManaged(false);
-        }
+        epicBadge.textProperty().bind(viewModel.epicProperty());
+        epicBadge.visibleProperty().bind(viewModel.hasEpicProperty());
+        epicBadge.managedProperty().bind(viewModel.hasEpicProperty());
 
         // Assignee
-        if (task.fields().assignee() != null && task.fields().assignee().displayName() != null) {
-            String name = task.fields().assignee().displayName();
-            String initials = getInitials(name);
-            assigneeInitials.setText(initials);
-        } else {
-            avatarContainer.setVisible(false);
-            avatarContainer.setManaged(false);
-        }
+        assigneeInitials.textProperty().bind(viewModel.assigneeInitialsProperty());
+        avatarContainer.visibleProperty().bind(viewModel.hasAssigneeProperty());
+        avatarContainer.managedProperty().bind(viewModel.hasAssigneeProperty());
 
         // Issue Type Icon
-        if (task.fields().issuetype() != null && task.fields().issuetype().iconUrl() != null) {
-            try {
-                Image iconImage = new Image(task.fields().issuetype().iconUrl(), true);
-                issueTypeIcon.setImage(iconImage);
-                issueTypeContainer.setVisible(true);
-                issueTypeContainer.setManaged(true);
-                priorityIcon.setVisible(false);
-                priorityIcon.setManaged(false);
-            } catch (Exception e) {
-                 useFallbackPriorityIcon();
+        viewModel.issueTypeIconUrlProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isEmpty()) {
+                try {
+                    issueTypeIcon.setImage(new Image(newVal, true));
+                } catch (Exception ignored) { }
+            } else {
+                issueTypeIcon.setImage(null);
             }
-        } else {
-            useFallbackPriorityIcon();
+        });
+        if (viewModel.issueTypeIconUrlProperty().get() != null && !viewModel.issueTypeIconUrlProperty().get().isEmpty()) {
+            try {
+                issueTypeIcon.setImage(new Image(viewModel.issueTypeIconUrlProperty().get(), true));
+            } catch (Exception ignored) { }
+        }
+
+        issueTypeContainer.visibleProperty().bind(viewModel.hasIssueTypeIconProperty());
+        issueTypeContainer.managedProperty().bind(viewModel.hasIssueTypeIconProperty());
+
+        // Priority Fallback
+        priorityIcon.visibleProperty().bind(viewModel.hasIssueTypeIconProperty().not());
+        priorityIcon.managedProperty().bind(viewModel.hasIssueTypeIconProperty().not());
+
+        viewModel.priorityIconLiteralProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isEmpty()) {
+                priorityIcon.setIconLiteral(newVal);
+            }
+        });
+        if (viewModel.priorityIconLiteralProperty().get() != null) {
+            priorityIcon.setIconLiteral(viewModel.priorityIconLiteralProperty().get());
+        }
+
+        viewModel.priorityIconColorProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isEmpty()) {
+                priorityIcon.setStyle("-fx-icon-color: " + newVal + ";");
+            }
+        });
+        if (viewModel.priorityIconColorProperty().get() != null) {
+            priorityIcon.setStyle("-fx-icon-color: " + viewModel.priorityIconColorProperty().get() + ";");
         }
 
         applyStateStyling();
     }
 
-    private void useFallbackPriorityIcon() {
-        issueTypeContainer.setVisible(false);
-        issueTypeContainer.setManaged(false);
-        priorityIcon.setVisible(true);
-        priorityIcon.setManaged(true);
-        if (task.fields() != null && task.fields().priority() != null) {
-            String pName = task.fields().priority().name();
-            priorityIcon.setIconLiteral("fltfmz-warning-20");
-            if (pName != null) {
-                if (pName.equalsIgnoreCase("High") || pName.equalsIgnoreCase("Highest")) {
-                    priorityIcon.setStyle("-fx-icon-color: #d7383b;");
-                } else if (pName.equalsIgnoreCase("Medium")) {
-                    priorityIcon.setStyle("-fx-icon-color: #ff8f70;");
-                } else {
-                    priorityIcon.setStyle("-fx-icon-color: #8A8A8A;");
-                    priorityIcon.setIconLiteral("fltfal-arrow-down-20");
-                }
-            }
-        }
-    }
-
-    private boolean isCompleted() {
-        if (task.fields().status() != null && task.fields().status().statusCategory() != null) {
-            return "done".equalsIgnoreCase(task.fields().status().statusCategory().key());
-        }
-        return false;
-    }
-
-    private boolean isInProgress() {
-        if (task.fields().status() != null && task.fields().status().statusCategory() != null) {
-            return "indeterminate".equalsIgnoreCase(task.fields().status().statusCategory().key());
-        }
-        return false;
-    }
-
     private void applyStateStyling() {
-        if (isCompleted()) {
+        if (viewModel.isCompletedProperty().get()) {
             this.setOpacity(0.6);
             taskTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface-variant; -fx-strikethrough: true;");
             taskKey.setStyle("-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-strikethrough: true;");
@@ -188,19 +165,16 @@ public class TaskCardComponent extends VBox {
             return;
         }
 
-        Long estSeconds = task.fields().timetracking() != null ? task.fields().timetracking().originalEstimateSeconds() : null;
-        Long spentSeconds = task.fields().timetracking() != null ? task.fields().timetracking().timeSpentSeconds() : null;
-        Double storyPoints = task.fields().storyPoints();
-
         // Story Points (always show if available and not expanded to progress)
-        if (storyPoints != null && !isExpanded) {
+        if (viewModel.hasStoryPointsProperty().get() && !isExpanded) {
             storyPointsContainer.setVisible(true);
             storyPointsContainer.setManaged(true);
-            storyPointsLabel.setText(String.valueOf(storyPoints) + " SP");
+            storyPointsLabel.textProperty().bind(viewModel.storyPointsProperty());
             storyPointsLabel.setGraphic(new FontIcon("fltfal-layer-20"));
         } else {
              storyPointsContainer.setVisible(false);
              storyPointsContainer.setManaged(false);
+             storyPointsLabel.textProperty().unbind();
         }
 
         // Expansion details
@@ -208,19 +182,15 @@ public class TaskCardComponent extends VBox {
             detailsContainer.setVisible(true);
             detailsContainer.setManaged(true);
 
-            if (estSeconds != null && estSeconds > 0) {
+            if (viewModel.hasProgressProperty().get()) {
                 progressContainer.setVisible(true);
                 progressContainer.setManaged(true);
                 actionContainer.setVisible(true);
                 actionContainer.setManaged(true);
 
-                long spent = spentSeconds != null ? spentSeconds : 0;
-                double pct = Math.min(1.0, (double) spent / estSeconds);
-                int pctInt = (int) (pct * 100);
+                progressPercentage.textProperty().bind(viewModel.progressPercentageProperty());
 
-                progressPercentage.setText(pctInt + "%");
-
-                progressBarFill.maxWidthProperty().bind(progressContainer.widthProperty().subtract(32).multiply(pct));
+                progressBarFill.maxWidthProperty().bind(progressContainer.widthProperty().subtract(32).multiply(viewModel.progressProperty()));
                 progressBarFill.minWidthProperty().bind(progressBarFill.maxWidthProperty());
                 progressBarFill.prefWidthProperty().bind(progressBarFill.maxWidthProperty());
             } else {
@@ -228,30 +198,27 @@ public class TaskCardComponent extends VBox {
                  progressContainer.setManaged(false);
                  actionContainer.setVisible(false);
                  actionContainer.setManaged(false);
+                 progressPercentage.textProperty().unbind();
+                 progressBarFill.maxWidthProperty().unbind();
             }
         } else {
             detailsContainer.setVisible(false);
             detailsContainer.setManaged(false);
+            progressPercentage.textProperty().unbind();
+            progressBarFill.maxWidthProperty().unbind();
         }
     }
 
-    private String getInitials(String name) {
-        if (name == null || name.isBlank()) return "?";
-        String[] parts = name.trim().split("\\s+");
-        if (parts.length == 1) {
-            return parts[0].substring(0, Math.min(2, parts[0].length())).toUpperCase();
-        } else {
-            return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1)).toUpperCase();
-        }
-    }
-
-    public JiraTask getTask() {
-        return task;
+    public TaskCardViewModel getViewModel() {
+        return viewModel;
     }
 
     @FXML
     private void handlePlayAction() {
-        if (windowManager != null && mainViewModel != null) {
+        if (mainViewModel != null) {
+             mainViewModel.setActiveTask(viewModel);
+        }
+        if (windowManager != null) {
              windowManager.showMainView();
         }
     }
