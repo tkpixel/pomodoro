@@ -134,13 +134,13 @@ public class SettingsViewController implements Initializable {
 
     private void updateAutoStartToggleUI(boolean isOn) {
         if (isOn) {
-            autoStartToggleThumb.getParent().setStyle("-fx-background-color: -fx-primary; -fx-background-radius: 9999px;");
-            autoStartToggleThumb.setStyle("-fx-background-color: -fx-on-primary-fixed; -fx-background-radius: 9999px;");
+            autoStartToggleThumb.getParent().setStyle("-fx-background-color: #ff8f70; -fx-background-radius: 9999px;");
+            autoStartToggleThumb.setStyle("-fx-background-color: #000000; -fx-background-radius: 9999px;");
             // Simple alignment push to the right for JavaFX StackPane
             javafx.scene.layout.StackPane.setAlignment(autoStartToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
         } else {
-            autoStartToggleThumb.getParent().setStyle("-fx-background-color: -fx-outline-variant; -fx-background-radius: 9999px;");
-            autoStartToggleThumb.setStyle("-fx-background-color: -fx-on-surface; -fx-background-radius: 9999px;");
+            autoStartToggleThumb.getParent().setStyle("-fx-background-color: #494847; -fx-background-radius: 9999px;");
+            autoStartToggleThumb.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 9999px;");
             javafx.scene.layout.StackPane.setAlignment(autoStartToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
         }
     }
