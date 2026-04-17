@@ -2,6 +2,7 @@ package com.signongroup.pomodoro.view;
 
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
 import com.signongroup.pomodoro.viewmodel.MainViewModel.TimerState;
+import com.signongroup.pomodoro.viewmodel.TaskCardViewModel;
 import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
 import javafx.beans.binding.Bindings;
@@ -161,6 +162,17 @@ public class MainViewController implements Initializable {
                     activeTaskProgressRegion.maxWidthProperty().unbind();
                 }
             });
+
+            if (viewModel.activeTaskProperty().get() != null) {
+                TaskCardViewModel newVal = viewModel.activeTaskProperty().get();
+                activeTaskTitleLabel.textProperty().bind(newVal.titleProperty());
+                activeTaskKeyLabel.textProperty().bind(newVal.taskKeyProperty());
+                activeTaskProgressContainer.visibleProperty().bind(newVal.hasProgressProperty());
+                activeTaskProgressContainer.managedProperty().bind(newVal.hasProgressProperty());
+                activeTaskProgressRegion.maxWidthProperty().bind(activeTaskProgressContainer.widthProperty().multiply(newVal.progressProperty()));
+                activeTaskProgressRegion.minWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
+                activeTaskProgressRegion.prefWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
+            }
         }
 
         // Indicator Pulse Animation
