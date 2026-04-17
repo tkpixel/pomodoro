@@ -98,6 +98,16 @@
     -fx-effect: dropshadow(gaussian, rgba(255, 143, 112, 0.3), 15, 0, 0, 0);
 }
 
+.timer-tick {
+    -fx-stroke: #494847;
+    -fx-stroke-line-cap: round;
+}
+
+.timer-tick:active {
+    -fx-stroke: -fx-primary;
+    -fx-effect: dropshadow(gaussian, rgba(255, 143, 112, 0.8), 20, 0, 0, 0);
+}
+
 .timer-base {
     -fx-stroke: -fx-surface-container-highest;
 }

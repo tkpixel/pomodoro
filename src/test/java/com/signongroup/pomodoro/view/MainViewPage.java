@@ -5,7 +5,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Arc;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.testfx.api.FxRobot;
 
@@ -15,14 +14,6 @@ public class MainViewPage {
 
     public MainViewPage(FxRobot robot) {
         this.robot = robot;
-    }
-
-    public Arc getBaseArc() {
-        return robot.lookup("#baseArc").queryAs(Arc.class);
-    }
-
-    public Arc getProgressArc() {
-        return robot.lookup("#progressArc").queryAs(Arc.class);
     }
 
     public String getTimerText() {
