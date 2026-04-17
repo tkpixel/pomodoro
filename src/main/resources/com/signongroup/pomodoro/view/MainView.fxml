@@ -31,9 +31,7 @@
             <HBox alignment="CENTER" spacing="40">
                 <!-- Left: Circular Timer -->
                 <StackPane prefWidth="260" prefHeight="260" minWidth="260" minHeight="260">
-                    <Group fx:id="timerTickContainer">
-                        <Circle fx:id="centerDot" radius="6" styleClass="timer-dot" />
-                    </Group>
+                    <Group fx:id="timerTickContainer" />
 
                     <VBox alignment="CENTER" spacing="-15">
                         <Label fx:id="timerLabel" text="25:00" styleClass="timer-text"/>

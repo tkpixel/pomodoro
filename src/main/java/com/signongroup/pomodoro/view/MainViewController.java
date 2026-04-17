@@ -43,9 +43,6 @@ public class MainViewController implements Initializable {
     @FXML
     private Group timerTickContainer;
 
-    @FXML
-    private Circle centerDot;
-
     private final List<Line> timerTicks = new ArrayList<>();
 
     @FXML
@@ -116,8 +113,8 @@ public class MainViewController implements Initializable {
         clearedTodayLabel.textProperty().bind(viewModel.clearedTodayTextProperty());
         nextBreakLabel.textProperty().bind(viewModel.nextBreakTextProperty());
 
-        // Generate 24 tick lines
-        int numTicks = 24;
+        // Generate 60 tick lines
+        int numTicks = 60;
         double radius = 117.0;
         // In the design, ticks are arranged in a circle. We want to start from the top (12 o'clock).
         // 0 degrees in standard trig is right (3 o'clock). To start at top, subtract 90 degrees.
@@ -125,9 +122,9 @@ public class MainViewController implements Initializable {
             // angle in radians. Start at top: -PI/2. Then go clockwise.
             double angle = -Math.PI / 2.0 + (2.0 * Math.PI * i / numTicks);
 
-            boolean isCardinal = (i % 6 == 0); // 0, 6, 12, 18
-            double tickLength = isCardinal ? 16.0 : 10.0;
-            double strokeWidth = isCardinal ? 5.0 : 4.0;
+            boolean isHighlight = (i % 5 == 0); // Highlight every 5th second
+            double tickLength = isHighlight ? 16.0 : 10.0;
+            double strokeWidth = isHighlight ? 5.0 : 4.0;
 
             // Start of line (outer edge)
             double startX = Math.cos(angle) * radius;
@@ -145,9 +142,9 @@ public class MainViewController implements Initializable {
             timerTickContainer.getChildren().add(tick);
         }
 
-        // Listener for timer progress
-        viewModel.timerProgressProperty().addListener((obs, oldVal, newVal) -> {
-            updateTicksActiveState(newVal.doubleValue(), viewModel.getTimerState());
+        // Listener for timer text to parse seconds for ticks
+        viewModel.timerTextProperty().addListener((obs, oldVal, newVal) -> {
+            updateTicksActiveState(newVal, viewModel.getTimerState());
         });
 
         // Bind break progress region width
@@ -220,10 +217,10 @@ public class MainViewController implements Initializable {
         // Initial setup
         updatePlayPauseIcon(viewModel.getIsRunning());
         updateUIForState(viewModel.getTimerState());
-        updateTicksActiveState(viewModel.timerProgressProperty().get(), viewModel.getTimerState());
+        updateTicksActiveState(viewModel.timerTextProperty().get(), viewModel.getTimerState());
     }
 
-    private void updateTicksActiveState(double progress, TimerState state) {
+    private void updateTicksActiveState(String timeText, TimerState state) {
         boolean isBreak = state == TimerState.BREAK_SHORT || state == TimerState.BREAK_LONG;
 
         if (isBreak) {
@@ -232,7 +229,16 @@ public class MainViewController implements Initializable {
                 tick.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, false);
             }
         } else {
-            int activeCount = (int) Math.round(progress * 24);
+            int seconds = 0;
+            try {
+                String[] parts = timeText.split(":");
+                if (parts.length == 2) {
+                    seconds = Integer.parseInt(parts[1]);
+                }
+            } catch (NumberFormatException ignored) {}
+
+            int activeCount = (seconds == 0) ? 60 : seconds;
+
             for (int i = 0; i < timerTicks.size(); i++) {
                 timerTicks.get(i).pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, i < activeCount);
             }
@@ -286,7 +292,7 @@ public class MainViewController implements Initializable {
         boolean isActiveBreak = isBreakShort || isBreakLong;
 
         // Update ticks based on state
-        updateTicksActiveState(viewModel.timerProgressProperty().get(), state);
+        updateTicksActiveState(viewModel.timerTextProperty().get(), state);
 
         breakCardContainer.pseudoClassStateChanged(BREAK_SHORT_PSEUDO_CLASS, isBreakShort);
         breakCardContainer.pseudoClassStateChanged(BREAK_LONG_PSEUDO_CLASS, isBreakLong);
