@@ -184,6 +184,34 @@ public class JiraBoardViewModel {
         }
     }
 
+    public void assignTaskToCurrentUser(String taskKey) {
+        isLoading.set(true);
+        jiraBoardService.assignTaskToCurrentUser(taskKey).thenAccept(success -> Platform.runLater(() -> {
+            if (success) {
+                refreshTasks();
+            } else {
+                log.error("Failed to assign task.");
+                isLoading.set(false);
+            }
+        })).exceptionally(ex -> {
+            log.error("Error during task assignment: ", ex);
+            Platform.runLater(() -> isLoading.set(false));
+            return null;
+        });
+    }
+
+    public List<String> getAdjacentColumnNames(String currentColumnName) {
+        List<String> adjacent = new ArrayList<>();
+        int currentIndex = dynamicColumnNames.indexOf(currentColumnName);
+        if (currentIndex > 0) {
+            adjacent.add(dynamicColumnNames.get(currentIndex - 1));
+        }
+        if (currentIndex >= 0 && currentIndex < dynamicColumnNames.size() - 1) {
+            adjacent.add(dynamicColumnNames.get(currentIndex + 1));
+        }
+        return adjacent;
+    }
+
     public void handleTaskDrop(String taskKey, String targetColumnName) {
         JiraTask draggedTask = taskKeyToModelMap.get(taskKey);
 

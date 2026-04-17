@@ -199,4 +199,64 @@ public class JiraBoardService {
             }
         });
     }
+
+    public CompletableFuture<Boolean> assignTaskToCurrentUser(String issueKey) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String accountId = authService.getSavedAccountId();
+                if (accountId == null || accountId.isBlank()) {
+                    throw new IllegalStateException("Account ID not configured. Please test connection first.");
+                }
+
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/api/3/issue/" + issueKey + "/assignee");
+
+                String body = "{\"accountId\": \"" + accountId + "\"}";
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .header("Content-Type", "application/json")
+                        .PUT(HttpRequest.BodyPublishers.ofString(body))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                return response.statusCode() >= 200 && response.statusCode() < 300;
+            } catch (Exception e) {
+                throw new RuntimeException("Error assigning task " + issueKey, e);
+            }
+        });
+    }
+
+    public CompletableFuture<Void> addWorklog(String issueKey, int timeSpentSeconds) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/api/3/issue/" + issueKey + "/worklog");
+
+                String body = "{\"timeSpentSeconds\": " + timeSpentSeconds + "}";
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                    throw new RuntimeException("Failed to add worklog: HTTP " + response.statusCode());
+                }
+                return null;
+            } catch (Exception e) {
+                // Log and return null instead of throwing to avoid crashing the timer
+                System.err.println("Error adding worklog for task " + issueKey + ": " + e.getMessage());
+                return null;
+            }
+        });
+    }
 }

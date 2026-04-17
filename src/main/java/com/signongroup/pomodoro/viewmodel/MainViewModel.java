@@ -1,5 +1,6 @@
 package com.signongroup.pomodoro.viewmodel;
 
+import com.signongroup.pomodoro.service.JiraBoardService;
 import com.signongroup.pomodoro.service.TimerService;
 import jakarta.inject.Singleton;
 import javafx.application.Platform;
@@ -49,11 +50,13 @@ public class MainViewModel {
 
     private final TimerService timerService;
     private final SettingsViewModel settingsViewModel;
+    private final JiraBoardService jiraBoardService;
 
     @jakarta.inject.Inject
-    public MainViewModel(SettingsViewModel settingsViewModel, TimerService timerService) {
+    public MainViewModel(SettingsViewModel settingsViewModel, TimerService timerService, JiraBoardService jiraBoardService) {
         this.settingsViewModel = settingsViewModel;
         this.timerService = timerService;
+        this.jiraBoardService = jiraBoardService;
 
         this.timerService.setTickCallback(() -> Platform.runLater(this::tick));
 
@@ -98,6 +101,10 @@ public class MainViewModel {
     private void handleTimerComplete() {
         pauseTimer();
         if (timerState.get() == TimerState.FOCUS_RUNNING) {
+            if (activeTask.get() != null) {
+                jiraBoardService.addWorklog(activeTask.get().taskKeyProperty().get(), focusTimeSeconds);
+                activeTask.get().addTimeSpent(focusTimeSeconds);
+            }
             clearedToday++;
             if (currentSession >= maxSessions) {
                 currentSession = 1;
@@ -111,6 +118,10 @@ public class MainViewModel {
             updateUI();
             startTimer();
         } else if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
+            if (timerState.get() == TimerState.BREAK_SHORT && activeTask.get() != null) {
+                jiraBoardService.addWorklog(activeTask.get().taskKeyProperty().get(), shortBreakSeconds);
+                activeTask.get().addTimeSpent(shortBreakSeconds);
+            }
             resetToReady();
         }
     }
