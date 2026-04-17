@@ -15,15 +15,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.Group;
 import javafx.scene.shape.Circle;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.scene.shape.Arc;
+import javafx.scene.shape.Line;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -38,10 +41,12 @@ public class MainViewController implements Initializable {
     private static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
 
     @FXML
-    private Arc baseArc;
+    private Group timerTickContainer;
 
     @FXML
-    private Arc progressArc;
+    private Circle centerDot;
+
+    private final List<Line> timerTicks = new ArrayList<>();
 
     @FXML
     private Label timerLabel;
@@ -111,8 +116,39 @@ public class MainViewController implements Initializable {
         clearedTodayLabel.textProperty().bind(viewModel.clearedTodayTextProperty());
         nextBreakLabel.textProperty().bind(viewModel.nextBreakTextProperty());
 
-        // Bind Arc length to progress (multiply by -360 as the Arc goes clockwise which is negative in JavaFX)
-        progressArc.lengthProperty().bind(viewModel.timerProgressProperty().multiply(-360));
+        // Generate 24 tick lines
+        int numTicks = 24;
+        double radius = 117.0;
+        // In the design, ticks are arranged in a circle. We want to start from the top (12 o'clock).
+        // 0 degrees in standard trig is right (3 o'clock). To start at top, subtract 90 degrees.
+        for (int i = 0; i < numTicks; i++) {
+            // angle in radians. Start at top: -PI/2. Then go clockwise.
+            double angle = -Math.PI / 2.0 + (2.0 * Math.PI * i / numTicks);
+
+            boolean isCardinal = (i % 6 == 0); // 0, 6, 12, 18
+            double tickLength = isCardinal ? 16.0 : 10.0;
+            double strokeWidth = isCardinal ? 5.0 : 4.0;
+
+            // Start of line (outer edge)
+            double startX = Math.cos(angle) * radius;
+            double startY = Math.sin(angle) * radius;
+
+            // End of line (inner edge)
+            double endX = Math.cos(angle) * (radius - tickLength);
+            double endY = Math.sin(angle) * (radius - tickLength);
+
+            Line tick = new Line(startX, startY, endX, endY);
+            tick.setStrokeWidth(strokeWidth);
+            tick.getStyleClass().add("timer-tick");
+
+            timerTicks.add(tick);
+            timerTickContainer.getChildren().add(tick);
+        }
+
+        // Listener for timer progress
+        viewModel.timerProgressProperty().addListener((obs, oldVal, newVal) -> {
+            updateTicksActiveState(newVal.doubleValue(), viewModel.getTimerState());
+        });
 
         // Bind break progress region width
         breakProgressRegion.prefWidthProperty().bind(breakCardContainer.widthProperty().multiply(viewModel.breakProgressProperty()));
@@ -126,9 +162,6 @@ public class MainViewController implements Initializable {
         viewModel.isRunningProperty().addListener((obs, oldVal, newVal) -> updatePlayPauseIcon(newVal));
 
         // Reactive Declarative Styling bindings
-        progressArc.visibleProperty().bind(Bindings.createBooleanBinding(() ->
-                viewModel.getTimerState() != TimerState.BREAK_SHORT && viewModel.getTimerState() != TimerState.BREAK_LONG, viewModel.timerStateProperty()));
-
         breakProgressRegion.visibleProperty().bind(Bindings.createBooleanBinding(() ->
                 viewModel.getTimerState() == TimerState.BREAK_SHORT || viewModel.getTimerState() == TimerState.BREAK_LONG, viewModel.timerStateProperty()));
 
@@ -187,6 +220,23 @@ public class MainViewController implements Initializable {
         // Initial setup
         updatePlayPauseIcon(viewModel.getIsRunning());
         updateUIForState(viewModel.getTimerState());
+        updateTicksActiveState(viewModel.timerProgressProperty().get(), viewModel.getTimerState());
+    }
+
+    private void updateTicksActiveState(double progress, TimerState state) {
+        boolean isBreak = state == TimerState.BREAK_SHORT || state == TimerState.BREAK_LONG;
+
+        if (isBreak) {
+            // Hide progress visually during break, similar to how progressArc was hidden
+            for (Line tick : timerTicks) {
+                tick.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, false);
+            }
+        } else {
+            int activeCount = (int) Math.round(progress * 24);
+            for (int i = 0; i < timerTicks.size(); i++) {
+                timerTicks.get(i).pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, i < activeCount);
+            }
+        }
     }
 
     @FXML
@@ -235,9 +285,8 @@ public class MainViewController implements Initializable {
         boolean isBreakLong = state == TimerState.BREAK_LONG;
         boolean isActiveBreak = isBreakShort || isBreakLong;
 
-        if (baseArc != null) {
-            baseArc.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, !isActiveBreak);
-        }
+        // Update ticks based on state
+        updateTicksActiveState(viewModel.timerProgressProperty().get(), state);
 
         breakCardContainer.pseudoClassStateChanged(BREAK_SHORT_PSEUDO_CLASS, isBreakShort);
         breakCardContainer.pseudoClassStateChanged(BREAK_LONG_PSEUDO_CLASS, isBreakLong);
