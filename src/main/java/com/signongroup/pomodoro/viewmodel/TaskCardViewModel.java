@@ -30,6 +30,9 @@ public class TaskCardViewModel {
     private final BooleanProperty hasAssignee = new SimpleBooleanProperty();
     private final BooleanProperty hasIssueTypeIcon = new SimpleBooleanProperty();
 
+    private long currentTimeSpentSeconds = 0;
+    private long currentEstimateSeconds = 0;
+
     public TaskCardViewModel(JiraTask task) {
         this.task = task;
         updateProperties();
@@ -77,14 +80,26 @@ public class TaskCardViewModel {
         Long estSeconds = task.fields().timetracking() != null ? task.fields().timetracking().originalEstimateSeconds() : null;
         Long spentSeconds = task.fields().timetracking() != null ? task.fields().timetracking().timeSpentSeconds() : null;
 
-        if (estSeconds != null && estSeconds > 0) {
-            long spent = spentSeconds != null ? spentSeconds : 0;
-            double pct = Math.min(1.0, (double) spent / estSeconds);
+        this.currentEstimateSeconds = estSeconds != null ? estSeconds : 0;
+        this.currentTimeSpentSeconds = spentSeconds != null ? spentSeconds : 0;
+
+        updateProgressProperties();
+    }
+
+    public void addTimeSpent(long seconds) {
+        this.currentTimeSpentSeconds += seconds;
+        updateProgressProperties();
+    }
+
+    private void updateProgressProperties() {
+        if (currentEstimateSeconds > 0) {
+            double pct = Math.min(1.0, (double) currentTimeSpentSeconds / currentEstimateSeconds);
             progress.set(pct);
             progressPercentage.set((int) (pct * 100) + "%");
             hasProgress.set(true);
         } else {
             hasProgress.set(false);
+            progress.set(0.0);
         }
     }
 

@@ -144,6 +144,8 @@ public class MainViewController implements Initializable {
         if (activeTaskCard != null) {
             activeTaskCard.visibleProperty().bind(viewModel.activeTaskProperty().isNotNull());
             activeTaskCard.managedProperty().bind(activeTaskCard.visibleProperty());
+            activeTaskProgressRegion.minWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
+            activeTaskProgressRegion.prefWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
 
             viewModel.activeTaskProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal != null) {
@@ -152,8 +154,6 @@ public class MainViewController implements Initializable {
                     activeTaskProgressContainer.visibleProperty().bind(newVal.hasProgressProperty());
                     activeTaskProgressContainer.managedProperty().bind(newVal.hasProgressProperty());
                     activeTaskProgressRegion.maxWidthProperty().bind(activeTaskProgressContainer.widthProperty().multiply(newVal.progressProperty()));
-                    activeTaskProgressRegion.minWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
-                    activeTaskProgressRegion.prefWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
                 } else {
                     activeTaskTitleLabel.textProperty().unbind();
                     activeTaskKeyLabel.textProperty().unbind();
@@ -170,8 +170,6 @@ public class MainViewController implements Initializable {
                 activeTaskProgressContainer.visibleProperty().bind(newVal.hasProgressProperty());
                 activeTaskProgressContainer.managedProperty().bind(newVal.hasProgressProperty());
                 activeTaskProgressRegion.maxWidthProperty().bind(activeTaskProgressContainer.widthProperty().multiply(newVal.progressProperty()));
-                activeTaskProgressRegion.minWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
-                activeTaskProgressRegion.prefWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
             }
         }
 
