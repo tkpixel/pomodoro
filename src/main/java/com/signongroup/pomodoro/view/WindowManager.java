@@ -45,6 +45,33 @@ public class WindowManager {
         switchView("/com/signongroup/pomodoro/view/jira/JiraBoardView.fxml");
     }
 
+    public void showMiniTimerView() {
+        switchView("/com/signongroup/pomodoro/view/MiniTimerView.fxml");
+    }
+
+    public void toggleMiniMode(boolean isMini) {
+        if (primaryStage == null) return;
+        if (isMini) {
+            primaryStage.setMinWidth(230);
+            primaryStage.setMinHeight(100);
+            primaryStage.setMaxWidth(230);
+            primaryStage.setMaxHeight(100);
+            primaryStage.setWidth(230);
+            primaryStage.setHeight(100);
+            showMiniTimerView();
+            primaryStage.setAlwaysOnTop(true);
+        } else {
+            primaryStage.setMinWidth(570);
+            primaryStage.setMinHeight(460);
+            primaryStage.setMaxWidth(Double.MAX_VALUE);
+            primaryStage.setMaxHeight(Double.MAX_VALUE);
+            primaryStage.setWidth(570);
+            primaryStage.setHeight(460);
+            showMainView();
+            primaryStage.setAlwaysOnTop(false);
+        }
+    }
+
     private void switchView(String fxmlPath) {
         if (scene == null) {
             log.error("switchView called but scene is null – was WindowManager.init() called?");
