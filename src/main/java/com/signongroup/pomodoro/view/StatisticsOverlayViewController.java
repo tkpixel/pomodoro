@@ -62,6 +62,7 @@ public class StatisticsOverlayViewController implements Initializable {
     }
 
     public void open() {
+        statisticsViewModel.loadStatistics();
         overlayRoot.setVisible(true);
         TranslateTransition openTransition = new TranslateTransition(Duration.millis(300), bottomSheet);
         openTransition.setToY(0);

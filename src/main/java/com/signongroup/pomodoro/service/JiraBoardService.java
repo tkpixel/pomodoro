@@ -9,6 +9,7 @@ import com.signongroup.pomodoro.model.jira.JiraTransition;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -256,6 +257,38 @@ public class JiraBoardService {
                 // Log and return null instead of throwing to avoid crashing the timer
                 System.err.println("Error adding worklog for task " + issueKey + ": " + e.getMessage());
                 return null;
+            }
+        });
+    }
+
+    public CompletableFuture<Integer> fetchTicketCount(String jql) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
+                URI uri = URI.create(baseUrl + "/rest/api/3/search?jql=" + encodedJql + "&maxResults=0");
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    return root.path("total").asInt(0);
+                } else if (response.statusCode() >= 400 && response.statusCode() < 500) {
+                    // E.g., 400 Bad Request for "sprint in openSprints()" if not supported/available
+                    System.err.println("Bad Request fetching ticket count for JQL: " + jql + ", HTTP: " + response.statusCode() + " - " + response.body());
+                    return 0;
+                } else {
+                    throw new RuntimeException("Failed to fetch ticket count: HTTP " + response.statusCode());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error fetching ticket count for JQL: " + jql, e);
             }
         });
     }
