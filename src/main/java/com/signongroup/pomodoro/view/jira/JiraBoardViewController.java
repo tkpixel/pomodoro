@@ -186,7 +186,7 @@ public class JiraBoardViewController implements Initializable {
         Platform.runLater(() -> {
             container.getChildren().clear();
             for (TaskCardViewModel taskVM : tasks) {
-                TaskCardComponent card = new TaskCardComponent(taskVM, windowManager, mainViewModel);
+                TaskCardComponent card = new TaskCardComponent(taskVM, windowManager, mainViewModel, viewModel);
                 container.getChildren().add(card);
             }
         });

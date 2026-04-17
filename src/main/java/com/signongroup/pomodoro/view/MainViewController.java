@@ -13,6 +13,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.scene.shape.Arc;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -72,6 +78,21 @@ public class MainViewController implements Initializable {
     @FXML
     private StatisticsOverlayViewController statisticsOverlayController;
 
+    @FXML
+    private VBox activeTaskCard;
+    @FXML
+    private Circle activeTaskIndicator;
+    @FXML
+    private Label activeTaskKeyLabel;
+    @FXML
+    private Label activeTaskTitleLabel;
+    @FXML
+    private StackPane activeTaskProgressContainer;
+    @FXML
+    private Region activeTaskProgressRegion;
+
+    private Timeline indicatorTimeline;
+
     private final MainViewModel viewModel;
     private final WindowManager windowManager;
 
@@ -117,6 +138,41 @@ public class MainViewController implements Initializable {
         }, viewModel.timerStateProperty()));
 
         viewModel.timerStateProperty().addListener((obs, oldVal, newVal) -> updateUIForState(newVal));
+
+        // Active Task Card bindings
+        if (activeTaskCard != null) {
+            activeTaskCard.visibleProperty().bind(viewModel.activeTaskProperty().isNotNull());
+            activeTaskCard.managedProperty().bind(activeTaskCard.visibleProperty());
+
+            viewModel.activeTaskProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    activeTaskTitleLabel.textProperty().bind(newVal.titleProperty());
+                    activeTaskKeyLabel.textProperty().bind(newVal.taskKeyProperty());
+                    activeTaskProgressContainer.visibleProperty().bind(newVal.hasProgressProperty());
+                    activeTaskProgressContainer.managedProperty().bind(newVal.hasProgressProperty());
+                    activeTaskProgressRegion.maxWidthProperty().bind(activeTaskProgressContainer.widthProperty().multiply(newVal.progressProperty()));
+                    activeTaskProgressRegion.minWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
+                    activeTaskProgressRegion.prefWidthProperty().bind(activeTaskProgressRegion.maxWidthProperty());
+                } else {
+                    activeTaskTitleLabel.textProperty().unbind();
+                    activeTaskKeyLabel.textProperty().unbind();
+                    activeTaskProgressContainer.visibleProperty().unbind();
+                    activeTaskProgressContainer.managedProperty().unbind();
+                    activeTaskProgressRegion.maxWidthProperty().unbind();
+                }
+            });
+        }
+
+        // Indicator Pulse Animation
+        if (activeTaskIndicator != null) {
+            indicatorTimeline = new Timeline(
+                new KeyFrame(javafx.util.Duration.ZERO, new KeyValue(activeTaskIndicator.opacityProperty(), 1.0)),
+                new KeyFrame(javafx.util.Duration.seconds(1), new KeyValue(activeTaskIndicator.opacityProperty(), 0.3)),
+                new KeyFrame(javafx.util.Duration.seconds(2), new KeyValue(activeTaskIndicator.opacityProperty(), 1.0))
+            );
+            indicatorTimeline.setCycleCount(Animation.INDEFINITE);
+            indicatorTimeline.play();
+        }
 
         // Initial setup
         updatePlayPauseIcon(viewModel.getIsRunning());

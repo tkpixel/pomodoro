@@ -1,10 +1,15 @@
 package com.signongroup.pomodoro.view.jira;
 
 import com.signongroup.pomodoro.view.WindowManager;
+import com.signongroup.pomodoro.viewmodel.JiraBoardViewModel;
 import com.signongroup.pomodoro.viewmodel.MainViewModel;
 import com.signongroup.pomodoro.viewmodel.TaskCardViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -47,12 +52,14 @@ public class TaskCardComponent extends VBox {
     private final TaskCardViewModel viewModel;
     private final WindowManager windowManager;
     private final MainViewModel mainViewModel;
+    private final JiraBoardViewModel jiraBoardViewModel;
     private boolean isExpanded = false;
 
-    public TaskCardComponent(TaskCardViewModel viewModel, WindowManager windowManager, MainViewModel mainViewModel) {
+    public TaskCardComponent(TaskCardViewModel viewModel, WindowManager windowManager, MainViewModel mainViewModel, JiraBoardViewModel jiraBoardViewModel) {
         this.viewModel = viewModel;
         this.windowManager = windowManager;
         this.mainViewModel = mainViewModel;
+        this.jiraBoardViewModel = jiraBoardViewModel;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("TaskCardComponent.fxml"));
         fxmlLoader.setClassLoader(getClass().getClassLoader());
@@ -82,8 +89,11 @@ public class TaskCardComponent extends VBox {
         });
 
         this.setOnMouseClicked(e -> {
-            isExpanded = !isExpanded;
-            applyStateStyling();
+            // Only toggle expansion on primary click
+            if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY && !e.isConsumed()) {
+                isExpanded = !isExpanded;
+                applyStateStyling();
+            }
         });
 
         this.setOnDragDetected(event -> {
@@ -93,6 +103,71 @@ public class TaskCardComponent extends VBox {
             db.setContent(content);
             event.consume();
         });
+
+        ContextMenu contextMenu = new ContextMenu();
+        contextMenu.getStyleClass().add("context-menu");
+
+        Menu moveStatusMenu = new Menu("Move Status");
+        FontIcon moveIcon = new FontIcon("fltrmz-arrow-swap-20");
+        moveIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
+        moveStatusMenu.setGraphic(moveIcon);
+
+        MenuItem setAsActiveItem = new MenuItem("Set as Active");
+        FontIcon activeIcon = new FontIcon("fltfmz-play-20");
+        activeIcon.setStyle("-fx-icon-color: #FF4500;");
+        setAsActiveItem.setGraphic(activeIcon);
+        setAsActiveItem.setOnAction(e -> {
+            if (mainViewModel != null) {
+                mainViewModel.setActiveTask(viewModel);
+            }
+            if (windowManager != null) {
+                windowManager.showMainView();
+            }
+        });
+
+        SeparatorMenuItem separator = new SeparatorMenuItem();
+
+        MenuItem assignToMeItem = new MenuItem("Assign to Me");
+        FontIcon assignIcon = new FontIcon("fltral-person-20");
+        assignIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
+        assignToMeItem.setGraphic(assignIcon);
+        assignToMeItem.setOnAction(e -> {
+            if (jiraBoardViewModel != null) {
+                jiraBoardViewModel.assignTaskToCurrentUser(viewModel.taskKeyProperty().get());
+            }
+        });
+
+        contextMenu.getItems().addAll(moveStatusMenu, setAsActiveItem, separator, assignToMeItem);
+
+        this.setOnContextMenuRequested(e -> {
+            if (jiraBoardViewModel != null) {
+                moveStatusMenu.getItems().clear();
+
+                String currentColumn = null;
+                String taskKey = viewModel.taskKeyProperty().get();
+                for (java.util.Map.Entry<String, javafx.collections.ObservableList<TaskCardViewModel>> entry : jiraBoardViewModel.getColumnTasksMap().entrySet()) {
+                    for (TaskCardViewModel t : entry.getValue()) {
+                        if (t.taskKeyProperty().get().equals(taskKey)) {
+                            currentColumn = entry.getKey();
+                            break;
+                        }
+                    }
+                    if (currentColumn != null) break;
+                }
+
+                if (currentColumn != null) {
+                    java.util.List<String> adjacentColumns = jiraBoardViewModel.getAdjacentColumnNames(currentColumn);
+                    for (String colName : adjacentColumns) {
+                        MenuItem colItem = new MenuItem(colName);
+                        colItem.setOnAction(event -> jiraBoardViewModel.handleTaskDrop(taskKey, colName));
+                        moveStatusMenu.getItems().add(colItem);
+                    }
+                }
+            }
+
+            contextMenu.show(this, e.getScreenX(), e.getScreenY());
+        });
+
     }
 
     private void bindData() {
