@@ -266,7 +266,8 @@ public class JiraBoardService {
             try {
                 String baseUrl = getBaseUrl();
                 String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
-                URI uri = URI.create(baseUrl + "/rest/api/3/search/jql?jql=" + encodedJql + "&maxResults=0");
+                // Jira API `/rest/api/3/search/jql` requires maxResults to be between 1 and 5000.
+                URI uri = URI.create(baseUrl + "/rest/api/3/search/jql?jql=" + encodedJql + "&maxResults=1");
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(uri)
