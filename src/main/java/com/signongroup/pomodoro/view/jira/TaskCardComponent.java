@@ -108,7 +108,7 @@ public class TaskCardComponent extends VBox {
         contextMenu.getStyleClass().add("context-menu");
 
         Menu moveStatusMenu = new Menu("Move Status");
-        FontIcon moveIcon = new FontIcon("fltral-arrow-swap-20");
+        FontIcon moveIcon = new FontIcon("fltrmz-arrow-swap-20");
         moveIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
         moveStatusMenu.setGraphic(moveIcon);
 
@@ -128,7 +128,7 @@ public class TaskCardComponent extends VBox {
         SeparatorMenuItem separator = new SeparatorMenuItem();
 
         MenuItem assignToMeItem = new MenuItem("Assign to Me");
-        FontIcon assignIcon = new FontIcon("fltrmz-person-20");
+        FontIcon assignIcon = new FontIcon("fltral-person-20");
         assignIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
         assignToMeItem.setGraphic(assignIcon);
         assignToMeItem.setOnAction(e -> {
