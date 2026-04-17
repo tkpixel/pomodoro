@@ -267,17 +267,20 @@ public class JiraBoardService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String baseUrl = getBaseUrl();
-                String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
-                // Jira API `/rest/api/3/search/jql` requires maxResults to be between 1 and 5000.
-                URI uri = URI.create(baseUrl + "/rest/api/3/search/jql?jql=" + encodedJql + "&maxResults=1");
+                // We use POST /rest/api/3/search because GET /rest/api/3/search/jql uses pagination tokens
+                // and does not return the "total" field for ticket counts.
+                URI uri = URI.create(baseUrl + "/rest/api/3/search");
 
-                System.out.println("JQL Request: " + uri);
+                String body = "{\"jql\": \"" + jql.replace("\"", "\\\"") + "\", \"maxResults\": 1}";
+
+                System.out.println("JQL Request (POST): " + uri + " Body: " + body);
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(uri)
                         .header("Authorization", getAuthHeader())
                         .header("Accept", "application/json")
-                        .GET()
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body))
                         .build();
 
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
