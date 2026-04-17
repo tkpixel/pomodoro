@@ -60,6 +60,8 @@ public class JiraBoardService {
                 String baseUrl = getBaseUrl();
                 URI uri = URI.create(baseUrl + "/rest/agile/1.0/board");
 
+                System.out.println("JQL Request: " + uri);
+
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(uri)
                         .header("Authorization", getAuthHeader())
@@ -269,6 +271,8 @@ public class JiraBoardService {
                 // Jira API `/rest/api/3/search/jql` requires maxResults to be between 1 and 5000.
                 URI uri = URI.create(baseUrl + "/rest/api/3/search/jql?jql=" + encodedJql + "&maxResults=1");
 
+                System.out.println("JQL Request: " + uri);
+
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(uri)
                         .header("Authorization", getAuthHeader())
@@ -279,6 +283,7 @@ public class JiraBoardService {
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
+                    System.out.println("JQL Response (" + jql + "): " + response.body());
                     JsonNode root = objectMapper.readTree(response.body());
                     return root.path("total").asInt(0);
                 } else if (response.statusCode() >= 400 && response.statusCode() < 500) {
