@@ -236,7 +236,7 @@ public class JiraBoardService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String baseUrl = getBaseUrl();
-                URI uri = URI.create(baseUrl + "/rest/api/3/issuetype/project?projectId=" + projectId);
+                URI uri = URI.create(baseUrl + "/rest/api/3/issuetype");
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(uri)

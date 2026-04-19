@@ -145,7 +145,7 @@ public class CreateIssueViewController implements Initializable {
                 setText(item.name().toUpperCase());
                 FontIcon icon = new FontIcon("fltfal-arrow-up-24"); // Approximate keyboard_double_arrow_up
                 icon.setIconSize(16);
-                icon.setStyle("-fx-icon-color: -fx-error;");
+                icon.setStyle("-fx-icon-color: #ff716c;");
                 setGraphic(icon);
             }
         }

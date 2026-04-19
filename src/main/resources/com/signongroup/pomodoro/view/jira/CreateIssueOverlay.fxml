@@ -64,8 +64,8 @@
                 <VBox spacing="8" HBox.hgrow="ALWAYS">
                     <Label text="ASSIGNEE" style="-fx-font-family: 'Inter'; -fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
                     <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: -fx-surface-container-low; -fx-background-radius: 8; -fx-padding: 8;">
-                        <StackPane style="-fx-background-color: -fx-primary-container; -fx-background-radius: 12;" prefWidth="24" prefHeight="24">
-                            <Label text="ME" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: -fx-on-primary-container;"/>
+                        <StackPane style="-fx-background-color: #ff7852; -fx-background-radius: 12;" prefWidth="24" prefHeight="24">
+                            <Label text="ME" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #480d00;"/>
                         </StackPane>
                         <Label text="ME" style="-fx-font-family: 'Inter'; -fx-font-size: 12px; -fx-font-weight: 500; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
                     </HBox>
