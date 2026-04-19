@@ -3,9 +3,11 @@ package com.signongroup.pomodoro.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.signongroup.pomodoro.model.jira.BoardConfiguration;
+import com.signongroup.pomodoro.model.jira.IssueType;
 import com.signongroup.pomodoro.model.jira.JiraBoard;
 import com.signongroup.pomodoro.model.jira.JiraTask;
 import com.signongroup.pomodoro.model.jira.JiraTransition;
+import com.signongroup.pomodoro.model.jira.Priority;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.net.URI;
@@ -226,6 +228,96 @@ public class JiraBoardService {
                 return response.statusCode() >= 200 && response.statusCode() < 300;
             } catch (Exception e) {
                 throw new RuntimeException("Error assigning task " + issueKey, e);
+            }
+        });
+    }
+
+    public CompletableFuture<List<IssueType>> fetchIssueTypes(String projectId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/api/3/issuetype/project?projectId=" + projectId);
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    List<IssueType> issueTypes = new ArrayList<>();
+                    for (JsonNode node : root) {
+                        issueTypes.add(objectMapper.treeToValue(node, IssueType.class));
+                    }
+                    return issueTypes;
+                } else {
+                    throw new RuntimeException("Failed to fetch issue types: HTTP " + response.statusCode());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error fetching issue types for project " + projectId, e);
+            }
+        });
+    }
+
+    public CompletableFuture<List<Priority>> fetchPriorities() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/api/3/priority");
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    List<Priority> priorities = new ArrayList<>();
+                    for (JsonNode node : root) {
+                        priorities.add(objectMapper.treeToValue(node, Priority.class));
+                    }
+                    return priorities;
+                } else {
+                    throw new RuntimeException("Failed to fetch priorities: HTTP " + response.statusCode());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error fetching priorities", e);
+            }
+        });
+    }
+
+    public CompletableFuture<Void> createIssue(com.signongroup.pomodoro.model.jira.IssueCreateRequest issueCreateRequest) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/api/3/issue");
+
+                String body = objectMapper.writeValueAsString(issueCreateRequest);
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                    throw new RuntimeException("Failed to create issue: HTTP " + response.statusCode() + " " + response.body());
+                }
+                return null;
+            } catch (Exception e) {
+                throw new RuntimeException("Error creating issue", e);
             }
         });
     }
