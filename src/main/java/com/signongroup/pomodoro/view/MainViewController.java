@@ -261,6 +261,11 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
+    public void handleMinimize(ActionEvent event) {
+        windowManager.toggleMiniMode(true);
+    }
+
+    @FXML
     public void handleOpenSettingsMenu(ActionEvent event) {
         windowManager.showSettingsView();
     }
