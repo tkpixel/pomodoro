@@ -267,9 +267,7 @@ public class JiraBoardService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String baseUrl = getBaseUrl();
-                // We use POST /rest/api/3/search because GET /rest/api/3/search/jql uses pagination tokens
-                // and does not return the "total" field for ticket counts.
-                URI uri = URI.create(baseUrl + "/rest/api/3/search");
+                URI uri = URI.create(baseUrl + "/rest/api/3/search/jql");
 
                 String body = "{\"jql\": \"" + jql.replace("\"", "\\\"") + "\", \"maxResults\": 1}";
 
