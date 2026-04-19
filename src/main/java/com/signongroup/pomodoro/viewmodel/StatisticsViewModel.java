@@ -37,9 +37,9 @@ public class StatisticsViewModel {
     public void loadStatistics() {
         Platform.runLater(() -> isLoading.set(true));
 
-        String jqlToday = "assignee = currentUser() AND statusCategory = Done AND resolved >= startOfDay()";
-        String jqlWeek = "assignee = currentUser() AND statusCategory = Done AND resolved >= startOfWeek()";
-        String jqlYear = "assignee = currentUser() AND statusCategory = Done AND resolved >= startOfYear()";
+        String jqlToday = "assignee = currentUser() AND statusCategory = Done AND statusCategoryChangedDate >= startOfDay()";
+        String jqlWeek = "assignee = currentUser() AND statusCategory = Done AND statusCategoryChangedDate >= startOfWeek()";
+        String jqlYear = "assignee = currentUser() AND statusCategory = Done AND statusCategoryChangedDate >= startOfYear()";
         String jqlSprintCleared = "assignee = currentUser() AND sprint in openSprints() AND statusCategory = Done";
         String jqlSprintPlanned = "assignee = currentUser() AND sprint in openSprints()";
 
