@@ -11,7 +11,7 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.signongroup.pomodoro.view.MainViewController"
            styleClass="bg-mesh"
-           prefHeight="460.0" prefWidth="570.0">
+           prefHeight="552.0" prefWidth="684.0">
 
     <!-- Decorative Elements (Blur effects not perfectly supported in JavaFX out-of-the-box, simulated via background) -->
 
@@ -148,16 +148,15 @@
         <padding>
             <Insets left="24" right="24"/>
         </padding>
-        <Region prefWidth="24"/>
+        <Button styleClass="fab-icon-button" onAction="#handleMinimize">
+            <graphic>
+                <FontIcon iconLiteral="fltfal-arrow-minimize-20" iconSize="24" styleClass="menu-icon"/>
+            </graphic>
+        </Button>
         <Region HBox.hgrow="ALWAYS"/>
         <Label text="MONOLITH" styleClass="font-manrope tracking-widest" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: -fx-primary; -fx-text-transform: uppercase;" />
         <Region HBox.hgrow="ALWAYS"/>
         <HBox alignment="CENTER" spacing="8">
-            <Button styleClass="fab-icon-button" onAction="#handleMinimize">
-                <graphic>
-                    <FontIcon iconLiteral="fltrmz-minimize-20" iconSize="24" styleClass="menu-icon"/>
-                </graphic>
-            </Button>
             <Button styleClass="fab-icon-button" onAction="#handleOpenSettingsMenu">
                 <graphic>
                     <FontIcon iconLiteral="fltral-line-horizontal-3-20" iconSize="24" styleClass="menu-icon"/>

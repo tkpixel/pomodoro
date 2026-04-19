@@ -52,21 +52,21 @@ public class WindowManager {
     public void toggleMiniMode(boolean isMini) {
         if (primaryStage == null) return;
         if (isMini) {
-            primaryStage.setMinWidth(230);
-            primaryStage.setMinHeight(100);
-            primaryStage.setMaxWidth(230);
-            primaryStage.setMaxHeight(100);
-            primaryStage.setWidth(230);
-            primaryStage.setHeight(100);
+            primaryStage.setMinWidth(288);
+            primaryStage.setMinHeight(125);
+            primaryStage.setMaxWidth(288);
+            primaryStage.setMaxHeight(125);
+            primaryStage.setWidth(288);
+            primaryStage.setHeight(125);
             showMiniTimerView();
             primaryStage.setAlwaysOnTop(true);
         } else {
-            primaryStage.setMinWidth(570);
-            primaryStage.setMinHeight(460);
+            primaryStage.setMinWidth(684);
+            primaryStage.setMinHeight(552);
             primaryStage.setMaxWidth(Double.MAX_VALUE);
             primaryStage.setMaxHeight(Double.MAX_VALUE);
-            primaryStage.setWidth(570);
-            primaryStage.setHeight(460);
+            primaryStage.setWidth(684);
+            primaryStage.setHeight(552);
             showMainView();
             primaryStage.setAlwaysOnTop(false);
         }
