@@ -267,16 +267,18 @@ public class JiraBoardService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String baseUrl = getBaseUrl();
-                String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
-                URI uri = URI.create(baseUrl + "/rest/api/3/search?jql=" + encodedJql + "&maxResults=0");
+                URI uri = URI.create(baseUrl + "/rest/api/3/search/approximate-count");
 
-                System.out.println("JQL Request (GET): " + uri);
+                String body = "{\"jql\": \"" + jql.replace("\"", "\\\"") + "\"}";
+
+                System.out.println("JQL Request (POST): " + uri + " Body: " + body);
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(uri)
                         .header("Authorization", getAuthHeader())
                         .header("Accept", "application/json")
-                        .GET()
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body))
                         .build();
 
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -284,7 +286,7 @@ public class JiraBoardService {
                 if (response.statusCode() == 200) {
                     System.out.println("JQL Response (" + jql + "): " + response.body());
                     JsonNode root = objectMapper.readTree(response.body());
-                    return root.path("total").asInt(0);
+                    return root.path("count").asInt(0);
                 } else if (response.statusCode() >= 400 && response.statusCode() < 500) {
                     // E.g., 400 Bad Request for "sprint in openSprints()" if not supported/available
                     System.err.println("Bad Request fetching ticket count for JQL: " + jql + ", HTTP: " + response.statusCode() + " - " + response.body());
