@@ -21,6 +21,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ public class JiraBoardViewController implements Initializable {
     @FXML private ComboBox<BoardViewModel> boardComboBox;
     @FXML private MenuButton filterMenuButton;
     @FXML private VBox columnsContainer;
+    @FXML private StackPane createIssueOverlay;
 
     private final Map<String, VBox> columnListMap = new HashMap<>();
 
@@ -75,6 +77,12 @@ public class JiraBoardViewController implements Initializable {
                 });
             }
         });
+
+        // Bind Create Issue Modal visibility
+        if (createIssueOverlay != null) {
+            createIssueOverlay.visibleProperty().bind(viewModel.isCreateModalVisibleProperty());
+            createIssueOverlay.managedProperty().bind(viewModel.isCreateModalVisibleProperty());
+        }
     }
 
     private void setupBoardComboBox() {
@@ -194,8 +202,8 @@ public class JiraBoardViewController implements Initializable {
 
     @FXML
     private void handleNewTask() {
-        log.info("New Task button clicked. Stub for dialog.");
-        // Implement dialog stub here if required
+        log.info("New Task button clicked. Opening dialog.");
+        viewModel.isCreateModalVisibleProperty().set(true);
     }
 
     @FXML

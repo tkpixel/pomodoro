@@ -43,6 +43,7 @@ public class JiraBoardViewModel {
     private final java.util.Map<String, JiraTask> taskKeyToModelMap = new java.util.HashMap<>();
 
     private final BooleanProperty isLoading = new SimpleBooleanProperty(false);
+    private final BooleanProperty isCreateModalVisible = new SimpleBooleanProperty(false);
 
     @Inject
     public JiraBoardViewModel(JiraBoardService jiraBoardService, UserPreferencesService userPreferencesService) {
@@ -184,6 +185,10 @@ public class JiraBoardViewModel {
         }
     }
 
+    public void loadTasksForSelectedBoard() {
+        refreshTasks();
+    }
+
     public void assignTaskToCurrentUser(String taskKey) {
         isLoading.set(true);
         jiraBoardService.assignTaskToCurrentUser(taskKey).thenAccept(success -> Platform.runLater(() -> {
@@ -292,4 +297,5 @@ public class JiraBoardViewModel {
     public BooleanProperty getColumnVisibilityProperty(String columnName) { return columnVisibilityMap.get(columnName); }
 
     public BooleanProperty isLoadingProperty() { return isLoading; }
+    public BooleanProperty isCreateModalVisibleProperty() { return isCreateModalVisible; }
 }

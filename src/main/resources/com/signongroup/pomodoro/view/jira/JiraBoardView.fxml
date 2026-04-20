@@ -70,4 +70,7 @@
         </Button>
     </StackPane>
 
+    <!-- Create Issue Modal Overlay -->
+    <fx:include fx:id="createIssueOverlay" source="CreateIssueOverlay.fxml"/>
+
 </StackPane>
