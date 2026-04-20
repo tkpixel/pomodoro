@@ -9,6 +9,7 @@
     -fx-surface-container: #1a1919;
     -fx-surface-container-high: #201f1f;
     -fx-surface-container-highest: #262626;
+    -fx-surface-bright: #2c2c2c;
 
     -fx-on-surface: #ffffff;
     -fx-on-surface-variant: #adaaaa;
@@ -21,6 +22,8 @@
     -fx-on-background: #ffffff;
     -fx-outline: #777575;
     -fx-outline-variant: #494847;
+
+    -fx-tertiary: #eaa5ff;
 
     /* Backgrounds */
     -fx-background-color: -fx-surface;
