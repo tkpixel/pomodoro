@@ -1,5 +1,6 @@
 package com.signongroup.pomodoro.viewmodel;
 
+import com.signongroup.pomodoro.service.ActiveTaskService;
 import com.signongroup.pomodoro.service.JiraBoardService;
 import com.signongroup.pomodoro.service.TimerService;
 import jakarta.inject.Singleton;
@@ -36,9 +37,6 @@ public class MainViewModel {
     private final BooleanProperty isRunning = new SimpleBooleanProperty(false);
     private final ObjectProperty<TimerState> timerState = new SimpleObjectProperty<>(TimerState.READY);
 
-    // Functional Play action active task reference
-    private final ObjectProperty<TaskCardViewModel> activeTask = new SimpleObjectProperty<>();
-
     private int focusTimeSeconds;
     private int shortBreakSeconds;
     private int longBreakSeconds;
@@ -51,12 +49,14 @@ public class MainViewModel {
     private final TimerService timerService;
     private final SettingsViewModel settingsViewModel;
     private final JiraBoardService jiraBoardService;
+    private final ActiveTaskService activeTaskService;
 
     @jakarta.inject.Inject
-    public MainViewModel(SettingsViewModel settingsViewModel, TimerService timerService, JiraBoardService jiraBoardService) {
+    public MainViewModel(SettingsViewModel settingsViewModel, TimerService timerService, JiraBoardService jiraBoardService, ActiveTaskService activeTaskService) {
         this.settingsViewModel = settingsViewModel;
         this.timerService = timerService;
         this.jiraBoardService = jiraBoardService;
+        this.activeTaskService = activeTaskService;
 
         this.timerService.setTickCallback(() -> Platform.runLater(this::tick));
 
@@ -101,9 +101,9 @@ public class MainViewModel {
     private void handleTimerComplete() {
         pauseTimer();
         if (timerState.get() == TimerState.FOCUS_RUNNING) {
-            if (activeTask.get() != null) {
-                jiraBoardService.addWorklog(activeTask.get().taskKeyProperty().get(), focusTimeSeconds);
-                activeTask.get().addTimeSpent(focusTimeSeconds);
+            if (activeTaskService.getActiveTask() != null) {
+                jiraBoardService.addWorklog(activeTaskService.getActiveTask().taskKeyProperty().get(), focusTimeSeconds);
+                activeTaskService.getActiveTask().addTimeSpent(focusTimeSeconds);
             }
             clearedToday++;
             if (currentSession >= maxSessions) {
@@ -118,9 +118,9 @@ public class MainViewModel {
             updateUI();
             startTimer();
         } else if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
-            if (timerState.get() == TimerState.BREAK_SHORT && activeTask.get() != null) {
-                jiraBoardService.addWorklog(activeTask.get().taskKeyProperty().get(), shortBreakSeconds);
-                activeTask.get().addTimeSpent(shortBreakSeconds);
+            if (timerState.get() == TimerState.BREAK_SHORT && activeTaskService.getActiveTask() != null) {
+                jiraBoardService.addWorklog(activeTaskService.getActiveTask().taskKeyProperty().get(), shortBreakSeconds);
+                activeTaskService.getActiveTask().addTimeSpent(shortBreakSeconds);
             }
             resetToReady();
         }
@@ -204,15 +204,15 @@ public class MainViewModel {
     // --- Active Task Routing ---
 
     public void setActiveTask(TaskCardViewModel task) {
-        this.activeTask.set(task);
+        this.activeTaskService.setActiveTask(task);
     }
 
     public ObjectProperty<TaskCardViewModel> activeTaskProperty() {
-        return activeTask;
+        return this.activeTaskService.activeTaskProperty();
     }
 
     public TaskCardViewModel getActiveTask() {
-        return activeTask.get();
+        return this.activeTaskService.getActiveTask();
     }
 
     // --- Getters & Setters / Properties ---

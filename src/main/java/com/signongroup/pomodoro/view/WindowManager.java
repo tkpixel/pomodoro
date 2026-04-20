@@ -41,6 +41,10 @@ public class WindowManager {
         switchView("/com/signongroup/pomodoro/view/SettingsView.fxml");
     }
 
+    public void showStopwatchView() {
+        switchView("/com/signongroup/pomodoro/view/StopwatchView.fxml");
+    }
+
     public void showJiraBoardView() {
         switchView("/com/signongroup/pomodoro/view/jira/JiraBoardView.fxml");
     }

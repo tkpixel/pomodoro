@@ -282,6 +282,11 @@ public class MainViewController implements Initializable {
         }
     }
 
+    @FXML
+    public void handleSwitchToStopwatch(ActionEvent event) {
+        windowManager.showStopwatchView();
+    }
+
     private void updatePlayPauseIcon(boolean isRunning) {
         if (isRunning) {
             playIcon.setIconLiteral("fltfmz-pause-20");
