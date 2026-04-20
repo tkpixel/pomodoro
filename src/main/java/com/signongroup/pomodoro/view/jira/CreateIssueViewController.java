@@ -126,7 +126,7 @@ public class CreateIssueViewController implements Initializable {
                 setGraphic(null);
             } else {
                 setText(item.name().toUpperCase());
-                FontIcon icon = new FontIcon("fltfal-document-24");
+                FontIcon icon = new FontIcon("fltfmz-task-list-24");
                 icon.setIconSize(16);
                 icon.setStyle("-fx-icon-color: -fx-tertiary;");
                 setGraphic(icon);

@@ -15,7 +15,7 @@
         <!-- Header -->
         <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: #131313; -fx-padding: 16 24;"
               styleClass="top-rounded">
-            <FontIcon iconLiteral="fltfmz-grid-24" iconSize="24" style="-fx-icon-color: -fx-primary;"/>
+            <FontIcon iconLiteral="fltral-grid-24" iconSize="24" style="-fx-icon-color: -fx-primary;"/>
             <Label text="New Issue" style="-fx-font-family: 'Manrope'; -fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: -fx-primary;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button onAction="#handleCancel" style="-fx-background-color: transparent; -fx-padding: 0; -fx-cursor: hand;">
