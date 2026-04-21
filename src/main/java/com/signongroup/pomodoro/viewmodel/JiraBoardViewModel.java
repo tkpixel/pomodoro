@@ -69,7 +69,7 @@ public class JiraBoardViewModel {
         jiraBoardService.fetchBoards().thenAccept(fetchedBoards -> Platform.runLater(() -> {
             List<BoardViewModel> boardVms = new ArrayList<>();
             for(JiraBoard b : fetchedBoards) {
-                boardVms.add(new BoardViewModel(b.id(), b.name(), b.location()));
+                boardVms.add(new BoardViewModel(b.id(), b.name(), b.type(), b.location()));
             }
             boards.setAll(boardVms);
 

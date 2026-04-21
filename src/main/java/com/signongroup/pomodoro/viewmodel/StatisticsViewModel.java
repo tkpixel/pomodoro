@@ -18,6 +18,8 @@ public class StatisticsViewModel {
     private static final String JQL_SPRINT_CLEARED = "assignee = currentUser() AND sprint in openSprints() AND statusCategory = Done AND project = \"%s\" AND statusCategoryChangedDate >= startOfYear()";
     private static final String JQL_SPRINT_TOTAL = "assignee = currentUser() AND sprint in openSprints() AND project = \"%s\"";
     private static final String JQL_OVERALL_YEAR = "assignee = currentUser() AND statusCategory = Done AND statusCategoryChangedDate >= startOfYear()";
+    private static final String JQL_KANBAN_CLEARED = "assignee = currentUser() AND statusCategory = Done AND project = \"%s\"";
+    private static final String JQL_KANBAN_TOTAL = "assignee = currentUser() AND project = \"%s\"";
 
     private final JiraBoardService jiraBoardService;
 
@@ -26,6 +28,9 @@ public class StatisticsViewModel {
     private final IntegerProperty sprintCleared = new SimpleIntegerProperty();
     private final IntegerProperty sprintPlanned = new SimpleIntegerProperty();
     private final IntegerProperty year = new SimpleIntegerProperty();
+
+    private final javafx.beans.property.StringProperty sprintClearedTitle = new javafx.beans.property.SimpleStringProperty("SPRINT CLEARED");
+    private final javafx.beans.property.StringProperty sprintPlannedTitle = new javafx.beans.property.SimpleStringProperty("SPRINT PLANNED");
 
     @Inject
     public StatisticsViewModel(JiraBoardService jiraBoardService) {
@@ -44,11 +49,22 @@ public class StatisticsViewModel {
                 ? selectedBoard.location().projectKey()
                 : null;
 
+        boolean isScrum = selectedBoard == null || !"kanban".equalsIgnoreCase(selectedBoard.type());
+
         if (projectKey != null && !projectKey.isBlank()) {
             CompletableFuture<Integer> todayFuture = jiraBoardService.fetchTicketCount(String.format(JQL_TODAY, projectKey));
             CompletableFuture<Integer> weekFuture = jiraBoardService.fetchTicketCount(String.format(JQL_WEEK, projectKey));
-            CompletableFuture<Integer> sprintClearedFuture = jiraBoardService.fetchTicketCount(String.format(JQL_SPRINT_CLEARED, projectKey));
-            CompletableFuture<Integer> sprintTotalFuture = jiraBoardService.fetchTicketCount(String.format(JQL_SPRINT_TOTAL, projectKey));
+
+            CompletableFuture<Integer> sprintClearedFuture;
+            CompletableFuture<Integer> sprintTotalFuture;
+
+            if (isScrum) {
+                sprintClearedFuture = jiraBoardService.fetchTicketCount(String.format(JQL_SPRINT_CLEARED, projectKey));
+                sprintTotalFuture = jiraBoardService.fetchTicketCount(String.format(JQL_SPRINT_TOTAL, projectKey));
+            } else {
+                sprintClearedFuture = jiraBoardService.fetchTicketCount(String.format(JQL_KANBAN_CLEARED, projectKey));
+                sprintTotalFuture = jiraBoardService.fetchTicketCount(String.format(JQL_KANBAN_TOTAL, projectKey));
+            }
 
             CompletableFuture.allOf(yearFuture, todayFuture, weekFuture, sprintClearedFuture, sprintTotalFuture)
                 .thenAccept(v -> {
@@ -59,6 +75,14 @@ public class StatisticsViewModel {
                     int finalSprintTotal = sprintTotalFuture.join();
 
                     Platform.runLater(() -> {
+                        if (isScrum) {
+                            sprintClearedTitle.set("SPRINT CLEARED");
+                            sprintPlannedTitle.set("SPRINT PLANNED");
+                        } else {
+                            sprintClearedTitle.set("ALL-TIME CLEARED");
+                            sprintPlannedTitle.set("TOTAL TICKETS");
+                        }
+
                         year.set(finalYear);
                         clearedToday.set(finalToday);
                         week.set(finalWeek);
@@ -73,6 +97,13 @@ public class StatisticsViewModel {
         } else {
             yearFuture.thenAccept(finalYear -> {
                 Platform.runLater(() -> {
+                    if (isScrum) {
+                        sprintClearedTitle.set("SPRINT CLEARED");
+                        sprintPlannedTitle.set("SPRINT PLANNED");
+                    } else {
+                        sprintClearedTitle.set("ALL-TIME CLEARED");
+                        sprintPlannedTitle.set("TOTAL TICKETS");
+                    }
                     year.set(finalYear);
                     clearedToday.set(0);
                     week.set(0);
@@ -144,5 +175,21 @@ public class StatisticsViewModel {
 
     public void setYear(int year) {
         this.year.set(year);
+    }
+
+    public javafx.beans.property.StringProperty sprintClearedTitleProperty() {
+        return sprintClearedTitle;
+    }
+
+    public String getSprintClearedTitle() {
+        return sprintClearedTitle.get();
+    }
+
+    public javafx.beans.property.StringProperty sprintPlannedTitleProperty() {
+        return sprintPlannedTitle;
+    }
+
+    public String getSprintPlannedTitle() {
+        return sprintPlannedTitle.get();
     }
 }

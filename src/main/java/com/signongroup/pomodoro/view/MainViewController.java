@@ -288,7 +288,7 @@ public class MainViewController implements Initializable {
                 dummyBoard = new com.signongroup.pomodoro.model.jira.JiraBoard(
                         currentBoard.id(),
                         currentBoard.name(),
-                        null,
+                        currentBoard.type(),
                         currentBoard.location()
                 );
             }
