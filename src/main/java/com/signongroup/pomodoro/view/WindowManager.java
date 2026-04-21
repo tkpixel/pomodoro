@@ -1,5 +1,6 @@
 package com.signongroup.pomodoro.view;
 
+import com.signongroup.pomodoro.service.TrackingService;
 import io.micronaut.context.ApplicationContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -22,10 +23,12 @@ public class WindowManager {
     private Stage primaryStage;
     private final ApplicationContext context;
     private Scene scene;
+    private final TrackingService trackingService;
 
     @Inject
-    public WindowManager(ApplicationContext context) {
+    public WindowManager(ApplicationContext context, TrackingService trackingService) {
         this.context = context;
+        this.trackingService = trackingService;
     }
 
     public void init(Stage primaryStage, Scene scene) {
@@ -34,6 +37,7 @@ public class WindowManager {
     }
 
     public void showMainView() {
+        trackingService.setActiveMode(TrackingService.TrackingMode.POMODORO);
         switchView("/com/signongroup/pomodoro/view/MainView.fxml");
     }
 
@@ -42,6 +46,7 @@ public class WindowManager {
     }
 
     public void showStopwatchView() {
+        trackingService.setActiveMode(TrackingService.TrackingMode.STOPWATCH);
         switchView("/com/signongroup/pomodoro/view/StopwatchView.fxml");
     }
 

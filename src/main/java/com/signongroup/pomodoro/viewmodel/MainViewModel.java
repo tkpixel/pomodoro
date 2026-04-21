@@ -3,6 +3,7 @@ package com.signongroup.pomodoro.viewmodel;
 import com.signongroup.pomodoro.service.ActiveTaskService;
 import com.signongroup.pomodoro.service.JiraBoardService;
 import com.signongroup.pomodoro.service.TimerService;
+import com.signongroup.pomodoro.service.TrackingService;
 import jakarta.inject.Singleton;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -50,13 +51,15 @@ public class MainViewModel {
     private final SettingsViewModel settingsViewModel;
     private final JiraBoardService jiraBoardService;
     private final ActiveTaskService activeTaskService;
+    private final TrackingService trackingService;
 
     @jakarta.inject.Inject
-    public MainViewModel(SettingsViewModel settingsViewModel, TimerService timerService, JiraBoardService jiraBoardService, ActiveTaskService activeTaskService) {
+    public MainViewModel(SettingsViewModel settingsViewModel, TimerService timerService, JiraBoardService jiraBoardService, ActiveTaskService activeTaskService, TrackingService trackingService) {
         this.settingsViewModel = settingsViewModel;
         this.timerService = timerService;
         this.jiraBoardService = jiraBoardService;
         this.activeTaskService = activeTaskService;
+        this.trackingService = trackingService;
 
         this.timerService.setTickCallback(() -> Platform.runLater(this::tick));
 
@@ -78,8 +81,21 @@ public class MainViewModel {
             updateUI();
         });
 
+        this.timerText.addListener((obs, oldVal, newVal) -> pushTrackingState());
+        this.isRunning.addListener((obs, oldVal, newVal) -> pushTrackingState());
+        this.trackingService.activeModeProperty().addListener((obs, oldVal, newVal) -> pushTrackingState());
+
         timeRemainingSeconds = focusTimeSeconds;
         updateUI();
+    }
+
+    private void pushTrackingState() {
+        if (trackingService.getActiveMode() == TrackingService.TrackingMode.POMODORO) {
+            trackingService.activeTimeProperty().set(timerText.get());
+            trackingService.isRunningProperty().set(isRunning.get());
+            trackingService.setOnToggleTimer(this::toggleTimer);
+            trackingService.setOnResetTimer(this::resetCurrentPhase);
+        }
     }
 
     private void updateSettingsFromViewModel() {

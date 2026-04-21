@@ -3,6 +3,7 @@ package com.signongroup.pomodoro.viewmodel;
 import com.signongroup.pomodoro.service.ActiveTaskService;
 import com.signongroup.pomodoro.service.JiraBoardService;
 import com.signongroup.pomodoro.service.TimerService;
+import com.signongroup.pomodoro.service.TrackingService;
 import jakarta.inject.Singleton;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -20,18 +21,33 @@ public class StopwatchViewModel {
     private final JiraBoardService jiraBoardService;
     private final ActiveTaskService activeTaskService;
     private final MainViewModel mainViewModel;
+    private final TrackingService trackingService;
 
     private int elapsedSeconds = 0;
     private int unloggedSeconds = 0;
 
     @jakarta.inject.Inject
-    public StopwatchViewModel(JiraBoardService jiraBoardService, ActiveTaskService activeTaskService, MainViewModel mainViewModel) {
+    public StopwatchViewModel(JiraBoardService jiraBoardService, ActiveTaskService activeTaskService, MainViewModel mainViewModel, TrackingService trackingService) {
         this.timerService = new TimerService();
         this.jiraBoardService = jiraBoardService;
         this.activeTaskService = activeTaskService;
         this.mainViewModel = mainViewModel;
+        this.trackingService = trackingService;
 
         this.timerService.setTickCallback(() -> Platform.runLater(this::tick));
+
+        this.timerText.addListener((obs, oldVal, newVal) -> pushTrackingState());
+        this.isRunning.addListener((obs, oldVal, newVal) -> pushTrackingState());
+        this.trackingService.activeModeProperty().addListener((obs, oldVal, newVal) -> pushTrackingState());
+    }
+
+    private void pushTrackingState() {
+        if (trackingService.getActiveMode() == TrackingService.TrackingMode.STOPWATCH) {
+            trackingService.activeTimeProperty().set(timerText.get());
+            trackingService.isRunningProperty().set(isRunning.get());
+            trackingService.setOnToggleTimer(this::toggleTimer);
+            trackingService.setOnResetTimer(this::resetTimer);
+        }
     }
 
     private void tick() {
