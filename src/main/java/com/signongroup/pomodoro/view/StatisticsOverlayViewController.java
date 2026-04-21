@@ -40,6 +40,12 @@ public class StatisticsOverlayViewController implements Initializable {
     @FXML
     private Label yearLabel;
 
+    @FXML
+    private Label sprintClearedTitleLabel;
+
+    @FXML
+    private Label sprintPlannedTitleLabel;
+
     private final StatisticsViewModel statisticsViewModel;
 
     @Inject
@@ -55,6 +61,13 @@ public class StatisticsOverlayViewController implements Initializable {
         sprintClearedLabel.textProperty().bind(statisticsViewModel.sprintClearedProperty().asString());
         sprintPlannedLabel.textProperty().bind(Bindings.concat("/ ", statisticsViewModel.sprintPlannedProperty()));
         yearLabel.textProperty().bind(statisticsViewModel.yearProperty().asString());
+
+        if (sprintClearedTitleLabel != null) {
+            sprintClearedTitleLabel.textProperty().bind(statisticsViewModel.sprintClearedTitleProperty());
+        }
+        if (sprintPlannedTitleLabel != null) {
+            sprintPlannedTitleLabel.textProperty().bind(statisticsViewModel.sprintPlannedTitleProperty());
+        }
 
         // Ensure starting state is hidden
         overlayRoot.setVisible(false);

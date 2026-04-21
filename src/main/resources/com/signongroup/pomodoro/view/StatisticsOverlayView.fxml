@@ -68,7 +68,7 @@
 
             <!-- Card 3: Sprint -->
             <VBox styleClass="settings-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                <Label text="SPRINT" styleClass="settings-card-label-muted" />
+                <Label fx:id="sprintClearedTitleLabel" text="SPRINT CLEARED" styleClass="settings-card-label-muted" />
                 <Region VBox.vgrow="ALWAYS" />
                 <HBox alignment="BOTTOM_LEFT" spacing="4">
                     <Label fx:id="sprintClearedLabel" text="124" styleClass="settings-card-value" />

@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record JiraBoard(
     @JsonProperty("id") Long id,
     @JsonProperty("name") String name,
-    @JsonProperty("type") String type
+    @JsonProperty("type") String type,
+    @JsonProperty("location") BoardLocation location
 ) {
     @Override
     public String toString() {

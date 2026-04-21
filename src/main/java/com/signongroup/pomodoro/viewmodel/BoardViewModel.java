@@ -1,4 +1,6 @@
 package com.signongroup.pomodoro.viewmodel;
 
-public record BoardViewModel(Long id, String name) {
+import com.signongroup.pomodoro.model.jira.BoardLocation;
+
+public record BoardViewModel(Long id, String name, String type, BoardLocation location) {
 }
