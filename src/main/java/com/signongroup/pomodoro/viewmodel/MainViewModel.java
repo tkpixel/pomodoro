@@ -87,6 +87,9 @@ public class MainViewModel {
 
         timeRemainingSeconds = focusTimeSeconds;
         updateUI();
+
+        // Explicitly push initial state upon initialization
+        pushTrackingState();
     }
 
     private void pushTrackingState() {

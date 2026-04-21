@@ -39,6 +39,9 @@ public class StopwatchViewModel {
         this.timerText.addListener((obs, oldVal, newVal) -> pushTrackingState());
         this.isRunning.addListener((obs, oldVal, newVal) -> pushTrackingState());
         this.trackingService.activeModeProperty().addListener((obs, oldVal, newVal) -> pushTrackingState());
+
+        // Explicitly push initial state upon initialization
+        pushTrackingState();
     }
 
     private void pushTrackingState() {
