@@ -98,11 +98,15 @@ public class MainViewController implements Initializable {
 
     private final MainViewModel viewModel;
     private final WindowManager windowManager;
+    private final com.signongroup.pomodoro.viewmodel.StatisticsViewModel statisticsViewModel;
+    private final com.signongroup.pomodoro.viewmodel.JiraBoardViewModel jiraBoardViewModel;
 
     @Inject
-    public MainViewController(MainViewModel viewModel, WindowManager windowManager) {
+    public MainViewController(MainViewModel viewModel, WindowManager windowManager, com.signongroup.pomodoro.viewmodel.StatisticsViewModel statisticsViewModel, com.signongroup.pomodoro.viewmodel.JiraBoardViewModel jiraBoardViewModel) {
         this.viewModel = viewModel;
         this.windowManager = windowManager;
+        this.statisticsViewModel = statisticsViewModel;
+        this.jiraBoardViewModel = jiraBoardViewModel;
     }
 
     @Override
@@ -278,6 +282,17 @@ public class MainViewController implements Initializable {
     @FXML
     public void handleOpenStatistics(ActionEvent event) {
         if (statisticsOverlayController != null) {
+            com.signongroup.pomodoro.viewmodel.BoardViewModel currentBoard = jiraBoardViewModel.getSelectedBoard();
+            com.signongroup.pomodoro.model.jira.JiraBoard dummyBoard = null;
+            if (currentBoard != null) {
+                dummyBoard = new com.signongroup.pomodoro.model.jira.JiraBoard(
+                        currentBoard.id(),
+                        currentBoard.name(),
+                        null,
+                        currentBoard.location()
+                );
+            }
+            statisticsViewModel.loadStatistics(dummyBoard);
             statisticsOverlayController.open();
         }
     }
