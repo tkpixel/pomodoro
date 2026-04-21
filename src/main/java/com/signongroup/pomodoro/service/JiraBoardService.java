@@ -322,6 +322,37 @@ public class JiraBoardService {
         });
     }
 
+    public CompletableFuture<Integer> fetchTicketCount(String jql) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String baseUrl = getBaseUrl();
+                URI uri = URI.create(baseUrl + "/rest/api/3/search/approximate-count");
+
+                String body = "{\"jql\": \"" + jql.replace("\"", "\\\"") + "\"}";
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(uri)
+                        .header("Authorization", getAuthHeader())
+                        .header("Accept", "application/json")
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonNode root = objectMapper.readTree(response.body());
+                    return root.path("count").asInt(0);
+                } else {
+                    throw new RuntimeException("Failed to fetch ticket count: HTTP " + response.statusCode());
+                }
+            } catch (Exception e) {
+                System.err.println("Error fetching ticket count for JQL: " + jql + " - " + e.getMessage());
+                return 0; // Fallback to 0
+            }
+        });
+    }
+
     public CompletableFuture<Void> addWorklog(String issueKey, int timeSpentSeconds) {
         return CompletableFuture.supplyAsync(() -> {
             try {
