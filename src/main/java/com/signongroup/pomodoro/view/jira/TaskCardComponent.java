@@ -121,7 +121,7 @@ public class TaskCardComponent extends VBox {
                 mainViewModel.setActiveTask(viewModel);
             }
             if (windowManager != null) {
-                windowManager.showMainView();
+                windowManager.showActiveTimerView();
             }
         });
 
@@ -294,7 +294,7 @@ public class TaskCardComponent extends VBox {
              mainViewModel.setActiveTask(viewModel);
         }
         if (windowManager != null) {
-             windowManager.showMainView();
+             windowManager.showActiveTimerView();
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.signongroup.pomodoro.view;
 
+import com.signongroup.pomodoro.service.TrackingService;
 import io.micronaut.context.ApplicationContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -22,10 +23,12 @@ public class WindowManager {
     private Stage primaryStage;
     private final ApplicationContext context;
     private Scene scene;
+    private final TrackingService trackingService;
 
     @Inject
-    public WindowManager(ApplicationContext context) {
+    public WindowManager(ApplicationContext context, TrackingService trackingService) {
         this.context = context;
+        this.trackingService = trackingService;
     }
 
     public void init(Stage primaryStage, Scene scene) {
@@ -34,11 +37,25 @@ public class WindowManager {
     }
 
     public void showMainView() {
+        trackingService.setActiveMode(TrackingService.TrackingMode.POMODORO);
         switchView("/com/signongroup/pomodoro/view/MainView.fxml");
     }
 
     public void showSettingsView() {
         switchView("/com/signongroup/pomodoro/view/SettingsView.fxml");
+    }
+
+    public void showStopwatchView() {
+        trackingService.setActiveMode(TrackingService.TrackingMode.STOPWATCH);
+        switchView("/com/signongroup/pomodoro/view/StopwatchView.fxml");
+    }
+
+    public void showActiveTimerView() {
+        if (trackingService.getActiveMode() == TrackingService.TrackingMode.POMODORO) {
+            showMainView();
+        } else {
+            showStopwatchView();
+        }
     }
 
     public void showJiraBoardView() {
@@ -67,7 +84,7 @@ public class WindowManager {
             primaryStage.setMaxHeight(Double.MAX_VALUE);
             primaryStage.setWidth(684);
             primaryStage.setHeight(552);
-            showMainView();
+            showActiveTimerView();
             primaryStage.setAlwaysOnTop(false);
         }
     }

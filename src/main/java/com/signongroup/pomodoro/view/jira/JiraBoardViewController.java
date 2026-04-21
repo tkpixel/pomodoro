@@ -208,6 +208,6 @@ public class JiraBoardViewController implements Initializable {
 
     @FXML
     private void handleBackToMain() {
-        windowManager.showMainView();
+        windowManager.showActiveTimerView();
     }
 }
