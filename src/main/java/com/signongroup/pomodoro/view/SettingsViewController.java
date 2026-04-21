@@ -146,7 +146,7 @@ public class SettingsViewController implements Initializable {
 
     @FXML
     public void handleBack(ActionEvent event) {
-        windowManager.showMainView();
+        windowManager.showActiveTimerView();
     }
 
     // --- Accordion Toggle Handlers ---

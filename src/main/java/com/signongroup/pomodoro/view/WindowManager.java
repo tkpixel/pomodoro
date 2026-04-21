@@ -50,6 +50,14 @@ public class WindowManager {
         switchView("/com/signongroup/pomodoro/view/StopwatchView.fxml");
     }
 
+    public void showActiveTimerView() {
+        if (trackingService.getActiveMode() == TrackingService.TrackingMode.POMODORO) {
+            showMainView();
+        } else {
+            showStopwatchView();
+        }
+    }
+
     public void showJiraBoardView() {
         switchView("/com/signongroup/pomodoro/view/jira/JiraBoardView.fxml");
     }
@@ -76,7 +84,7 @@ public class WindowManager {
             primaryStage.setMaxHeight(Double.MAX_VALUE);
             primaryStage.setWidth(684);
             primaryStage.setHeight(552);
-            showMainView();
+            showActiveTimerView();
             primaryStage.setAlwaysOnTop(false);
         }
     }
