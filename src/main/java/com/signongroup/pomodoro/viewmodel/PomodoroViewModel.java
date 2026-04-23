@@ -29,10 +29,10 @@ public class PomodoroViewModel {
         BREAK_LONG
     }
 
-    private final StringProperty timerText = new SimpleStringProperty("25:00");
+    private final StringProperty timerText = new SimpleStringProperty("00:00");
     private final StringProperty sessionText = new SimpleStringProperty("1 / 4");
     private final StringProperty clearedTodayText = new SimpleStringProperty("00");
-    private final StringProperty nextBreakText = new SimpleStringProperty("05:00");
+    private final StringProperty nextBreakText = new SimpleStringProperty("00:00");
     private final DoubleProperty timerProgress = new SimpleDoubleProperty(1.0);
     private final DoubleProperty breakProgress = new SimpleDoubleProperty(0.0);
     private final BooleanProperty isRunning = new SimpleBooleanProperty(false);

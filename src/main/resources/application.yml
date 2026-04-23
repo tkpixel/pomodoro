@@ -1,0 +1,6 @@
+pomodoro:
+  defaults:
+    focus-duration-minutes: 25
+    short-break-duration-minutes: 5
+    long-break-duration-minutes: 15
+    cycles-before-long-break: 4

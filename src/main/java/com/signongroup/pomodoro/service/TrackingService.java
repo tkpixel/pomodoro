@@ -14,7 +14,7 @@ public class TrackingService {
         STOPWATCH
     }
 
-    private final StringProperty activeTime = new SimpleStringProperty("25:00");
+    private final StringProperty activeTime = new SimpleStringProperty("00:00");
     private final BooleanProperty isRunning = new SimpleBooleanProperty(false);
     private final javafx.beans.property.ObjectProperty<TrackingMode> activeMode = new javafx.beans.property.SimpleObjectProperty<>(TrackingMode.POMODORO);
 
