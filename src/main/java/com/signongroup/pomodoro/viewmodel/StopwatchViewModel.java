@@ -20,14 +20,14 @@ public class StopwatchViewModel {
     private final TimerService timerService;
     private final JiraBoardService jiraBoardService;
     private final ActiveTaskService activeTaskService;
-    private final MainViewModel mainViewModel;
+    private final PomodoroViewModel mainViewModel;
     private final TrackingService trackingService;
 
     private int elapsedSeconds = 0;
     private int unloggedSeconds = 0;
 
     @jakarta.inject.Inject
-    public StopwatchViewModel(JiraBoardService jiraBoardService, ActiveTaskService activeTaskService, MainViewModel mainViewModel, TrackingService trackingService) {
+    public StopwatchViewModel(JiraBoardService jiraBoardService, ActiveTaskService activeTaskService, PomodoroViewModel mainViewModel, TrackingService trackingService) {
         this.timerService = new TimerService();
         this.jiraBoardService = jiraBoardService;
         this.activeTaskService = activeTaskService;

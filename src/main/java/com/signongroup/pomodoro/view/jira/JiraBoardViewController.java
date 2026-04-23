@@ -3,7 +3,7 @@ package com.signongroup.pomodoro.view.jira;
 import com.signongroup.pomodoro.view.WindowManager;
 import com.signongroup.pomodoro.viewmodel.BoardViewModel;
 import com.signongroup.pomodoro.viewmodel.JiraBoardViewModel;
-import com.signongroup.pomodoro.viewmodel.MainViewModel;
+import com.signongroup.pomodoro.viewmodel.PomodoroViewModel;
 import com.signongroup.pomodoro.viewmodel.TaskCardViewModel;
 import io.micronaut.context.annotation.Prototype;
 import jakarta.inject.Inject;
@@ -37,7 +37,7 @@ public class JiraBoardViewController implements Initializable {
 
     private final JiraBoardViewModel viewModel;
     private final WindowManager windowManager;
-    private final MainViewModel mainViewModel;
+    private final PomodoroViewModel mainViewModel;
 
     @FXML private ComboBox<BoardViewModel> boardComboBox;
     @FXML private MenuButton filterMenuButton;
@@ -47,7 +47,7 @@ public class JiraBoardViewController implements Initializable {
     private final Map<String, VBox> columnListMap = new HashMap<>();
 
     @Inject
-    public JiraBoardViewController(JiraBoardViewModel viewModel, WindowManager windowManager, MainViewModel mainViewModel) {
+    public JiraBoardViewController(JiraBoardViewModel viewModel, WindowManager windowManager, PomodoroViewModel mainViewModel) {
         this.viewModel = viewModel;
         this.windowManager = windowManager;
         this.mainViewModel = mainViewModel;

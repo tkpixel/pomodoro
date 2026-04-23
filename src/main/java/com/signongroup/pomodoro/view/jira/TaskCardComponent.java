@@ -2,7 +2,7 @@ package com.signongroup.pomodoro.view.jira;
 
 import com.signongroup.pomodoro.view.WindowManager;
 import com.signongroup.pomodoro.viewmodel.JiraBoardViewModel;
-import com.signongroup.pomodoro.viewmodel.MainViewModel;
+import com.signongroup.pomodoro.viewmodel.PomodoroViewModel;
 import com.signongroup.pomodoro.viewmodel.TaskCardViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,11 +51,11 @@ public class TaskCardComponent extends VBox {
 
     private final TaskCardViewModel viewModel;
     private final WindowManager windowManager;
-    private final MainViewModel mainViewModel;
+    private final PomodoroViewModel mainViewModel;
     private final JiraBoardViewModel jiraBoardViewModel;
     private boolean isExpanded = false;
 
-    public TaskCardComponent(TaskCardViewModel viewModel, WindowManager windowManager, MainViewModel mainViewModel, JiraBoardViewModel jiraBoardViewModel) {
+    public TaskCardComponent(TaskCardViewModel viewModel, WindowManager windowManager, PomodoroViewModel mainViewModel, JiraBoardViewModel jiraBoardViewModel) {
         this.viewModel = viewModel;
         this.windowManager = windowManager;
         this.mainViewModel = mainViewModel;

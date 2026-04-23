@@ -1,7 +1,7 @@
 package com.signongroup.pomodoro.view;
 
 import atlantafx.base.theme.NordDark;
-import com.signongroup.pomodoro.viewmodel.MainViewModel;
+import com.signongroup.pomodoro.viewmodel.PomodoroViewModel;
 import io.micronaut.context.ApplicationContext;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

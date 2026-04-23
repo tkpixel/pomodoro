@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.Group?>
+<?import org.kordamp.ikonli.javafx.*?>
 <?import javafx.geometry.Insets?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
@@ -13,145 +10,8 @@
            styleClass="bg-mesh"
            prefHeight="552.0" prefWidth="684.0">
 
-    <!-- Decorative Elements (Blur effects not perfectly supported in JavaFX out-of-the-box, simulated via background) -->
-
-    <!-- Main Content -->
-    <VBox alignment="CENTER" spacing="40" StackPane.alignment="CENTER" pickOnBounds="false">
-        <padding>
-            <Insets top="80" bottom="100" left="16" right="16"/>
-        </padding>
-
-        <VBox alignment="CENTER">
-            <!-- Header -->
-            <HBox alignment="CENTER" style="-fx-padding: 0 0 40 0;">
-                <Label text="FOCUS" styleClass="font-manrope tracking-widest" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: -fx-on-surface; -fx-opacity: 0.9; -fx-text-transform: uppercase;"/>
-            </HBox>
-
-            <!-- Dashboard Split Layout -->
-            <HBox alignment="CENTER" spacing="40">
-                <!-- Left: Circular Timer -->
-                <StackPane prefWidth="260" prefHeight="260" minWidth="260" minHeight="260">
-                    <Group fx:id="timerTickContainer">
-                        <!-- Invisible boundary circle to prevent layout shift from drop-shadow bounds -->
-                        <Circle radius="150" fill="TRANSPARENT" />
-                    </Group>
-
-                    <VBox alignment="CENTER" spacing="-15">
-                        <Label fx:id="timerLabel" text="25:00" styleClass="timer-text"/>
-                        <Label text="MINUTES" styleClass="timer-label tracking-widest" style="-fx-padding: 4 0 0 0; -fx-text-fill: -fx-primary;"/>
-                    </VBox>
-                </StackPane>
-
-                <!-- Right: Vertically Stacked Data Cards -->
-                <VBox spacing="12" HBox.hgrow="ALWAYS">
-                    <!-- Session Card -->
-                    <HBox styleClass="card" alignment="CENTER_LEFT" spacing="12">
-                        <StackPane styleClass="card-icon-container">
-                            <FontIcon iconLiteral="fltfal-layer-20" iconSize="20"/>
-                        </StackPane>
-                        <VBox alignment="CENTER_LEFT">
-                            <Label text="SESSION" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
-                            <Label fx:id="sessionLabel" text="1 / 4" styleClass="card-value"/>
-                        </VBox>
-                    </HBox>
-
-                    <!-- Tasks Card -->
-                    <Button styleClass="card" alignment="CENTER_LEFT" onAction="#handleOpenStatistics" maxWidth="Infinity">
-                        <graphic>
-                            <HBox alignment="CENTER_LEFT" spacing="12">
-                                <StackPane styleClass="card-icon-container">
-                                    <FontIcon iconLiteral="fltfal-checkmark-square-24" iconSize="20"/>
-                                </StackPane>
-                                <VBox alignment="CENTER_LEFT">
-                                    <Label text="CLEARED TODAY" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
-                                    <HBox alignment="BOTTOM_LEFT" spacing="4">
-                                        <Label fx:id="clearedTodayLabel" text="00" styleClass="card-value"/>
-                                    </HBox>
-                                </VBox>
-                            </HBox>
-                        </graphic>
-                    </Button>
-
-                    <!-- Break Card -->
-                    <StackPane>
-                        <HBox fx:id="breakCardContainer" styleClass="card" alignment="CENTER_LEFT" spacing="12">
-                            <StackPane fx:id="breakCardIconContainer" styleClass="card-icon-container-break">
-                                <FontIcon fx:id="breakIcon" iconLiteral="fltral-drink-coffee-20" iconSize="20"/>
-                            </StackPane>
-                            <VBox alignment="CENTER_LEFT">
-                                <Label fx:id="breakTitleLabel" text="NEXT BREAK" styleClass="card-title tracking-widest" style="-fx-text-transform: uppercase;"/>
-                                <Label fx:id="nextBreakLabel" text="05:00" styleClass="card-value-muted"/>
-                            </VBox>
-                        </HBox>
-                        <Region fx:id="breakProgressRegion" StackPane.alignment="BOTTOM_RIGHT" maxHeight="4" style="-fx-background-color: -fx-primary;" styleClass="progress-glow" visible="false"/>
-                    </StackPane>
-                </VBox>
-            </HBox>
-
-            <!-- Jira Active Ticket Card -->
-            <VBox fx:id="activeTaskCard" style="-fx-background-color: #1C1C1E; -fx-background-radius: 16; -fx-padding: 20; -fx-border-color: rgba(255,255,255,0.05); -fx-border-radius: 16; -fx-border-width: 1; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 24, 0, 0, 12);" spacing="16" managed="false" visible="false">
-                <VBox.margin>
-                    <Insets top="48" bottom="32"/>
-                </VBox.margin>
-                <HBox alignment="CENTER_LEFT" spacing="8">
-                    <Circle fx:id="activeTaskIndicator" radius="4" fill="#FF4500" />
-                    <Label text="ACTIVE TASK" style="-fx-font-family: 'Inter'; -fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #FF4500; -fx-text-transform: uppercase; -fx-letter-spacing: 0.2em;"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <Label fx:id="activeTaskKeyLabel" style="-fx-font-family: 'Inter'; -fx-font-size: 11px; -fx-font-weight: 900; -fx-text-fill: #FF4500; -fx-letter-spacing: 0.1em;"/>
-                </HBox>
-                <Label fx:id="activeTaskTitleLabel" wrapText="true" style="-fx-font-family: 'Manrope'; -fx-font-size: 16px; -fx-font-weight: 800; -fx-text-fill: white; -fx-padding: 0 0 16 0;"/>
-                <StackPane fx:id="activeTaskProgressContainer" alignment="CENTER_LEFT" style="-fx-background-color: rgba(255,255,255,0.05); -fx-background-radius: 9999; -fx-pref-height: 6;">
-                    <Region fx:id="activeTaskProgressRegion" style="-fx-background-color: #FF4500; -fx-background-radius: 9999; -fx-effect: dropshadow(gaussian, rgba(255, 69, 0, 0.4), 10, 0, 0, 0);" />
-                </StackPane>
-            </VBox>
-        </VBox>
-    </VBox>
-
-    <!-- Floating Action Bar -->
-    <HBox alignment="CENTER" spacing="10" StackPane.alignment="BOTTOM_CENTER" maxHeight="-Infinity">
-        <padding>
-            <Insets bottom="20"/>
-        </padding>
-
-        <!-- Main Pill Navigation -->
-        <HBox alignment="CENTER" styleClass="fab-glass" spacing="8" prefHeight="60">
-            <padding>
-                <Insets left="16" right="16"/>
-            </padding>
-            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleResetPhase">
-                <graphic>
-                    <FontIcon iconLiteral="fltral-arrow-clockwise-20" iconSize="24"/>
-                </graphic>
-            </Button>
-            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleSwitchToStopwatch">
-                <graphic>
-                    <FontIcon iconLiteral="fltrmz-timer-20" iconSize="24" />
-                </graphic>
-            </Button>
-            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" style="-fx-text-fill: -fx-primary;">
-                <graphic>
-                    <FontIcon iconLiteral="fltral-food-20" iconSize="24" style="-fx-icon-color: -fx-primary;"/>
-                </graphic>
-            </Button>
-            <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleOpenJiraBoard">
-                <graphic>
-                    <FontIcon iconLiteral="fltral-checkmark-square-24" iconSize="24"/>
-                </graphic>
-            </Button>
-            <Button fx:id="skipButton" styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleDynamicAction">
-                <graphic>
-                    <FontIcon iconLiteral="fltrmz-next-24" iconSize="24"/>
-                </graphic>
-            </Button>
-        </HBox>
-
-        <!-- Primary Action Button -->
-        <Button styleClass="play-btn" prefWidth="64" prefHeight="64" onAction="#handlePlayPause">
-            <graphic>
-                <FontIcon fx:id="playIcon" iconLiteral="fltfmz-play-20" iconSize="36" iconColor="#101010"/>
-            </graphic>
-        </Button>
-    </HBox>
+    <!-- Sub-view content is loaded here dynamically -->
+    <StackPane fx:id="contentContainer" />
 
     <!-- TopAppBar LAST = highest Z-order = always clickable -->
     <HBox alignment="CENTER_LEFT" prefHeight="80.0" styleClass="glass-bar" StackPane.alignment="TOP_CENTER" maxHeight="80.0">
@@ -174,8 +34,5 @@
             </Button>
         </HBox>
     </HBox>
-
-    <!-- Statistics Overlay -->
-    <fx:include fx:id="statisticsOverlay" source="StatisticsOverlayView.fxml"/>
 
 </StackPane>
