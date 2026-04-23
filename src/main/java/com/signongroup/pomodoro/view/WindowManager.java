@@ -49,11 +49,9 @@ public class WindowManager {
     }
 
     public void showActiveTimerView() {
-        if (trackingService.getActiveMode() == TrackingService.TrackingMode.POMODORO) {
-            showPomodoroView();
-        } else {
-            showStopwatchView();
-        }
+        // First ensure the mode is correctly set without triggering a scene switch.
+        // Then load the MainView shell which automatically loads the right sub-view.
+        switchView("/com/signongroup/pomodoro/view/MainView.fxml");
     }
 
     public void showJiraBoardView() {
