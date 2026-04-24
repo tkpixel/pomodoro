@@ -21,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import com.signongroup.pomodoro.util.IconFactory;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
@@ -108,12 +109,12 @@ public class TaskCardComponent extends VBox {
         contextMenu.getStyleClass().add("context-menu");
 
         Menu moveStatusMenu = new Menu("Move Status");
-        FontIcon moveIcon = new FontIcon("fltral-arrow-swap-20");
+        FontIcon moveIcon = IconFactory.create(IconFactory.ARROW_SWAP);
         moveIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
         moveStatusMenu.setGraphic(moveIcon);
 
         MenuItem setAsActiveItem = new MenuItem("Set as Active");
-        FontIcon activeIcon = new FontIcon("fltfmz-play-20");
+        FontIcon activeIcon = IconFactory.create(IconFactory.PLAY_20);
         activeIcon.setStyle("-fx-icon-color: #FF4500;");
         setAsActiveItem.setGraphic(activeIcon);
         setAsActiveItem.setOnAction(e -> {
@@ -128,7 +129,7 @@ public class TaskCardComponent extends VBox {
         SeparatorMenuItem separator = new SeparatorMenuItem();
 
         MenuItem assignToMeItem = new MenuItem("Assign to Me");
-        FontIcon assignIcon = new FontIcon("fltrmz-person-20");
+        FontIcon assignIcon = IconFactory.create(IconFactory.PERSON);
         assignIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
         assignToMeItem.setGraphic(assignIcon);
         assignToMeItem.setOnAction(e -> {
@@ -245,7 +246,7 @@ public class TaskCardComponent extends VBox {
             storyPointsContainer.setVisible(true);
             storyPointsContainer.setManaged(true);
             storyPointsLabel.textProperty().bind(viewModel.storyPointsProperty());
-            storyPointsLabel.setGraphic(new FontIcon("fltfal-layer-20"));
+            storyPointsLabel.setGraphic(IconFactory.create(IconFactory.LAYER, 20));
         } else {
              storyPointsContainer.setVisible(false);
              storyPointsContainer.setManaged(false);

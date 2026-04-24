@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.util.StringConverter;
+import com.signongroup.pomodoro.util.IconFactory;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
@@ -126,8 +127,7 @@ public class CreateIssueViewController implements Initializable {
                 setGraphic(null);
             } else {
                 setText(item.name().toUpperCase());
-                FontIcon icon = new FontIcon("fltfmz-task-list-24");
-                icon.setIconSize(16);
+                FontIcon icon = IconFactory.create(IconFactory.TASK_LIST, 16);
                 icon.setStyle("-fx-icon-color: -fx-tertiary;");
                 setGraphic(icon);
             }
@@ -143,8 +143,7 @@ public class CreateIssueViewController implements Initializable {
                 setGraphic(null);
             } else {
                 setText(item.name().toUpperCase());
-                FontIcon icon = new FontIcon("fltfal-arrow-up-24"); // Approximate keyboard_double_arrow_up
-                icon.setIconSize(16);
+                FontIcon icon = IconFactory.create(IconFactory.PRIO_HIGH, 16);
                 icon.setStyle("-fx-icon-color: #ff716c;");
                 setGraphic(icon);
             }
