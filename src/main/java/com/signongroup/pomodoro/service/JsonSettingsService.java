@@ -1,7 +1,9 @@
 package com.signongroup.pomodoro.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.signongroup.pomodoro.config.DefaultPomodoroConfig;
 import com.signongroup.pomodoro.model.DurationSettings;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +20,11 @@ public class JsonSettingsService implements SettingsService {
 
     private final ObjectMapper objectMapper;
     private final File settingsFile;
+    private final DefaultPomodoroConfig defaultConfig;
 
-    public JsonSettingsService() {
+    @Inject
+    public JsonSettingsService(DefaultPomodoroConfig defaultConfig) {
+        this.defaultConfig = defaultConfig;
         this.objectMapper = new ObjectMapper();
 
         String userHome = System.getProperty("user.home");
@@ -42,7 +47,13 @@ public class JsonSettingsService implements SettingsService {
                 log.error("Failed to load settings from JSON. Using defaults.", e);
             }
         }
-        return DurationSettings.defaultSettings();
+        return new DurationSettings(
+                defaultConfig.focusDurationMinutes(),
+                defaultConfig.shortBreakDurationMinutes(),
+                defaultConfig.longBreakDurationMinutes(),
+                defaultConfig.cyclesBeforeLongBreak(),
+                false // autoStartBreaks default
+        );
     }
 
     @Override

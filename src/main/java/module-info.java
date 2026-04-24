@@ -52,6 +52,7 @@ module com.signongroup.pomodoro {
     exports com.signongroup.pomodoro.model;
     exports com.signongroup.pomodoro.model.jira;
     exports com.signongroup.pomodoro.service;
+    exports com.signongroup.pomodoro.config;
 
 
     // ── Reflection-Öffnungen für FXMLLoader ──────────────────────────────────
@@ -64,6 +65,7 @@ module com.signongroup.pomodoro {
     opens com.signongroup.pomodoro.service to io.micronaut.micronaut_inject;
     opens com.signongroup.pomodoro.model to io.micronaut.micronaut_inject, com.fasterxml.jackson.databind;
     opens com.signongroup.pomodoro.model.jira to io.micronaut.micronaut_inject, com.fasterxml.jackson.databind;
+    opens com.signongroup.pomodoro.config to io.micronaut.micronaut_inject;
 }
 
 
