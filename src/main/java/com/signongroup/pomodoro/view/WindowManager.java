@@ -36,9 +36,8 @@ public class WindowManager {
         this.scene = scene;
     }
 
-    public void showMainView() {
+    public void showPomodoroView() {
         trackingService.setActiveMode(TrackingService.TrackingMode.POMODORO);
-        switchView("/com/signongroup/pomodoro/view/MainView.fxml");
     }
 
     public void showSettingsView() {
@@ -47,15 +46,12 @@ public class WindowManager {
 
     public void showStopwatchView() {
         trackingService.setActiveMode(TrackingService.TrackingMode.STOPWATCH);
-        switchView("/com/signongroup/pomodoro/view/StopwatchView.fxml");
     }
 
     public void showActiveTimerView() {
-        if (trackingService.getActiveMode() == TrackingService.TrackingMode.POMODORO) {
-            showMainView();
-        } else {
-            showStopwatchView();
-        }
+        // First ensure the mode is correctly set without triggering a scene switch.
+        // Then load the MainView shell which automatically loads the right sub-view.
+        switchView("/com/signongroup/pomodoro/view/MainView.fxml");
     }
 
     public void showJiraBoardView() {

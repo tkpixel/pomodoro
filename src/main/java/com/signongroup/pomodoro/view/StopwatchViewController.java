@@ -118,16 +118,6 @@ public class StopwatchViewController implements Initializable {
     }
 
     @FXML
-    public void handleMinimize(ActionEvent event) {
-        windowManager.toggleMiniMode(true);
-    }
-
-    @FXML
-    public void handleOpenSettingsMenu(ActionEvent event) {
-        windowManager.showSettingsView();
-    }
-
-    @FXML
     public void handleOpenJiraBoard(ActionEvent event) {
         windowManager.showJiraBoardView();
     }
@@ -141,6 +131,6 @@ public class StopwatchViewController implements Initializable {
 
     @FXML
     public void handleSwitchToPomodoro(ActionEvent event) {
-        windowManager.showMainView();
+        windowManager.showPomodoroView();
     }
 }

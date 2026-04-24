@@ -20,7 +20,7 @@ import javafx.beans.property.StringProperty;
  * Wird von Micronaut als Singleton verwaltet.
  */
 @Singleton
-public class MainViewModel {
+public class PomodoroViewModel {
 
     public enum TimerState {
         READY,
@@ -54,7 +54,7 @@ public class MainViewModel {
     private final TrackingService trackingService;
 
     @jakarta.inject.Inject
-    public MainViewModel(SettingsViewModel settingsViewModel, TimerService timerService, JiraBoardService jiraBoardService, ActiveTaskService activeTaskService, TrackingService trackingService) {
+    public PomodoroViewModel(SettingsViewModel settingsViewModel, TimerService timerService, JiraBoardService jiraBoardService, ActiveTaskService activeTaskService, TrackingService trackingService) {
         this.settingsViewModel = settingsViewModel;
         this.timerService = timerService;
         this.jiraBoardService = jiraBoardService;
