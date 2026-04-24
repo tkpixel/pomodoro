@@ -36,6 +36,9 @@ module com.signongroup.pomodoro {
     // ── Logging ───────────────────────────────────────────────────────────────
     requires org.slf4j;
 
+    // ── java-keyring (Credentials) ────────────────────────────────────────
+    requires java.keyring;
+
     requires java.net.http;
     requires java.prefs;
     requires com.fasterxml.jackson.annotation;
