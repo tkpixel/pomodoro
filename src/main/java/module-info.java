@@ -28,6 +28,10 @@ module com.signongroup.pomodoro {
     requires io.micronaut.micronaut_inject;
     requires io.micronaut.micronaut_context;
     requires io.micronaut.micronaut_aop;
+    requires io.micronaut.micronaut_http;
+    requires io.micronaut.micronaut_http_client;
+    requires io.micronaut.micronaut_http_client_core;
+    requires org.reactivestreams;
 
     // ── Jakarta (Annotations) ─────────────────────────────────────────────────
     requires jakarta.inject;
