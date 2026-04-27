@@ -32,6 +32,8 @@ module com.signongroup.pomodoro {
     requires io.micronaut.micronaut_http_client;
     requires io.micronaut.micronaut_http_client_core;
     requires org.reactivestreams;
+    requires io.micronaut.micronaut_jackson_databind;
+    requires io.micronaut.micronaut_json_core;
 
     // ── Jakarta (Annotations) ─────────────────────────────────────────────────
     requires jakarta.inject;

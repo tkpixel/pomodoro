@@ -1,25 +1,24 @@
-package com.signongroup.pomodoro.service;
+import re
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.signongroup.pomodoro.model.jira.BoardConfiguration;
-import com.signongroup.pomodoro.model.jira.IssueType;
-import com.signongroup.pomodoro.model.jira.JiraBoard;
-import com.signongroup.pomodoro.model.jira.JiraTask;
-import com.signongroup.pomodoro.model.jira.JiraTransition;
-import com.signongroup.pomodoro.model.jira.Priority;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import java.net.URI;
-import io.micronaut.http.HttpResponse;
+with open('src/main/java/com/signongroup/pomodoro/service/JiraBoardService.java', 'r') as f:
+    text = f.read()
+
+# Replace imports
+text = re.sub(
+    r'import java\.net\.http\.HttpClient;\nimport java\.net\.http\.HttpRequest;\nimport java\.net\.http\.HttpResponse;\nimport java\.nio\.charset\.StandardCharsets;\nimport java\.time\.Duration;\nimport java\.util\.ArrayList;\nimport java\.util\.Base64;\nimport java\.util\.List;\nimport java\.util\.concurrent\.CompletableFuture;',
+    '''import io.micronaut.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Executors;''',
+    text
+)
 
-@Singleton
-public class JiraBoardService {
+# Class sig and fields
+text = re.sub(
+    r'public class JiraBoardService \{\n\n    private final JiraAuthService authService;\n    private final HttpClient httpClient;\n    private final ObjectMapper objectMapper;\n\n    @Inject\n    public JiraBoardService\(JiraAuthService authService\) \{\n        this\.authService = authService;\n        this\.httpClient = HttpClient\.newBuilder\(\)\n                \.connectTimeout\(Duration\.ofSeconds\(10\)\)\n                \.build\(\);\n        this\.objectMapper = new ObjectMapper\(\);\n    \}',
+    '''public class JiraBoardService {
 
     private final JiraAuthService authService;
     private final JiraApiClient jiraApiClient;
@@ -31,17 +30,20 @@ public class JiraBoardService {
         this.authService = authService;
         this.jiraApiClient = jiraApiClient;
         this.objectMapper = objectMapper;
-    }
+    }''',
+    text
+)
 
-    private String getBaseUrl() {
-        String url = authService.getSavedUrl();
-        if (url == null || url.isBlank()) {
-            throw new IllegalStateException("Jira URL not configured.");
-        }
-        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
-    }
+text = re.sub(
+    r'    private String getAuthHeader\(\) \{[\s\S]*?\}\n\n',
+    '',
+    text
+)
 
-    public CompletableFuture<List<JiraBoard>> fetchBoards() {
+# fetchBoards
+text = re.sub(
+    r'''    public CompletableFuture<List<JiraBoard>> fetchBoards\(\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<List<JiraBoard>> fetchBoards() {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/agile/1.0/board");
@@ -58,10 +60,14 @@ public class JiraBoardService {
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching boards", e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<List<JiraTask>> fetchTasks(Long boardId) {
+# fetchTasks
+text = re.sub(
+    r'''    public CompletableFuture<List<JiraTask>> fetchTasks\(String boardId\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<List<JiraTask>> fetchTasks(String boardId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/agile/1.0/board/" + boardId + "/issue?maxResults=50");
@@ -78,10 +84,14 @@ public class JiraBoardService {
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching tasks for board " + boardId, e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<BoardConfiguration> fetchBoardConfiguration(Long boardId) {
+# fetchBoardConfiguration
+text = re.sub(
+    r'''    public CompletableFuture<BoardConfiguration> fetchBoardConfiguration\(String boardId\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<BoardConfiguration> fetchBoardConfiguration(String boardId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/agile/1.0/board/" + boardId + "/configuration");
@@ -93,10 +103,14 @@ public class JiraBoardService {
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching configuration for board " + boardId, e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<List<JiraTransition>> fetchTransitions(String issueKey) {
+# fetchTransitions
+text = re.sub(
+    r'''    public CompletableFuture<List<JiraTransition>> fetchTransitions\(String issueKey\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<List<JiraTransition>> fetchTransitions(String issueKey) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/transitions");
@@ -113,23 +127,31 @@ public class JiraBoardService {
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching transitions for issue " + issueKey, e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<Boolean> moveTask(String issueKey, String transitionId) {
+# moveTask
+text = re.sub(
+    r'''    public CompletableFuture<Boolean> moveTask\(String issueKey, String transitionId\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<Boolean> moveTask(String issueKey, String transitionId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/transitions");
-                String body = "{\"transition\": {\"id\": \"" + transitionId + "\"}}";
+                String body = "{\\"transition\\": {\\"id\\": \\"" + transitionId + "\\"}}";
                 HttpResponse<JsonNode> response = jiraApiClient.post(uri, body).join();
                 return response.getStatus().getCode() >= 200 && response.getStatus().getCode() < 300;
             } catch (Exception e) {
                 throw new RuntimeException("Error moving task " + issueKey, e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<Boolean> assignTaskToCurrentUser(String issueKey) {
+# assignTaskToCurrentUser
+text = re.sub(
+    r'''    public CompletableFuture<Boolean> assignTaskToCurrentUser\(String issueKey\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<Boolean> assignTaskToCurrentUser(String issueKey) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String accountId = authService.getSavedAccountId();
@@ -137,16 +159,20 @@ public class JiraBoardService {
                     throw new IllegalStateException("Account ID not configured. Please test connection first.");
                 }
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/assignee");
-                String body = "{\"accountId\": \"" + accountId + "\"}";
+                String body = "{\\"accountId\\": \\"" + accountId + "\\"}";
                 HttpResponse<JsonNode> response = jiraApiClient.put(uri, body).join();
                 return response.getStatus().getCode() >= 200 && response.getStatus().getCode() < 300;
             } catch (Exception e) {
                 throw new RuntimeException("Error assigning task " + issueKey, e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<List<IssueType>> fetchIssueTypes(String projectId) {
+# fetchIssueTypes
+text = re.sub(
+    r'''    public CompletableFuture<List<IssueType>> fetchIssueTypes\(String projectId\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<List<IssueType>> fetchIssueTypes(String projectId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issuetype");
@@ -163,10 +189,14 @@ public class JiraBoardService {
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching issue types for project " + projectId, e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<List<Priority>> fetchPriorities() {
+# fetchPriorities
+text = re.sub(
+    r'''    public CompletableFuture<List<Priority>> fetchPriorities\(\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<List<Priority>> fetchPriorities() {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/priority");
@@ -183,10 +213,14 @@ public class JiraBoardService {
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching priorities", e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<Void> createIssue(com.signongroup.pomodoro.model.jira.IssueCreateRequest issueCreateRequest) {
+# createIssue
+text = re.sub(
+    r'''    public CompletableFuture<Void> createIssue\(com\.signongroup\.pomodoro\.model\.jira\.IssueCreateRequest issueCreateRequest\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<Void> createIssue(com.signongroup.pomodoro.model.jira.IssueCreateRequest issueCreateRequest) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue");
@@ -199,14 +233,18 @@ public class JiraBoardService {
             } catch (Exception e) {
                 throw new RuntimeException("Error creating issue", e);
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<Integer> fetchTicketCount(String jql) {
+# fetchTicketCount
+text = re.sub(
+    r'''    public CompletableFuture<Integer> fetchTicketCount\(String jql\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<Integer> fetchTicketCount(String jql) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/search/approximate-count");
-                String body = "{\"jql\": \"" + jql.replace("\"", "\\\"") + "\"}";
+                String body = "{\\"jql\\": \\"" + jql.replace("\\"", "\\\\\\"") + "\\"\\"}";
                 HttpResponse<JsonNode> response = jiraApiClient.post(uri, body).join();
                 if (response.getStatus().getCode() == 200) {
                     return response.body().path("count").asInt(0);
@@ -216,14 +254,18 @@ public class JiraBoardService {
                 System.err.println("Error fetching ticket count for JQL: " + jql + " - " + e.getMessage());
                 return 0; // Fallback to 0
             }
-        }, VIRTUAL_EXECUTOR);
-    }
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
 
-    public CompletableFuture<Void> addWorklog(String issueKey, int timeSpentSeconds) {
+# addWorklog
+text = re.sub(
+    r'''    public CompletableFuture<Void> addWorklog\(String issueKey, int timeSpentSeconds\) \{[\s\S]*?\}\n        \}\);''',
+    '''    public CompletableFuture<Void> addWorklog(String issueKey, int timeSpentSeconds) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/worklog");
-                String body = "{\"timeSpentSeconds\": " + timeSpentSeconds + "}";
+                String body = "{\\"timeSpentSeconds\\": " + timeSpentSeconds + "}";
                 HttpResponse<JsonNode> response = jiraApiClient.post(uri, body).join();
                 if (response.getStatus().getCode() < 200 || response.getStatus().getCode() >= 300) {
                     throw new RuntimeException("Failed to add worklog: HTTP " + response.getStatus().getCode());
@@ -234,6 +276,9 @@ public class JiraBoardService {
                 System.err.println("Error adding worklog for task " + issueKey + ": " + e.getMessage());
                 return null;
             }
-        }, VIRTUAL_EXECUTOR);
-    }
-}
+        }, VIRTUAL_EXECUTOR);''',
+    text
+)
+
+with open('src/main/java/com/signongroup/pomodoro/service/JiraBoardService.java', 'w') as f:
+    f.write(text)

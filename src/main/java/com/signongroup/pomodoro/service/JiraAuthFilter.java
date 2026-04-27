@@ -39,6 +39,12 @@ public class JiraAuthFilter implements HttpClientFilter {
             request.header("Authorization", "Basic " + encoded);
         }
         request.header("Accept", "application/json");
+
+        if (request.getMethod() == io.micronaut.http.HttpMethod.POST
+            || request.getMethod() == io.micronaut.http.HttpMethod.PUT) {
+            request.header("Content-Type", "application/json");
+        }
+
         return chain.proceed(request);
     }
 }
