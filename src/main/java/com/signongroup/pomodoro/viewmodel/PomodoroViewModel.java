@@ -4,6 +4,7 @@ import com.signongroup.pomodoro.service.ActiveTaskService;
 import com.signongroup.pomodoro.service.JiraBoardService;
 import com.signongroup.pomodoro.service.TimerService;
 import com.signongroup.pomodoro.service.TrackingService;
+import com.signongroup.pomodoro.service.SoundService;
 import jakarta.inject.Singleton;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -52,14 +53,27 @@ public class PomodoroViewModel {
     private final JiraBoardService jiraBoardService;
     private final ActiveTaskService activeTaskService;
     private final TrackingService trackingService;
+    private final SoundService soundService;
 
+    /**
+     * Constructor.
+     * @param settingsViewModel settingsViewModel
+     * @param timerService timerService
+     * @param jiraBoardService jiraBoardService
+     * @param activeTaskService activeTaskService
+     * @param trackingService trackingService
+     * @param soundService soundService
+     */
     @jakarta.inject.Inject
-    public PomodoroViewModel(SettingsViewModel settingsViewModel, TimerService timerService, JiraBoardService jiraBoardService, ActiveTaskService activeTaskService, TrackingService trackingService) {
+    public PomodoroViewModel(SettingsViewModel settingsViewModel, TimerService timerService,
+                             JiraBoardService jiraBoardService, ActiveTaskService activeTaskService,
+                             TrackingService trackingService, SoundService soundService) {
         this.settingsViewModel = settingsViewModel;
         this.timerService = timerService;
         this.jiraBoardService = jiraBoardService;
         this.activeTaskService = activeTaskService;
         this.trackingService = trackingService;
+        this.soundService = soundService;
 
         this.timerService.setTickCallback(() -> Platform.runLater(this::tick));
 
@@ -111,6 +125,11 @@ public class PomodoroViewModel {
     private void tick() {
         if (timeRemainingSeconds > 0) {
             timeRemainingSeconds--;
+            if (timeRemainingSeconds == 5) {
+                soundService.playWarningSound();
+            } else if (timeRemainingSeconds == 0) {
+                soundService.playAlarmSound();
+            }
             updateUI();
         } else {
             handleTimerComplete();
@@ -169,6 +188,9 @@ public class PomodoroViewModel {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
+    /**
+     * Starts the timer.
+     */
     public void startTimer() {
         if (timerState.get() == TimerState.READY) {
             timerState.set(TimerState.FOCUS_RUNNING);
@@ -177,11 +199,17 @@ public class PomodoroViewModel {
         timerService.start();
     }
 
+    /**
+     * Pauses the timer.
+     */
     public void pauseTimer() {
         isRunning.set(false);
         timerService.pause();
     }
 
+    /**
+     * Toggles the timer.
+     */
     public void toggleTimer() {
         if (isRunning.get()) {
             pauseTimer();
@@ -190,6 +218,9 @@ public class PomodoroViewModel {
         }
     }
 
+    /**
+     * Skips the current break.
+     */
     public void skipBreak() {
         if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
             pauseTimer();
@@ -197,6 +228,9 @@ public class PomodoroViewModel {
         }
     }
 
+    /**
+     * Resets the current phase.
+     */
     public void resetCurrentPhase() {
         TimerState currentState = timerState.get();
 
@@ -222,48 +256,192 @@ public class PomodoroViewModel {
 
     // --- Active Task Routing ---
 
+    /**
+     * Sets the active task.
+     * @param task task
+     */
     public void setActiveTask(TaskCardViewModel task) {
         this.activeTaskService.setActiveTask(task);
     }
 
+    /**
+     * Returns the active task property.
+     * @return ObjectProperty
+     */
     public ObjectProperty<TaskCardViewModel> activeTaskProperty() {
         return this.activeTaskService.activeTaskProperty();
     }
 
+    /**
+     * Returns the active task.
+     * @return TaskCardViewModel
+     */
     public TaskCardViewModel getActiveTask() {
         return this.activeTaskService.getActiveTask();
     }
 
     // --- Getters & Setters / Properties ---
 
-    public StringProperty timerTextProperty() { return timerText; }
-    public String getTimerText() { return timerText.get(); }
-    public void setTimerText(String value) { this.timerText.set(value); }
+    /**
+     * Returns the timerText property.
+     * @return StringProperty
+     */
+    public StringProperty timerTextProperty() {
+        return timerText;
+    }
+    /**
+     * Returns the timerText.
+     * @return String
+     */
+    public String getTimerText() {
+        return timerText.get();
+    }
+    /**
+     * Sets the timerText.
+     * @param value the timer text
+     */
+    public void setTimerText(String value) {
+        this.timerText.set(value);
+    }
 
-    public StringProperty sessionTextProperty() { return sessionText; }
-    public String getSessionText() { return sessionText.get(); }
-    public void setSessionText(String value) { this.sessionText.set(value); }
+    /**
+     * Returns the sessionText property.
+     * @return StringProperty
+     */
+    public StringProperty sessionTextProperty() {
+        return sessionText;
+    }
+    /**
+     * Returns the sessionText.
+     * @return String
+     */
+    public String getSessionText() {
+        return sessionText.get();
+    }
+    /**
+     * Sets the sessionText.
+     * @param value the session text
+     */
+    public void setSessionText(String value) {
+        this.sessionText.set(value);
+    }
 
-    public StringProperty clearedTodayTextProperty() { return clearedTodayText; }
-    public String getClearedTodayText() { return clearedTodayText.get(); }
-    public void setClearedTodayText(String value) { this.clearedTodayText.set(value); }
+    /**
+     * Returns the clearedTodayText property.
+     * @return StringProperty
+     */
+    public StringProperty clearedTodayTextProperty() {
+        return clearedTodayText;
+    }
+    /**
+     * Returns the clearedTodayText.
+     * @return String
+     */
+    public String getClearedTodayText() {
+        return clearedTodayText.get();
+    }
+    /**
+     * Sets the clearedTodayText.
+     * @param value the text
+     */
+    public void setClearedTodayText(String value) {
+        this.clearedTodayText.set(value);
+    }
 
-    public StringProperty nextBreakTextProperty() { return nextBreakText; }
-    public String getNextBreakText() { return nextBreakText.get(); }
-    public void setNextBreakText(String value) { this.nextBreakText.set(value); }
+    /**
+     * Returns the nextBreakText property.
+     * @return StringProperty
+     */
+    public StringProperty nextBreakTextProperty() {
+        return nextBreakText;
+    }
+    /**
+     * Returns the nextBreakText.
+     * @return String
+     */
+    public String getNextBreakText() {
+        return nextBreakText.get();
+    }
+    /**
+     * Sets the nextBreakText.
+     * @param value the text
+     */
+    public void setNextBreakText(String value) {
+        this.nextBreakText.set(value);
+    }
 
-    public DoubleProperty timerProgressProperty() { return timerProgress; }
-    public double getTimerProgress() { return timerProgress.get(); }
-    public void setTimerProgress(double value) { this.timerProgress.set(value); }
+    /**
+     * Returns the timerProgress property.
+     * @return DoubleProperty
+     */
+    public DoubleProperty timerProgressProperty() {
+        return timerProgress;
+    }
+    /**
+     * Returns the timerProgress.
+     * @return double
+     */
+    public double getTimerProgress() {
+        return timerProgress.get();
+    }
+    /**
+     * Sets the timerProgress.
+     * @param value the progress
+     */
+    public void setTimerProgress(double value) {
+        this.timerProgress.set(value);
+    }
 
-    public DoubleProperty breakProgressProperty() { return breakProgress; }
-    public double getBreakProgress() { return breakProgress.get(); }
-    public void setBreakProgress(double value) { this.breakProgress.set(value); }
+    /**
+     * Returns the breakProgress property.
+     * @return DoubleProperty
+     */
+    public DoubleProperty breakProgressProperty() {
+        return breakProgress;
+    }
+    /**
+     * Returns the breakProgress.
+     * @return double
+     */
+    public double getBreakProgress() {
+        return breakProgress.get();
+    }
+    /**
+     * Sets the breakProgress.
+     * @param value the progress
+     */
+    public void setBreakProgress(double value) {
+        this.breakProgress.set(value);
+    }
 
-    public BooleanProperty isRunningProperty() { return isRunning; }
-    public boolean getIsRunning() { return isRunning.get(); }
+    /**
+     * Returns the isRunning property.
+     * @return BooleanProperty
+     */
+    public BooleanProperty isRunningProperty() {
+        return isRunning;
+    }
+    /**
+     * Returns the isRunning.
+     * @return boolean
+     */
+    public boolean getIsRunning() {
+        return isRunning.get();
+    }
 
-    public ObjectProperty<TimerState> timerStateProperty() { return timerState; }
-    public TimerState getTimerState() { return timerState.get(); }
+    /**
+     * Returns the timerState property.
+     * @return ObjectProperty
+     */
+    public ObjectProperty<TimerState> timerStateProperty() {
+        return timerState;
+    }
+    /**
+     * Returns the timerState.
+     * @return TimerState
+     */
+    public TimerState getTimerState() {
+        return timerState.get();
+    }
 
 }
