@@ -10,9 +10,15 @@ import com.signongroup.pomodoro.model.jira.JiraTransition;
 import com.signongroup.pomodoro.model.jira.Priority;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import java.net.URI;
-import io.micronaut.http.HttpResponse;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -22,15 +28,27 @@ import java.util.concurrent.Executors;
 public class JiraBoardService {
 
     private final JiraAuthService authService;
-    private final JiraApiClient jiraApiClient;
+    private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private static final Executor VIRTUAL_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
 
     @Inject
-    public JiraBoardService(JiraAuthService authService, JiraApiClient jiraApiClient, ObjectMapper objectMapper) {
+    public JiraBoardService(JiraAuthService authService, ObjectMapper objectMapper) {
         this.authService = authService;
-        this.jiraApiClient = jiraApiClient;
         this.objectMapper = objectMapper;
+        this.httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+    }
+
+    private String buildAuthHeader() {
+        String email = authService.getSavedEmail();
+        String token = authService.getSavedToken();
+        if (email == null || token == null || email.isBlank() || token.isBlank()) {
+            throw new IllegalStateException("Jira credentials not configured.");
+        }
+        String auth = email + ":" + token;
+        return "Basic " + Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
     }
 
     private String getBaseUrl() {
@@ -41,20 +59,66 @@ public class JiraBoardService {
         return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
     }
 
+    private JsonNode get(URI uri) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Authorization", buildAuthHeader())
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+            throw new RuntimeException("HTTP " + response.statusCode() + ": " + response.body());
+        }
+        return objectMapper.readTree(response.body());
+    }
+
+    private JsonNode post(URI uri, String body) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Authorization", buildAuthHeader())
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.body() == null || response.body().isBlank()) {
+            return objectMapper.createObjectNode();
+        }
+        return objectMapper.readTree(response.body());
+    }
+
+    private int postStatus(URI uri, String body) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Authorization", buildAuthHeader())
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString()).statusCode();
+    }
+
+    private int putStatus(URI uri, String body) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Authorization", buildAuthHeader())
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString()).statusCode();
+    }
+
     public CompletableFuture<List<JiraBoard>> fetchBoards() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URI uri = URI.create(getBaseUrl() + "/rest/agile/1.0/board");
-                HttpResponse<JsonNode> response = jiraApiClient.get(uri).join();
-                if (response.getStatus().getCode() == 200) {
-                    JsonNode values = response.body().path("values");
-                    List<JiraBoard> boards = new ArrayList<>();
-                    for (JsonNode node : values) {
-                        boards.add(objectMapper.treeToValue(node, JiraBoard.class));
-                    }
-                    return boards;
+                JsonNode root = get(URI.create(getBaseUrl() + "/rest/agile/1.0/board"));
+                List<JiraBoard> boards = new ArrayList<>();
+                for (JsonNode node : root.path("values")) {
+                    boards.add(objectMapper.treeToValue(node, JiraBoard.class));
                 }
-                throw new RuntimeException("Failed to fetch boards: HTTP " + response.getStatus().getCode());
+                return boards;
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching boards", e);
             }
@@ -64,17 +128,12 @@ public class JiraBoardService {
     public CompletableFuture<List<JiraTask>> fetchTasks(Long boardId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URI uri = URI.create(getBaseUrl() + "/rest/agile/1.0/board/" + boardId + "/issue?maxResults=50");
-                HttpResponse<JsonNode> response = jiraApiClient.get(uri).join();
-                if (response.getStatus().getCode() == 200) {
-                    JsonNode issuesNode = response.body().path("issues");
-                    List<JiraTask> tasks = new ArrayList<>();
-                    for (JsonNode node : issuesNode) {
-                        tasks.add(objectMapper.treeToValue(node, JiraTask.class));
-                    }
-                    return tasks;
+                JsonNode root = get(URI.create(getBaseUrl() + "/rest/agile/1.0/board/" + boardId + "/issue?maxResults=50"));
+                List<JiraTask> tasks = new ArrayList<>();
+                for (JsonNode node : root.path("issues")) {
+                    tasks.add(objectMapper.treeToValue(node, JiraTask.class));
                 }
-                throw new RuntimeException("Failed to fetch tasks: HTTP " + response.getStatus().getCode());
+                return tasks;
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching tasks for board " + boardId, e);
             }
@@ -84,12 +143,8 @@ public class JiraBoardService {
     public CompletableFuture<BoardConfiguration> fetchBoardConfiguration(Long boardId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URI uri = URI.create(getBaseUrl() + "/rest/agile/1.0/board/" + boardId + "/configuration");
-                HttpResponse<JsonNode> response = jiraApiClient.get(uri).join();
-                if (response.getStatus().getCode() == 200) {
-                    return objectMapper.treeToValue(response.body(), BoardConfiguration.class);
-                }
-                throw new RuntimeException("Failed to fetch board config: HTTP " + response.getStatus().getCode());
+                JsonNode root = get(URI.create(getBaseUrl() + "/rest/agile/1.0/board/" + boardId + "/configuration"));
+                return objectMapper.treeToValue(root, BoardConfiguration.class);
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching configuration for board " + boardId, e);
             }
@@ -99,17 +154,12 @@ public class JiraBoardService {
     public CompletableFuture<List<JiraTransition>> fetchTransitions(String issueKey) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/transitions");
-                HttpResponse<JsonNode> response = jiraApiClient.get(uri).join();
-                if (response.getStatus().getCode() == 200) {
-                    JsonNode transitionsNode = response.body().path("transitions");
-                    List<JiraTransition> transitions = new ArrayList<>();
-                    for (JsonNode node : transitionsNode) {
-                        transitions.add(objectMapper.treeToValue(node, JiraTransition.class));
-                    }
-                    return transitions;
+                JsonNode root = get(URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/transitions"));
+                List<JiraTransition> transitions = new ArrayList<>();
+                for (JsonNode node : root.path("transitions")) {
+                    transitions.add(objectMapper.treeToValue(node, JiraTransition.class));
                 }
-                throw new RuntimeException("Failed to fetch transitions: HTTP " + response.getStatus().getCode());
+                return transitions;
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching transitions for issue " + issueKey, e);
             }
@@ -121,8 +171,8 @@ public class JiraBoardService {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/transitions");
                 String body = "{\"transition\": {\"id\": \"" + transitionId + "\"}}";
-                HttpResponse<JsonNode> response = jiraApiClient.post(uri, body).join();
-                return response.getStatus().getCode() >= 200 && response.getStatus().getCode() < 300;
+                int status = postStatus(uri, body);
+                return status >= 200 && status < 300;
             } catch (Exception e) {
                 throw new RuntimeException("Error moving task " + issueKey, e);
             }
@@ -138,8 +188,8 @@ public class JiraBoardService {
                 }
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/assignee");
                 String body = "{\"accountId\": \"" + accountId + "\"}";
-                HttpResponse<JsonNode> response = jiraApiClient.put(uri, body).join();
-                return response.getStatus().getCode() >= 200 && response.getStatus().getCode() < 300;
+                int status = putStatus(uri, body);
+                return status >= 200 && status < 300;
             } catch (Exception e) {
                 throw new RuntimeException("Error assigning task " + issueKey, e);
             }
@@ -149,17 +199,12 @@ public class JiraBoardService {
     public CompletableFuture<List<IssueType>> fetchIssueTypes(String projectId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URI uri = URI.create(getBaseUrl() + "/rest/api/3/issuetype");
-                HttpResponse<JsonNode> response = jiraApiClient.get(uri).join();
-                if (response.getStatus().getCode() == 200) {
-                    JsonNode root = response.body();
-                    List<IssueType> issueTypes = new ArrayList<>();
-                    for (JsonNode node : root) {
-                        issueTypes.add(objectMapper.treeToValue(node, IssueType.class));
-                    }
-                    return issueTypes;
+                JsonNode root = get(URI.create(getBaseUrl() + "/rest/api/3/issuetype"));
+                List<IssueType> issueTypes = new ArrayList<>();
+                for (JsonNode node : root) {
+                    issueTypes.add(objectMapper.treeToValue(node, IssueType.class));
                 }
-                throw new RuntimeException("Failed to fetch issue types: HTTP " + response.getStatus().getCode());
+                return issueTypes;
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching issue types for project " + projectId, e);
             }
@@ -169,17 +214,12 @@ public class JiraBoardService {
     public CompletableFuture<List<Priority>> fetchPriorities() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URI uri = URI.create(getBaseUrl() + "/rest/api/3/priority");
-                HttpResponse<JsonNode> response = jiraApiClient.get(uri).join();
-                if (response.getStatus().getCode() == 200) {
-                    JsonNode root = response.body();
-                    List<Priority> priorities = new ArrayList<>();
-                    for (JsonNode node : root) {
-                        priorities.add(objectMapper.treeToValue(node, Priority.class));
-                    }
-                    return priorities;
+                JsonNode root = get(URI.create(getBaseUrl() + "/rest/api/3/priority"));
+                List<Priority> priorities = new ArrayList<>();
+                for (JsonNode node : root) {
+                    priorities.add(objectMapper.treeToValue(node, Priority.class));
                 }
-                throw new RuntimeException("Failed to fetch priorities: HTTP " + response.getStatus().getCode());
+                return priorities;
             } catch (Exception e) {
                 throw new RuntimeException("Error fetching priorities", e);
             }
@@ -191,9 +231,9 @@ public class JiraBoardService {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue");
                 String body = objectMapper.writeValueAsString(issueCreateRequest);
-                HttpResponse<JsonNode> response = jiraApiClient.post(uri, body).join();
-                if (response.getStatus().getCode() < 200 || response.getStatus().getCode() >= 300) {
-                    throw new RuntimeException("Failed to create issue: HTTP " + response.getStatus().getCode() + " " + response.body());
+                int status = postStatus(uri, body);
+                if (status < 200 || status >= 300) {
+                    throw new RuntimeException("Failed to create issue: HTTP " + status);
                 }
                 return null;
             } catch (Exception e) {
@@ -207,14 +247,11 @@ public class JiraBoardService {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/search/approximate-count");
                 String body = "{\"jql\": \"" + jql.replace("\"", "\\\"") + "\"}";
-                HttpResponse<JsonNode> response = jiraApiClient.post(uri, body).join();
-                if (response.getStatus().getCode() == 200) {
-                    return response.body().path("count").asInt(0);
-                }
-                throw new RuntimeException("Failed to fetch ticket count: HTTP " + response.getStatus().getCode());
+                JsonNode root = post(uri, body);
+                return root.path("count").asInt(0);
             } catch (Exception e) {
                 System.err.println("Error fetching ticket count for JQL: " + jql + " - " + e.getMessage());
-                return 0; // Fallback to 0
+                return 0;
             }
         }, VIRTUAL_EXECUTOR);
     }
@@ -224,13 +261,12 @@ public class JiraBoardService {
             try {
                 URI uri = URI.create(getBaseUrl() + "/rest/api/3/issue/" + issueKey + "/worklog");
                 String body = "{\"timeSpentSeconds\": " + timeSpentSeconds + "}";
-                HttpResponse<JsonNode> response = jiraApiClient.post(uri, body).join();
-                if (response.getStatus().getCode() < 200 || response.getStatus().getCode() >= 300) {
-                    throw new RuntimeException("Failed to add worklog: HTTP " + response.getStatus().getCode());
+                int status = postStatus(uri, body);
+                if (status < 200 || status >= 300) {
+                    throw new RuntimeException("Failed to add worklog: HTTP " + status);
                 }
                 return null;
             } catch (Exception e) {
-                // Log and return null instead of throwing to avoid crashing the timer
                 System.err.println("Error adding worklog for task " + issueKey + ": " + e.getMessage());
                 return null;
             }
