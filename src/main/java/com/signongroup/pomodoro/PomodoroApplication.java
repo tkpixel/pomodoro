@@ -5,12 +5,15 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.annotation.Nullable;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.fluentui.FluentUiFilledAL;
+import org.kordamp.ikonli.fluentui.FluentUiFilledMZ;
+import org.kordamp.ikonli.fluentui.FluentUiRegularAL;
+import org.kordamp.ikonli.fluentui.FluentUiRegularMZ;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.Objects;
 
@@ -28,7 +31,15 @@ public class PomodoroApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
 
+        // Alle vier FluentUI-Handler im JavaFX-Thread explizit vorladen.
+        // Ohne diese Zeilen werden fltfmz-* und fltrmz-* Icons als Rechtecke dargestellt.
+        FontIcon.of(FluentUiFilledAL.ARCHIVE_20);
+        FontIcon.of(FluentUiFilledMZ.MAXIMIZE_20);
+        FontIcon.of(FluentUiRegularAL.ARCHIVE_20);
+        FontIcon.of(FluentUiRegularMZ.MAXIMIZE_20);
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/signongroup/pomodoro/view/MainView.fxml"));
+        loader.setClassLoader(getClass().getClassLoader());
 
         if (context != null) {
             loader.setControllerFactory(context::getBean);

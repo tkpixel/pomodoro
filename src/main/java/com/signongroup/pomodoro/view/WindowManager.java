@@ -96,9 +96,6 @@ public class WindowManager {
                 throw new IllegalStateException("Cannot find FXML file: " + fxmlPath);
             }
             FXMLLoader loader = new FXMLLoader(resource);
-            // Bulletproof instantiation: Explicitly set the ClassLoader to ensure ServiceLoader
-            // (which Ikonli uses internally) can find the registered IconPack service providers
-            // across the module boundary within this application context.
             loader.setClassLoader(getClass().getClassLoader());
             loader.setControllerFactory(context::getBean);
             Parent root = loader.load();

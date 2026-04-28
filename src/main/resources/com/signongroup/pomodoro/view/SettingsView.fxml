@@ -183,7 +183,7 @@
                                     <TextField fx:id="tokenFieldVisible" promptText="Paste token here" styleClass="form-input-flat-transparent" visible="false"/>
                                     <Button styleClass="fab-icon-button" onAction="#toggleTokenVisibility" style="-fx-padding: 0 12 0 0;">
                                         <graphic>
-                                            <FontIcon fx:id="visibilityIcon" iconLiteral="fltfal-eye-show-20" iconSize="20" style="-fx-icon-color: -fx-outline-variant;"/>
+                                            <FontIcon fx:id="visibilityIcon" iconLiteral="fltfal-eye-show-20" iconSize="20" styleClass="visibility-icon"/>
                                         </graphic>
                                     </Button>
                                 </StackPane>

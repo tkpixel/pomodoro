@@ -110,12 +110,12 @@ public class TaskCardComponent extends VBox {
 
         Menu moveStatusMenu = new Menu("Move Status");
         FontIcon moveIcon = IconFactory.create(IconFactory.ARROW_SWAP);
-        moveIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
+        moveIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa"));
         moveStatusMenu.setGraphic(moveIcon);
 
         MenuItem setAsActiveItem = new MenuItem("Set as Active");
         FontIcon activeIcon = IconFactory.create(IconFactory.PLAY_20);
-        activeIcon.setStyle("-fx-icon-color: #FF4500;");
+        activeIcon.setIconColor(javafx.scene.paint.Color.web("#FF4500"));
         setAsActiveItem.setGraphic(activeIcon);
         setAsActiveItem.setOnAction(e -> {
             if (mainViewModel != null) {
@@ -130,7 +130,7 @@ public class TaskCardComponent extends VBox {
 
         MenuItem assignToMeItem = new MenuItem("Assign to Me");
         FontIcon assignIcon = IconFactory.create(IconFactory.PERSON);
-        assignIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
+        assignIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa"));
         assignToMeItem.setGraphic(assignIcon);
         assignToMeItem.setOnAction(e -> {
             if (jiraBoardViewModel != null) {
@@ -219,11 +219,11 @@ public class TaskCardComponent extends VBox {
 
         viewModel.priorityIconColorProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.isEmpty()) {
-                priorityIcon.setStyle("-fx-icon-color: " + newVal + ";");
+                try { priorityIcon.setIconColor(javafx.scene.paint.Color.web(newVal)); } catch (Exception ignored) {}
             }
         });
         if (viewModel.priorityIconColorProperty().get() != null) {
-            priorityIcon.setStyle("-fx-icon-color: " + viewModel.priorityIconColorProperty().get() + ";");
+            try { priorityIcon.setIconColor(javafx.scene.paint.Color.web(viewModel.priorityIconColorProperty().get())); } catch (Exception ignored) {}
         }
 
         applyStateStyling();

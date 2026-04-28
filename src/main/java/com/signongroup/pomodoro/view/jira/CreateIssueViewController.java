@@ -128,7 +128,7 @@ public class CreateIssueViewController implements Initializable {
             } else {
                 setText(item.name().toUpperCase());
                 FontIcon icon = IconFactory.create(IconFactory.TASK_LIST, 16);
-                icon.setStyle("-fx-icon-color: -fx-tertiary;");
+                icon.setIconColor(javafx.scene.paint.Color.web("#eaa5ff"));
                 setGraphic(icon);
             }
         }
@@ -144,7 +144,7 @@ public class CreateIssueViewController implements Initializable {
             } else {
                 setText(item.name().toUpperCase());
                 FontIcon icon = IconFactory.create(IconFactory.PRIO_HIGH, 16);
-                icon.setStyle("-fx-icon-color: #ff716c;");
+                icon.setIconColor(javafx.scene.paint.Color.web("#ff716c"));
                 setGraphic(icon);
             }
         }

@@ -116,20 +116,20 @@ public class SettingsViewController implements Initializable {
 
     private void updateDurationHeaderStyle(boolean isExpanded) {
         if (isExpanded) {
-            durationIcon.setStyle("-fx-icon-color: -fx-primary;");
+            durationIcon.getStyleClass().add("active");
             durationExpandIcon.setRotate(180);
         } else {
-            durationIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
+            durationIcon.getStyleClass().remove("active");
             durationExpandIcon.setRotate(0);
         }
     }
 
     private void updateJiraHeaderStyle(boolean isExpanded) {
         if (isExpanded) {
-            jiraIcon.setStyle("-fx-icon-color: -fx-primary;");
+            jiraIcon.getStyleClass().add("active");
             jiraExpandIcon.setRotate(180);
         } else {
-            jiraIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
+            jiraIcon.getStyleClass().remove("active");
             jiraExpandIcon.setRotate(0);
         }
     }

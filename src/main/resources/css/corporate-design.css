@@ -28,7 +28,7 @@
     /* Backgrounds */
     -fx-background-color: -fx-surface;
 
-    /* Typograpy overrides matching the design */
+    /* Typography overrides matching the design */
     -fx-font-family: "Inter", sans-serif;
 }
 
@@ -310,6 +310,25 @@
     -fx-border-radius: 12px;
 }
 
+/* Accordion Icon Farb-States – CSS-Klassen statt setStyle() um Font-Vererbung zu vermeiden */
+.accordion-icon {
+    -fx-icon-color: -fx-on-surface-variant;
+}
+.accordion-icon.active {
+    -fx-icon-color: -fx-primary;
+}
+.accordion-expand-icon {
+    -fx-icon-color: -fx-on-surface-variant;
+}
+
+/* Generische Icon-Farb-Helfer – ersetzen alle style="-fx-icon-color: ..." Inline-Styles in FXML */
+.icon-primary      { -fx-icon-color: -fx-primary; }
+.icon-muted        { -fx-icon-color: -fx-on-surface-variant; }
+.icon-on-surface   { -fx-icon-color: -fx-on-surface; }
+.icon-on-primary   { -fx-icon-color: #ffffff; }
+.icon-dark         { -fx-icon-color: #000000; }
+.icon-success      { -fx-icon-color: #22c55e; }
+.visibility-icon   { -fx-icon-color: -fx-outline-variant; }
 .accordion-header {
     -fx-cursor: hand;
 }
@@ -603,7 +622,6 @@
     -fx-background-color: -fx-surface-container-highest;
     -fx-text-fill: white;
     -fx-background-radius: 12;
-    -fx-font-family: 'Inter';
     -fx-padding: 8 16;
 }
 .filter-menu-button:hover {
@@ -611,6 +629,7 @@
 }
 .filter-menu-button .label {
     -fx-text-fill: white;
+    -fx-font-family: 'Inter';
 }
 .filter-menu-button .arrow-button {
     -fx-padding: 0;

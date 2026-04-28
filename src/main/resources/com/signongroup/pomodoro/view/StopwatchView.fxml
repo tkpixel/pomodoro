@@ -95,7 +95,7 @@
             </Button>
             <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" style="-fx-text-fill: -fx-primary;">
                 <graphic>
-                    <FontIcon iconLiteral="fltrmz-timer-20" iconSize="24" style="-fx-icon-color: -fx-primary;"/>
+                    <FontIcon iconLiteral="fltrmz-timer-20" iconSize="24" styleClass="icon-primary"/>
                 </graphic>
             </Button>
             <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleSwitchToPomodoro">

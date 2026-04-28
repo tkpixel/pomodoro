@@ -28,14 +28,14 @@
                 <!-- Filter Menu -->
                 <MenuButton fx:id="filterMenuButton" text="Filter" styleClass="filter-menu-button">
                     <graphic>
-                        <FontIcon iconLiteral="fltfal-filter-20" iconSize="14" style="-fx-icon-color: white;"/>
+                        <FontIcon iconLiteral="fltfal-filter-20" iconSize="14" styleClass="icon-on-primary"/>
                     </graphic>
                     <!-- Items populated dynamically -->
                 </MenuButton>
 
                 <Button text="New Task" onAction="#handleNewTask" style="-fx-background-color: -fx-primary; -fx-text-fill: #480d00; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 20;">
                         <graphic>
-                        <FontIcon iconLiteral="fltfal-add-20" iconSize="14" style="-fx-icon-color: #480d00;"/>
+                        <FontIcon iconLiteral="fltfal-add-20" iconSize="14" styleClass="icon-dark"/>
                     </graphic>
                 </Button>
             </HBox>

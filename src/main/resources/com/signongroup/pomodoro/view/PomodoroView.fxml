@@ -132,7 +132,7 @@
             </Button>
             <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" style="-fx-text-fill: -fx-primary;">
                 <graphic>
-                    <FontIcon iconLiteral="fltral-food-20" iconSize="24" style="-fx-icon-color: -fx-primary;"/>
+                    <FontIcon iconLiteral="fltral-food-20" iconSize="24" styleClass="icon-primary"/>
                 </graphic>
             </Button>
             <Button styleClass="fab-icon-button" prefWidth="48" prefHeight="48" onAction="#handleOpenJiraBoard">

@@ -34,7 +34,7 @@
                 <Label fx:id="taskKey" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-font-family: 'Inter';"/>
             </HBox>
         </VBox>
-        <FontIcon fx:id="completedIcon" iconLiteral="fltral-checkmark-circle-20" iconSize="20" style="-fx-icon-color: #22c55e;" visible="false" managed="false"/>
+        <FontIcon fx:id="completedIcon" iconLiteral="fltral-checkmark-circle-20" iconSize="20" styleClass="icon-success" visible="false" managed="false"/>
     </HBox>
 
     <!-- Story Points Badge (Shown if no estimate) -->
@@ -61,7 +61,7 @@
         <HBox fx:id="actionContainer" alignment="CENTER_LEFT" spacing="10" managed="false" visible="false">
             <Button fx:id="playButton" style="-fx-background-color: -fx-primary; -fx-background-radius: 20; -fx-min-width: 40; -fx-min-height: 40;" onAction="#handlePlayAction">
                 <graphic>
-                    <FontIcon iconLiteral="fltfmz-play-20" iconSize="20" style="-fx-icon-color: #000000;"/>
+                    <FontIcon iconLiteral="fltfmz-play-20" iconSize="20" styleClass="icon-dark"/>
                 </graphic>
             </Button>
         </HBox>
