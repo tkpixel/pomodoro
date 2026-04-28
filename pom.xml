@@ -226,6 +226,14 @@
         <!--        <version>${poi.version}</version>-->
         <!--    </dependency>-->
 
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-http-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-jackson-databind</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -268,6 +276,11 @@
                         <path>
                             <groupId>io.micronaut</groupId>
                             <artifactId>micronaut-inject-java</artifactId>
+                            <version>${micronaut.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.micronaut</groupId>
+                            <artifactId>micronaut-http-validation</artifactId>
                             <version>${micronaut.version}</version>
                         </path>
                     </annotationProcessorPaths>
@@ -586,8 +599,13 @@
                                 <path>
                                     <groupId>io.micronaut</groupId>
                                     <artifactId>micronaut-inject-java</artifactId>
-                                    <version>${micronaut.version}</version>
-                                </path>
+                            <version>${micronaut.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.micronaut</groupId>
+                            <artifactId>micronaut-http-validation</artifactId>
+                            <version>${micronaut.version}</version>
+                        </path>
                                 <path>
                                     <groupId>com.google.errorprone</groupId>
                                     <artifactId>error_prone_core</artifactId>
