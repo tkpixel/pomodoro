@@ -722,19 +722,17 @@
     -fx-background-color: transparent;
 }
 .card-icon-container-break:break-short {
-    -fx-background-color: -fx-primary;
+    -fx-background-color: #36211c;
 }
-.card-icon-container-break:break-long {
-    -fx-background-color: #6bbdd0;
+.card-icon-container-break:break-short .ikonli-font-icon {
+    -fx-icon-color: -fx-primary;
 }
 
-.card:break-short {
-    -fx-border-color: -fx-primary transparent transparent transparent;
-    -fx-border-width: 2px 0 0 0;
+.card-icon-container-break:break-long {
+    -fx-background-color: #142d33;
 }
-.card:break-long {
-    -fx-border-color: #6bbdd0 transparent transparent transparent;
-    -fx-border-width: 2px 0 0 0;
+.card-icon-container-break:break-long .ikonli-font-icon {
+    -fx-icon-color: #6bbdd0;
 }
 
 .card-title:break-short {

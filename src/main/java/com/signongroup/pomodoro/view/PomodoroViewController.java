@@ -152,7 +152,9 @@ public class PomodoroViewController implements Initializable {
         });
 
         // Bind break progress region width
-        breakProgressRegion.prefWidthProperty().bind(breakCardContainer.widthProperty().multiply(viewModel.breakProgressProperty()));
+        breakProgressRegion.minWidthProperty().bind(breakProgressRegion.maxWidthProperty());
+        breakProgressRegion.prefWidthProperty().bind(breakProgressRegion.maxWidthProperty());
+        breakProgressRegion.maxWidthProperty().bind(breakCardContainer.widthProperty().multiply(viewModel.breakProgressProperty()));
 
         // Bind Skip Button visibility and managed properties
         skipButton.visibleProperty().bind(Bindings.createBooleanBinding(() ->
@@ -316,11 +318,5 @@ public class PomodoroViewController implements Initializable {
         breakTitleLabel.pseudoClassStateChanged(BREAK_SHORT_PSEUDO_CLASS, isBreakShort);
         breakTitleLabel.pseudoClassStateChanged(BREAK_LONG_PSEUDO_CLASS, isBreakLong);
         nextBreakLabel.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, isActiveBreak);
-
-        if (isActiveBreak) {
-            breakIcon.setIconColor(javafx.scene.paint.Color.web("#000000")); // -fx-on-primary-fixed roughly
-        } else {
-            breakIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa")); // -fx-on-surface-variant roughly
-        }
     }
 }

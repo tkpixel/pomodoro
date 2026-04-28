@@ -85,7 +85,7 @@
                                 <Label fx:id="nextBreakLabel" text="05:00" styleClass="card-value-muted"/>
                             </VBox>
                         </HBox>
-                        <Region fx:id="breakProgressRegion" StackPane.alignment="BOTTOM_RIGHT" maxHeight="4" style="-fx-background-color: -fx-primary;" styleClass="progress-glow" visible="false"/>
+                        <Region fx:id="breakProgressRegion" StackPane.alignment="BOTTOM_LEFT" maxHeight="4" style="-fx-background-color: -fx-primary;" styleClass="progress-glow" visible="false"/>
                     </StackPane>
                 </VBox>
             </HBox>
