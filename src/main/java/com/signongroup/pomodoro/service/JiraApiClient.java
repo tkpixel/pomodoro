@@ -15,8 +15,12 @@ import java.util.concurrent.CompletableFuture;
  * Generic Micronaut HTTP client for Jira API calls.
  * URI is passed per call to support the user-configured dynamic base URL.
  * Authorization header is injected at runtime by {@link JiraAuthFilter}.
+ *
+ * The @Client("/") annotation is required to allow absolute URIs to be passed
+ * as method parameters. Without a base URL, Micronaut cannot resolve absolute URIs
+ * and throws NoHostException.
  */
-@Client
+@Client("/")
 public interface JiraApiClient {
 
     @Get
