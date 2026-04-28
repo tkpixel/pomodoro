@@ -52,7 +52,8 @@ public class JsonSettingsService implements SettingsService {
                 defaultConfig.shortBreakDurationMinutes(),
                 defaultConfig.longBreakDurationMinutes(),
                 defaultConfig.cyclesBeforeLongBreak(),
-                false // autoStartBreaks default
+                false, // autoStartBreaks default
+                true // enableSound default
         );
     }
 

@@ -14,6 +14,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+
 import javafx.css.PseudoClass;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -31,6 +33,20 @@ public class SettingsViewController implements Initializable {
 
     // --- Accordion UI Elements ---
     @FXML private VBox durationContent;
+
+    @FXML
+    private HBox generalHeader;
+    @FXML
+    private VBox generalContent;
+    @FXML
+    private FontIcon generalIcon;
+    @FXML
+    private FontIcon generalExpandIcon;
+
+    @FXML
+    private StackPane enableSoundToggleTrack;
+    @FXML
+    private Region enableSoundToggleThumb;
     @FXML private FontIcon durationIcon;
     @FXML private FontIcon durationExpandIcon;
     @FXML private VBox jiraContent;

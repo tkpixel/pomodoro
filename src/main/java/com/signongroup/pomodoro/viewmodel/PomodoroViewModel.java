@@ -125,10 +125,12 @@ public class PomodoroViewModel {
     private void tick() {
         if (timeRemainingSeconds > 0) {
             timeRemainingSeconds--;
-            if (timeRemainingSeconds == 5) {
-                soundService.playWarningSound();
-            } else if (timeRemainingSeconds == 0) {
-                soundService.playAlarmSound();
+            if (settingsViewModel.enableSoundProperty().get()) {
+                if (timeRemainingSeconds == 5 && timerState.get() == TimerState.FOCUS_RUNNING) {
+                    soundService.playWarningSound();
+                } else if (timeRemainingSeconds == 0) {
+                    soundService.playAlarmSound();
+                }
             }
             updateUI();
         } else {

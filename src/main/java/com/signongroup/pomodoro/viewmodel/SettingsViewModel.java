@@ -21,6 +21,7 @@ public class SettingsViewModel {
     private final JiraAuthService jiraAuthService;
 
     // Accordion State
+    private final BooleanProperty isGeneralExpanded = new SimpleBooleanProperty(false);
     private final BooleanProperty isDurationExpanded = new SimpleBooleanProperty(false);
     private final BooleanProperty isJiraExpanded = new SimpleBooleanProperty(false);
 
@@ -30,6 +31,7 @@ public class SettingsViewModel {
     private final IntegerProperty longBreakMinutes = new SimpleIntegerProperty();
     private final IntegerProperty maxSessionCount = new SimpleIntegerProperty();
     private final BooleanProperty autoStartBreaks = new SimpleBooleanProperty();
+    private final BooleanProperty enableSound = new SimpleBooleanProperty(true);
 
     // Jira Connection Settings
     private final StringProperty url = new SimpleStringProperty("");
@@ -56,6 +58,7 @@ public class SettingsViewModel {
         longBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
         maxSessionCount.addListener((obs, oldVal, newVal) -> saveSettings());
         autoStartBreaks.addListener((obs, oldVal, newVal) -> saveSettings());
+        enableSound.addListener((obs, oldVal, newVal) -> saveSettings());
 
         // Bind validation
         canConnect.bind(Bindings.createBooleanBinding(() ->
@@ -96,15 +99,30 @@ public class SettingsViewModel {
                 shortBreakMinutes.get(),
                 longBreakMinutes.get(),
                 maxSessionCount.get(),
-                autoStartBreaks.get()
+                autoStartBreaks.get(),
+                enableSound.get()
         );
         settingsService.saveSettings(settings);
+    }
+
+    /**
+     * Toggles the general expanded state.
+     */
+    public void toggleGeneralExpanded() {
+        isGeneralExpanded.set(!isGeneralExpanded.get());
+        if (isGeneralExpanded.get()) {
+            isDurationExpanded.set(false);
+            isGeneralExpanded.set(false);
+            isJiraExpanded.set(false);
+            isGeneralExpanded.set(false);
+        }
     }
 
     public void toggleDurationExpanded() {
         isDurationExpanded.set(!isDurationExpanded.get());
         if (isDurationExpanded.get()) {
             isJiraExpanded.set(false);
+            isGeneralExpanded.set(false);
         }
     }
 
@@ -112,6 +130,7 @@ public class SettingsViewModel {
         isJiraExpanded.set(!isJiraExpanded.get());
         if (isJiraExpanded.get()) {
             isDurationExpanded.set(false);
+            isGeneralExpanded.set(false);
         }
     }
 
@@ -189,8 +208,12 @@ public class SettingsViewModel {
 
     // --- Getters for Properties ---
 
-    public BooleanProperty isDurationExpandedProperty() { return isDurationExpanded; }
-    public BooleanProperty isJiraExpandedProperty() { return isJiraExpanded; }
+    public BooleanProperty isDurationExpandedProperty() {
+        return isDurationExpanded;
+    }
+    public BooleanProperty isJiraExpandedProperty() {
+        return isJiraExpanded;
+    }
 
     public IntegerProperty focusSessionMinutesProperty() {
         return focusSessionMinutes;
@@ -208,15 +231,44 @@ public class SettingsViewModel {
         return maxSessionCount;
     }
 
+    /**
+     * Returns the isGeneralExpanded property.
+     * @return BooleanProperty
+     */
+    public BooleanProperty isGeneralExpandedProperty() {
+        return isGeneralExpanded;
+    }
+    /**
+     * Returns the enableSound property.
+     * @return BooleanProperty
+     */
+    public BooleanProperty enableSoundProperty() {
+        return enableSound;
+    }
+
     public BooleanProperty autoStartBreaksProperty() {
         return autoStartBreaks;
     }
 
-    public StringProperty urlProperty() { return url; }
-    public StringProperty emailProperty() { return email; }
-    public StringProperty tokenProperty() { return token; }
-    public BooleanProperty isConnectingProperty() { return isConnecting; }
-    public StringProperty statusMessageProperty() { return statusMessage; }
-    public BooleanProperty isSuccessProperty() { return isSuccess; }
-    public BooleanProperty canConnectProperty() { return canConnect; }
+    public StringProperty urlProperty() {
+        return url;
+    }
+    public StringProperty emailProperty() {
+        return email;
+    }
+    public StringProperty tokenProperty() {
+        return token;
+    }
+    public BooleanProperty isConnectingProperty() {
+        return isConnecting;
+    }
+    public StringProperty statusMessageProperty() {
+        return statusMessage;
+    }
+    public BooleanProperty isSuccessProperty() {
+        return isSuccess;
+    }
+    public BooleanProperty canConnectProperty() {
+        return canConnect;
+    }
 }
