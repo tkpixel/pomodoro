@@ -10,7 +10,7 @@
            style="-fx-background-color: #000000CC;" pickOnBounds="true">
 
     <VBox maxWidth="576.0" style="-fx-background-color: -fx-surface; -fx-background-radius: 12; -fx-border-color: rgba(73,72,71,0.15); -fx-border-radius: 12; -fx-border-width: 1;"
-          StackPane.alignment="CENTER" maxHeight="-Infinity" effect="${null}">
+          StackPane.alignment="CENTER" maxHeight="-Infinity">
 
         <!-- Header -->
         <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: #131313; -fx-padding: 16 24;"

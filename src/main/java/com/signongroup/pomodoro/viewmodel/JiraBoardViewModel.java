@@ -103,6 +103,9 @@ public class JiraBoardViewModel {
         isLoading.set(true);
         jiraBoardService.fetchBoardConfiguration(boardId).thenCompose(config -> {
             Platform.runLater(() -> {
+                java.util.Map<String, Boolean> currentVisibility = new java.util.HashMap<>();
+                columnVisibilityMap.forEach((col, prop) -> currentVisibility.put(col, prop.get()));
+
                 columnTasksMap.clear();
                 columnVisibilityMap.clear();
                 dynamicColumnNames.clear();
@@ -112,7 +115,8 @@ public class JiraBoardViewModel {
                     rawColumns.addAll(config.columnConfig().columns());
                     for (BoardColumn col : config.columnConfig().columns()) {
                         columnTasksMap.put(col.name(), FXCollections.observableArrayList());
-                        columnVisibilityMap.put(col.name(), new SimpleBooleanProperty(true));
+                        boolean isVisible = currentVisibility.getOrDefault(col.name(), true);
+                        columnVisibilityMap.put(col.name(), new SimpleBooleanProperty(isVisible));
                         dynamicColumnNames.add(col.name());
                     }
                 }
