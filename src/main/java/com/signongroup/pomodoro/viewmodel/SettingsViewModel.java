@@ -31,7 +31,8 @@ public class SettingsViewModel {
     private final IntegerProperty longBreakMinutes = new SimpleIntegerProperty();
     private final IntegerProperty maxSessionCount = new SimpleIntegerProperty();
     private final BooleanProperty autoStartBreaks = new SimpleBooleanProperty();
-    private final BooleanProperty enableSound = new SimpleBooleanProperty(true);
+    private final BooleanProperty enableSessionSound = new SimpleBooleanProperty(true);
+    private final BooleanProperty enableBreakSound = new SimpleBooleanProperty(true);
 
     // Jira Connection Settings
     private final StringProperty url = new SimpleStringProperty("");
@@ -58,7 +59,8 @@ public class SettingsViewModel {
         longBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
         maxSessionCount.addListener((obs, oldVal, newVal) -> saveSettings());
         autoStartBreaks.addListener((obs, oldVal, newVal) -> saveSettings());
-        enableSound.addListener((obs, oldVal, newVal) -> saveSettings());
+        enableSessionSound.addListener((obs, oldVal, newVal) -> saveSettings());
+        enableBreakSound.addListener((obs, oldVal, newVal) -> saveSettings());
 
         // Bind validation
         canConnect.bind(Bindings.createBooleanBinding(() ->
@@ -100,7 +102,8 @@ public class SettingsViewModel {
                 longBreakMinutes.get(),
                 maxSessionCount.get(),
                 autoStartBreaks.get(),
-                enableSound.get()
+                enableSessionSound.get(),
+                this.enableBreakSound.get()
         );
         settingsService.saveSettings(settings);
     }
@@ -237,11 +240,19 @@ public class SettingsViewModel {
         return isGeneralExpanded;
     }
     /**
-     * Returns the enableSound property.
+     * Returns the enableSessionSound property.
      * @return BooleanProperty
      */
-    public BooleanProperty enableSoundProperty() {
-        return enableSound;
+    public BooleanProperty enableSessionSoundProperty() {
+        return enableSessionSound;
+    }
+
+    /**
+     * Returns the enableBreakSound property.
+     * @return BooleanProperty
+     */
+    public BooleanProperty enableBreakSoundProperty() {
+        return enableBreakSound;
     }
 
     public BooleanProperty autoStartBreaksProperty() {

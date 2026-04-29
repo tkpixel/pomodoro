@@ -8,6 +8,7 @@ public record DurationSettings(
     @JsonProperty("longBreakMinutes") int longBreakMinutes,
     @JsonProperty("maxSessionCount") int maxSessionCount,
     @JsonProperty("autoStartBreaks") boolean autoStartBreaks,
-    @JsonProperty("enableSound") Boolean enableSound
+    @JsonProperty("enableSessionSound") Boolean enableSessionSound,
+    @JsonProperty("enableBreakSound") Boolean enableBreakSound
 ) {
 }

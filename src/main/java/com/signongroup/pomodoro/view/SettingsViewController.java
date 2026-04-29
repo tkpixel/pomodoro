@@ -36,8 +36,10 @@ public class SettingsViewController implements Initializable {
     @FXML private VBox generalContent;
     @FXML private FontIcon generalIcon;
     @FXML private FontIcon generalExpandIcon;
-    @FXML private StackPane enableSoundToggleTrack;
-    @FXML private Region enableSoundToggleThumb;
+    @FXML private StackPane enableSessionSoundToggleTrack;
+    @FXML private Region enableSessionSoundToggleThumb;
+    @FXML private StackPane enableBreakSoundToggleTrack;
+    @FXML private Region enableBreakSoundToggleThumb;
 
     @FXML private VBox durationContent;
     @FXML private FontIcon durationIcon;
@@ -110,11 +112,17 @@ public class SettingsViewController implements Initializable {
         });
         updateAutoStartToggleUI(viewModel.autoStartBreaksProperty().get());
 
-        // Enable Sound Toggle Binding
-        viewModel.enableSoundProperty().addListener((obs, oldVal, newVal) -> {
-            updateEnableSoundToggleUI(newVal);
+        // Enable Session Sound Toggle Binding
+        viewModel.enableSessionSoundProperty().addListener((obs, oldVal, newVal) -> {
+            updateEnableSessionSoundToggleUI(newVal);
         });
-        updateEnableSoundToggleUI(viewModel.enableSoundProperty().get());
+        updateEnableSessionSoundToggleUI(viewModel.enableSessionSoundProperty().get());
+
+        // Enable Break Sound Toggle Binding
+        viewModel.enableBreakSoundProperty().addListener((obs, oldVal, newVal) -> {
+            updateEnableBreakSoundToggleUI(newVal);
+        });
+        updateEnableBreakSoundToggleUI(viewModel.enableBreakSoundProperty().get());
 
         // Bind Jira Connection UI to ViewModel
         urlField.textProperty().bindBidirectional(viewModel.urlProperty());
@@ -177,13 +185,23 @@ public class SettingsViewController implements Initializable {
         }
     }
 
-    private void updateEnableSoundToggleUI(boolean isOn) {
-        enableSoundToggleTrack.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
-        enableSoundToggleThumb.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+    private void updateEnableSessionSoundToggleUI(boolean isOn) {
+        enableSessionSoundToggleTrack.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        enableSessionSoundToggleThumb.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
         if (isOn) {
-            javafx.scene.layout.StackPane.setAlignment(enableSoundToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
+            javafx.scene.layout.StackPane.setAlignment(enableSessionSoundToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
         } else {
-            javafx.scene.layout.StackPane.setAlignment(enableSoundToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
+            javafx.scene.layout.StackPane.setAlignment(enableSessionSoundToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
+        }
+    }
+
+    private void updateEnableBreakSoundToggleUI(boolean isOn) {
+        enableBreakSoundToggleTrack.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        enableBreakSoundToggleThumb.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        if (isOn) {
+            javafx.scene.layout.StackPane.setAlignment(enableBreakSoundToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
+        } else {
+            javafx.scene.layout.StackPane.setAlignment(enableBreakSoundToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
         }
     }
 
@@ -203,12 +221,21 @@ public class SettingsViewController implements Initializable {
     }
 
     /**
-     * Toggles enable sound setting.
+     * Toggles enable session sound setting.
      * @param event the mouse event
      */
     @FXML
-    public void toggleEnableSound(MouseEvent event) {
-        viewModel.enableSoundProperty().set(!viewModel.enableSoundProperty().get());
+    public void toggleEnableSessionSound(MouseEvent event) {
+        viewModel.enableSessionSoundProperty().set(!viewModel.enableSessionSoundProperty().get());
+    }
+
+    /**
+     * Toggles enable break sound setting.
+     * @param event the mouse event
+     */
+    @FXML
+    public void toggleEnableBreakSound(MouseEvent event) {
+        viewModel.enableBreakSoundProperty().set(!viewModel.enableBreakSoundProperty().get());
     }
 
     @FXML

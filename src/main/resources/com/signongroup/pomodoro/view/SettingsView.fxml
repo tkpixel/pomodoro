@@ -45,15 +45,27 @@
                     <VBox fx:id="generalContent" spacing="24" styleClass="accordion-content">
                         <padding><Insets top="0" right="24" bottom="32" left="24"/></padding>
 
-                        <!-- Notification Sound Toggle -->
+                        <!-- Session Notification Sound Toggle -->
                         <HBox alignment="CENTER" styleClass="ghost-border" style="-fx-background-color: -fx-surface-container-low; -fx-background-radius: 12; -fx-padding: 16;">
                             <VBox alignment="CENTER_LEFT" spacing="4">
-                                <Label text="Notification Sounds" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                                <Label text="PLAY AUDIO AT THE END OF SESSION AND BREAK" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
+                                <Label text="Session Sounds" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                <Label text="PLAY AUDIO AT THE END OF A SESSION" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
                             </VBox>
                             <Region HBox.hgrow="ALWAYS"/>
-                            <StackPane fx:id="enableSoundToggleTrack" onMouseClicked="#toggleEnableSound" styleClass="toggle-track" prefWidth="48" prefHeight="24">
-                                <Region fx:id="enableSoundToggleThumb" styleClass="toggle-thumb" StackPane.alignment="CENTER_LEFT" maxWidth="16" maxHeight="16"/>
+                            <StackPane fx:id="enableSessionSoundToggleTrack" onMouseClicked="#toggleEnableSessionSound" styleClass="toggle-track" prefWidth="48" prefHeight="24">
+                                <Region fx:id="enableSessionSoundToggleThumb" styleClass="toggle-thumb" StackPane.alignment="CENTER_LEFT" maxWidth="16" maxHeight="16"/>
+                            </StackPane>
+                        </HBox>
+
+                        <!-- Break Notification Sound Toggle -->
+                        <HBox alignment="CENTER" styleClass="ghost-border" style="-fx-background-color: -fx-surface-container-low; -fx-background-radius: 12; -fx-padding: 16;">
+                            <VBox alignment="CENTER_LEFT" spacing="4">
+                                <Label text="Break Sounds" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                <Label text="PLAY AUDIO AT THE END OF A BREAK" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <StackPane fx:id="enableBreakSoundToggleTrack" onMouseClicked="#toggleEnableBreakSound" styleClass="toggle-track" prefWidth="48" prefHeight="24">
+                                <Region fx:id="enableBreakSoundToggleThumb" styleClass="toggle-thumb" StackPane.alignment="CENTER_LEFT" maxWidth="16" maxHeight="16"/>
                             </StackPane>
                         </HBox>
                     </VBox>
