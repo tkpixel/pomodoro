@@ -32,10 +32,6 @@ public class SettingsViewController implements Initializable {
     private final WindowManager windowManager;
 
     // --- Accordion UI Elements ---
-    @FXML private HBox generalHeader;
-    @FXML private VBox generalContent;
-    @FXML private FontIcon generalIcon;
-    @FXML private FontIcon generalExpandIcon;
     @FXML private StackPane enableSessionSoundToggleTrack;
     @FXML private Region enableSessionSoundToggleThumb;
     @FXML private StackPane enableBreakSoundToggleTrack;
@@ -78,19 +74,11 @@ public class SettingsViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Bind Accordion Panels
-        generalContent.visibleProperty().bind(viewModel.isGeneralExpandedProperty());
-        generalContent.managedProperty().bind(viewModel.isGeneralExpandedProperty());
         durationContent.visibleProperty().bind(viewModel.isDurationExpandedProperty());
 
         durationContent.managedProperty().bind(viewModel.isDurationExpandedProperty());
         jiraContent.visibleProperty().bind(viewModel.isJiraExpandedProperty());
         jiraContent.managedProperty().bind(viewModel.isJiraExpandedProperty());
-
-        // Animate/Style Accordion Headers based on expanded state
-        viewModel.isGeneralExpandedProperty().addListener((obs, oldVal, newVal) -> {
-            updateGeneralHeaderStyle(newVal);
-        });
-        updateGeneralHeaderStyle(viewModel.isGeneralExpandedProperty().get());
 
         viewModel.isDurationExpandedProperty().addListener((obs, oldVal, newVal) -> {
             updateDurationHeaderStyle(newVal);
@@ -151,16 +139,6 @@ public class SettingsViewController implements Initializable {
         });
 
         connectButton.disableProperty().bind(viewModel.canConnectProperty().not());
-    }
-
-    private void updateGeneralHeaderStyle(boolean isExpanded) {
-        if (isExpanded) {
-            generalIcon.setStyle("-fx-icon-color: -fx-primary;");
-            generalExpandIcon.setRotate(180);
-        } else {
-            generalIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
-            generalExpandIcon.setRotate(0);
-        }
     }
 
     private void updateDurationHeaderStyle(boolean isExpanded) {
@@ -229,14 +207,6 @@ public class SettingsViewController implements Initializable {
     }
 
     // --- Accordion Toggle Handlers ---
-    /**
-     * Toggles general accordion.
-     * @param event the mouse event
-     */
-    @FXML
-    public void toggleGeneralExpanded(MouseEvent event) {
-        viewModel.toggleGeneralExpanded();
-    }
 
     /**
      * Toggles enable session sound setting.
