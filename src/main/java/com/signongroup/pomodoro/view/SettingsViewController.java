@@ -55,6 +55,8 @@ public class SettingsViewController implements Initializable {
     @FXML private Label maxSessionsLabel;
     @FXML private StackPane autoStartToggleTrack;
     @FXML private Region autoStartToggleThumb;
+    @FXML private StackPane autoStartSessionsToggleTrack;
+    @FXML private Region autoStartSessionsToggleThumb;
 
     // --- Jira Settings UI Elements ---
     @FXML private TextField urlField;
@@ -106,7 +108,13 @@ public class SettingsViewController implements Initializable {
         longBreakLabel.textProperty().bind(viewModel.longBreakMinutesProperty().asString("%02d:00"));
         maxSessionsLabel.textProperty().bind(viewModel.maxSessionCountProperty().asString());
 
-        // Auto Start Toggle Binding
+        // Auto Start Sessions Toggle Binding
+        viewModel.autoStartSessionsProperty().addListener((obs, oldVal, newVal) -> {
+            updateAutoStartSessionsToggleUI(newVal);
+        });
+        updateAutoStartSessionsToggleUI(viewModel.autoStartSessionsProperty().get());
+
+        // Auto Start Breaks Toggle Binding
         viewModel.autoStartBreaksProperty().addListener((obs, oldVal, newVal) -> {
             updateAutoStartToggleUI(newVal);
         });
@@ -172,6 +180,16 @@ public class SettingsViewController implements Initializable {
         } else {
             jiraIcon.getStyleClass().remove("active");
             jiraExpandIcon.setRotate(0);
+        }
+    }
+
+    private void updateAutoStartSessionsToggleUI(boolean isOn) {
+        autoStartSessionsToggleTrack.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        autoStartSessionsToggleThumb.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        if (isOn) {
+            javafx.scene.layout.StackPane.setAlignment(autoStartSessionsToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
+        } else {
+            javafx.scene.layout.StackPane.setAlignment(autoStartSessionsToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
         }
     }
 
@@ -273,6 +291,19 @@ public class SettingsViewController implements Initializable {
     @FXML
     public void handleDecMaxSessions() { viewModel.decrementMaxSessionCount(); }
 
+    /**
+     * Toggles auto start sessions.
+     * @param event the mouse event
+     */
+    @FXML
+    public void toggleAutoStartSessions(MouseEvent event) {
+        viewModel.autoStartSessionsProperty().set(!viewModel.autoStartSessionsProperty().get());
+    }
+
+    /**
+     * Toggles auto start.
+     * @param event the mouse event
+     */
     @FXML
     public void toggleAutoStart(MouseEvent event) {
         viewModel.autoStartBreaksProperty().set(!viewModel.autoStartBreaksProperty().get());

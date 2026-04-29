@@ -125,12 +125,8 @@ public class PomodoroViewModel {
     private void tick() {
         if (timeRemainingSeconds > 0) {
             timeRemainingSeconds--;
-            if (timeRemainingSeconds == 5 && timerState.get() == TimerState.FOCUS_RUNNING
-                    && settingsViewModel.enableSessionSoundProperty().get()) {
-                soundService.playWarningSound();
-            } else if (timeRemainingSeconds == 0) {
-                if (timerState.get() == TimerState.FOCUS_RUNNING
-                        && settingsViewModel.enableSessionSoundProperty().get()) {
+            if (timeRemainingSeconds == 5) {
+                if (timerState.get() == TimerState.FOCUS_RUNNING && settingsViewModel.enableSessionSoundProperty().get()) {
                     soundService.playAlarmSound();
                 } else if ((timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG)
                         && settingsViewModel.enableBreakSoundProperty().get()) {
@@ -161,13 +157,18 @@ public class PomodoroViewModel {
                 timerState.set(TimerState.BREAK_SHORT);
             }
             updateUI();
-            startTimer();
+            if (settingsViewModel.autoStartBreaksProperty().get()) {
+                startTimer();
+            }
         } else if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
             if (timerState.get() == TimerState.BREAK_SHORT && activeTaskService.getActiveTask() != null) {
                 jiraBoardService.addWorklog(activeTaskService.getActiveTask().taskKeyProperty().get(), shortBreakSeconds);
                 activeTaskService.getActiveTask().addTimeSpent(shortBreakSeconds);
             }
             resetToReady();
+            if (settingsViewModel.autoStartSessionsProperty().get()) {
+                startTimer();
+            }
         }
     }
 
@@ -232,6 +233,9 @@ public class PomodoroViewModel {
         if (timerState.get() == TimerState.BREAK_SHORT || timerState.get() == TimerState.BREAK_LONG) {
             pauseTimer();
             resetToReady();
+            if (settingsViewModel.autoStartSessionsProperty().get()) {
+                startTimer();
+            }
         }
     }
 

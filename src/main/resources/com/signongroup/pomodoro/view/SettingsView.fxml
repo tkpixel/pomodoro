@@ -14,7 +14,7 @@
            prefHeight="884.0" prefWidth="570.0">
 
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-padding: 0;" hbarPolicy="NEVER">
-        <VBox spacing="8" alignment="TOP_LEFT" maxWidth="600" style="-fx-padding: 120 24 240 24;">
+        <VBox spacing="16" alignment="TOP_LEFT" maxWidth="600" style="-fx-padding: 120 24 160 24;">
 
             <!-- Page Title & Intro -->
             <VBox spacing="8" style="-fx-margin-bottom: 48;">
@@ -26,7 +26,7 @@
             </VBox>
 
             <!-- Accordion Panels Container -->
-            <VBox fx:id="accordionContainer" spacing="16">
+            <VBox fx:id="accordionContainer" spacing="16" style="-fx-padding: 0 24 0 0;">
 
 
                 <!-- Panel 1: General Settings -->
@@ -164,6 +164,18 @@
                             </VBox>
 
                         </GridPane>
+
+                                                <!-- Auto-start Sessions Toggle -->
+                        <HBox alignment="CENTER" styleClass="ghost-border" style="-fx-background-color: -fx-surface-container-low; -fx-background-radius: 12; -fx-padding: 16;">
+                            <VBox alignment="CENTER_LEFT" spacing="4">
+                                <Label text="Auto-start Sessions" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                <Label text="CONTINUE AUTOMATICALLY AFTER A BREAK" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <StackPane fx:id="autoStartSessionsToggleTrack" onMouseClicked="#toggleAutoStartSessions" styleClass="toggle-track" prefWidth="48" prefHeight="24">
+                                <Region fx:id="autoStartSessionsToggleThumb" styleClass="toggle-thumb" StackPane.alignment="CENTER_LEFT" maxWidth="16" maxHeight="16"/>
+                            </StackPane>
+                        </HBox>
 
                         <!-- Auto-start Breaks Toggle -->
                         <HBox alignment="CENTER" styleClass="ghost-border" style="-fx-background-color: -fx-surface-container-low; -fx-background-radius: 12; -fx-padding: 16;">
