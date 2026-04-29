@@ -30,6 +30,9 @@ public class SettingsViewModel {
     private final IntegerProperty longBreakMinutes = new SimpleIntegerProperty();
     private final IntegerProperty maxSessionCount = new SimpleIntegerProperty();
     private final BooleanProperty autoStartBreaks = new SimpleBooleanProperty();
+    private final BooleanProperty autoStartSessions = new SimpleBooleanProperty();
+    private final BooleanProperty enableSessionSound = new SimpleBooleanProperty(true);
+    private final BooleanProperty enableBreakSound = new SimpleBooleanProperty(true);
 
     // Jira Connection Settings
     private final StringProperty url = new SimpleStringProperty("");
@@ -56,6 +59,9 @@ public class SettingsViewModel {
         longBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
         maxSessionCount.addListener((obs, oldVal, newVal) -> saveSettings());
         autoStartBreaks.addListener((obs, oldVal, newVal) -> saveSettings());
+        autoStartSessions.addListener((obs, oldVal, newVal) -> saveSettings());
+        enableSessionSound.addListener((obs, oldVal, newVal) -> saveSettings());
+        enableBreakSound.addListener((obs, oldVal, newVal) -> saveSettings());
 
         // Bind validation
         canConnect.bind(Bindings.createBooleanBinding(() ->
@@ -88,6 +94,21 @@ public class SettingsViewModel {
         longBreakMinutes.set(settings.longBreakMinutes());
         maxSessionCount.set(settings.maxSessionCount());
         autoStartBreaks.set(settings.autoStartBreaks());
+        if (settings.autoStartSessions() != null) {
+            autoStartSessions.set(settings.autoStartSessions());
+        } else {
+            autoStartSessions.set(false);
+        }
+        if (settings.enableSessionSound() != null) {
+            enableSessionSound.set(settings.enableSessionSound());
+        } else {
+            enableSessionSound.set(true);
+        }
+        if (settings.enableBreakSound() != null) {
+            enableBreakSound.set(settings.enableBreakSound());
+        } else {
+            enableBreakSound.set(true);
+        }
     }
 
     private void saveSettings() {
@@ -96,7 +117,10 @@ public class SettingsViewModel {
                 shortBreakMinutes.get(),
                 longBreakMinutes.get(),
                 maxSessionCount.get(),
-                autoStartBreaks.get()
+                autoStartBreaks.get(),
+                autoStartSessions.get(),
+                enableSessionSound.get(),
+                enableBreakSound.get()
         );
         settingsService.saveSettings(settings);
     }
@@ -141,13 +165,13 @@ public class SettingsViewModel {
 
     public void incrementFocusSession() {
         if (focusSessionMinutes.get() < 90) {
-            focusSessionMinutes.set(focusSessionMinutes.get() + 5);
+            focusSessionMinutes.set(focusSessionMinutes.get() + 1);
         }
     }
 
     public void decrementFocusSession() {
-        if (focusSessionMinutes.get() > 5) {
-            focusSessionMinutes.set(focusSessionMinutes.get() - 5);
+        if (focusSessionMinutes.get() > 1) {
+            focusSessionMinutes.set(focusSessionMinutes.get() - 1);
         }
     }
 
@@ -189,8 +213,12 @@ public class SettingsViewModel {
 
     // --- Getters for Properties ---
 
-    public BooleanProperty isDurationExpandedProperty() { return isDurationExpanded; }
-    public BooleanProperty isJiraExpandedProperty() { return isJiraExpanded; }
+    public BooleanProperty isDurationExpandedProperty() {
+        return isDurationExpanded;
+    }
+    public BooleanProperty isJiraExpandedProperty() {
+        return isJiraExpanded;
+    }
 
     public IntegerProperty focusSessionMinutesProperty() {
         return focusSessionMinutes;
@@ -208,15 +236,54 @@ public class SettingsViewModel {
         return maxSessionCount;
     }
 
+
+    /**
+     * Returns the enableSessionSound property.
+     * @return BooleanProperty
+     */
+    public BooleanProperty enableSessionSoundProperty() {
+        return enableSessionSound;
+    }
+
+    /**
+     * Returns the enableBreakSound property.
+     * @return BooleanProperty
+     */
+    public BooleanProperty enableBreakSoundProperty() {
+        return enableBreakSound;
+    }
+
+    public BooleanProperty autoStartSessionsProperty() {
+        return autoStartSessions;
+    }
+
+    /**
+     * Returns the autoStartBreaks property.
+     * @return BooleanProperty
+     */
     public BooleanProperty autoStartBreaksProperty() {
         return autoStartBreaks;
     }
 
-    public StringProperty urlProperty() { return url; }
-    public StringProperty emailProperty() { return email; }
-    public StringProperty tokenProperty() { return token; }
-    public BooleanProperty isConnectingProperty() { return isConnecting; }
-    public StringProperty statusMessageProperty() { return statusMessage; }
-    public BooleanProperty isSuccessProperty() { return isSuccess; }
-    public BooleanProperty canConnectProperty() { return canConnect; }
+    public StringProperty urlProperty() {
+        return url;
+    }
+    public StringProperty emailProperty() {
+        return email;
+    }
+    public StringProperty tokenProperty() {
+        return token;
+    }
+    public BooleanProperty isConnectingProperty() {
+        return isConnecting;
+    }
+    public StringProperty statusMessageProperty() {
+        return statusMessage;
+    }
+    public BooleanProperty isSuccessProperty() {
+        return isSuccess;
+    }
+    public BooleanProperty canConnectProperty() {
+        return canConnect;
+    }
 }

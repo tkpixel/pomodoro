@@ -129,6 +129,7 @@ public class SettingsViewTest {
         // After filling, it should be enabled
         assertThat(page.isConnectButtonDisabled()).isFalse();
 
+
         page.clickConnect();
 
         WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);

@@ -7,6 +7,7 @@ module com.signongroup.pomodoro {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires javafx.media;
 
     // ── AtlantaFX (Styling) ───────────────────────────────────────────────────
     requires atlantafx.base;
