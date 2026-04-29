@@ -112,9 +112,7 @@ public class SettingsViewModel {
         isGeneralExpanded.set(!isGeneralExpanded.get());
         if (isGeneralExpanded.get()) {
             isDurationExpanded.set(false);
-            isGeneralExpanded.set(false);
             isJiraExpanded.set(false);
-            isGeneralExpanded.set(false);
         }
     }
 

@@ -32,21 +32,14 @@ public class SettingsViewController implements Initializable {
     private final WindowManager windowManager;
 
     // --- Accordion UI Elements ---
+    @FXML private HBox generalHeader;
+    @FXML private VBox generalContent;
+    @FXML private FontIcon generalIcon;
+    @FXML private FontIcon generalExpandIcon;
+    @FXML private StackPane enableSoundToggleTrack;
+    @FXML private Region enableSoundToggleThumb;
+
     @FXML private VBox durationContent;
-
-    @FXML
-    private HBox generalHeader;
-    @FXML
-    private VBox generalContent;
-    @FXML
-    private FontIcon generalIcon;
-    @FXML
-    private FontIcon generalExpandIcon;
-
-    @FXML
-    private StackPane enableSoundToggleTrack;
-    @FXML
-    private Region enableSoundToggleThumb;
     @FXML private FontIcon durationIcon;
     @FXML private FontIcon durationExpandIcon;
     @FXML private VBox jiraContent;
@@ -81,12 +74,20 @@ public class SettingsViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Bind Accordion Panels
+        generalContent.visibleProperty().bind(viewModel.isGeneralExpandedProperty());
+        generalContent.managedProperty().bind(viewModel.isGeneralExpandedProperty());
         durationContent.visibleProperty().bind(viewModel.isDurationExpandedProperty());
+
         durationContent.managedProperty().bind(viewModel.isDurationExpandedProperty());
         jiraContent.visibleProperty().bind(viewModel.isJiraExpandedProperty());
         jiraContent.managedProperty().bind(viewModel.isJiraExpandedProperty());
 
         // Animate/Style Accordion Headers based on expanded state
+        viewModel.isGeneralExpandedProperty().addListener((obs, oldVal, newVal) -> {
+            updateGeneralHeaderStyle(newVal);
+        });
+        updateGeneralHeaderStyle(viewModel.isGeneralExpandedProperty().get());
+
         viewModel.isDurationExpandedProperty().addListener((obs, oldVal, newVal) -> {
             updateDurationHeaderStyle(newVal);
         });
@@ -109,6 +110,12 @@ public class SettingsViewController implements Initializable {
         });
         updateAutoStartToggleUI(viewModel.autoStartBreaksProperty().get());
 
+        // Enable Sound Toggle Binding
+        viewModel.enableSoundProperty().addListener((obs, oldVal, newVal) -> {
+            updateEnableSoundToggleUI(newVal);
+        });
+        updateEnableSoundToggleUI(viewModel.enableSoundProperty().get());
+
         // Bind Jira Connection UI to ViewModel
         urlField.textProperty().bindBidirectional(viewModel.urlProperty());
         emailField.textProperty().bindBidirectional(viewModel.emailProperty());
@@ -128,6 +135,16 @@ public class SettingsViewController implements Initializable {
         });
 
         connectButton.disableProperty().bind(viewModel.canConnectProperty().not());
+    }
+
+    private void updateGeneralHeaderStyle(boolean isExpanded) {
+        if (isExpanded) {
+            generalIcon.setStyle("-fx-icon-color: -fx-primary;");
+            generalExpandIcon.setRotate(180);
+        } else {
+            generalIcon.setStyle("-fx-icon-color: -fx-on-surface-variant;");
+            generalExpandIcon.setRotate(0);
+        }
     }
 
     private void updateDurationHeaderStyle(boolean isExpanded) {
@@ -160,12 +177,40 @@ public class SettingsViewController implements Initializable {
         }
     }
 
+    private void updateEnableSoundToggleUI(boolean isOn) {
+        enableSoundToggleTrack.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        enableSoundToggleThumb.pseudoClassStateChanged(PSEUDO_CLASS_ON, isOn);
+        if (isOn) {
+            javafx.scene.layout.StackPane.setAlignment(enableSoundToggleThumb, javafx.geometry.Pos.CENTER_RIGHT);
+        } else {
+            javafx.scene.layout.StackPane.setAlignment(enableSoundToggleThumb, javafx.geometry.Pos.CENTER_LEFT);
+        }
+    }
+
     @FXML
     public void handleBack(ActionEvent event) {
         windowManager.showActiveTimerView();
     }
 
     // --- Accordion Toggle Handlers ---
+    /**
+     * Toggles general accordion.
+     * @param event the mouse event
+     */
+    @FXML
+    public void toggleGeneralExpanded(MouseEvent event) {
+        viewModel.toggleGeneralExpanded();
+    }
+
+    /**
+     * Toggles enable sound setting.
+     * @param event the mouse event
+     */
+    @FXML
+    public void toggleEnableSound(MouseEvent event) {
+        viewModel.enableSoundProperty().set(!viewModel.enableSoundProperty().get());
+    }
+
     @FXML
     public void toggleDurationExpanded(MouseEvent event) {
         viewModel.toggleDurationExpanded();

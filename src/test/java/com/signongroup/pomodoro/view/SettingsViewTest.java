@@ -129,6 +129,9 @@ public class SettingsViewTest {
         // After filling, it should be enabled
         assertThat(page.isConnectButtonDisabled()).isFalse();
 
+        FxRobot robot = new FxRobot();
+        robot.interact(() -> robot.lookup("#connectButton").query().getScene().getWindow().setHeight(1500));
+        WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);
         page.clickConnect();
 
         WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS);

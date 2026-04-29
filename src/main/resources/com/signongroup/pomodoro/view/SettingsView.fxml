@@ -14,7 +14,7 @@
            prefHeight="884.0" prefWidth="570.0">
 
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-padding: 0;" hbarPolicy="NEVER">
-        <VBox spacing="16" alignment="TOP_LEFT" maxWidth="600" style="-fx-padding: 120 24 160 24;">
+        <VBox spacing="8" alignment="TOP_LEFT" maxWidth="600" style="-fx-padding: 120 24 240 24;">
 
             <!-- Page Title & Intro -->
             <VBox spacing="8" style="-fx-margin-bottom: 48;">
@@ -28,7 +28,38 @@
             <!-- Accordion Panels Container -->
             <VBox fx:id="accordionContainer" spacing="16">
 
-                <!-- Panel 1: Duration Preferences -->
+
+                <!-- Panel 1: General Settings -->
+                <VBox styleClass="ghost-border, accordion-panel">
+                    <!-- Header -->
+                    <HBox fx:id="generalHeader" onMouseClicked="#toggleGeneralExpanded" alignment="CENTER_LEFT" styleClass="accordion-header">
+                        <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+                        <FontIcon fx:id="generalIcon" iconLiteral="fltfmz-settings-20" iconSize="24" styleClass="accordion-icon"/>
+                        <Region prefWidth="16"/>
+                        <Label text="GENERAL SETTINGS" styleClass="accordion-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <FontIcon fx:id="generalExpandIcon" iconLiteral="fltral-chevron-down-20" iconSize="24" styleClass="accordion-expand-icon"/>
+                    </HBox>
+
+                    <!-- Content -->
+                    <VBox fx:id="generalContent" spacing="24" styleClass="accordion-content">
+                        <padding><Insets top="0" right="24" bottom="32" left="24"/></padding>
+
+                        <!-- Notification Sound Toggle -->
+                        <HBox alignment="CENTER" styleClass="ghost-border" style="-fx-background-color: -fx-surface-container-low; -fx-background-radius: 12; -fx-padding: 16;">
+                            <VBox alignment="CENTER_LEFT" spacing="4">
+                                <Label text="Notification Sounds" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                <Label text="PLAY AUDIO AT THE END OF SESSION AND BREAK" style="-fx-font-size: 10px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <StackPane fx:id="enableSoundToggleTrack" onMouseClicked="#toggleEnableSound" styleClass="toggle-track" prefWidth="48" prefHeight="24">
+                                <Region fx:id="enableSoundToggleThumb" styleClass="toggle-thumb" StackPane.alignment="CENTER_LEFT" maxWidth="16" maxHeight="16"/>
+                            </StackPane>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Panel 2: Duration Preferences -->
                 <VBox styleClass="ghost-border, accordion-panel">
 
                     <!-- Header -->
