@@ -107,21 +107,30 @@ public class JiraBoardViewModel {
 
         configFuture.thenCombine(tasksFuture, (config, tasks) -> {
             Platform.runLater(() -> {
-                java.util.Map<String, Boolean> currentVisibility = new java.util.HashMap<>();
-                columnVisibilityMap.forEach((col, prop) -> currentVisibility.put(col, prop.get()));
-
-                columnTasksMap.clear();
-                columnVisibilityMap.clear();
-                dynamicColumnNames.clear();
-                rawColumns.clear();
-
+                List<String> newColumnNames = new ArrayList<>();
                 if (config.columnConfig() != null && config.columnConfig().columns() != null) {
-                    rawColumns.addAll(config.columnConfig().columns());
                     for (BoardColumn col : config.columnConfig().columns()) {
-                        columnTasksMap.put(col.name(), FXCollections.observableArrayList());
-                        boolean isVisible = currentVisibility.getOrDefault(col.name(), true);
-                        columnVisibilityMap.put(col.name(), new SimpleBooleanProperty(isVisible));
-                        dynamicColumnNames.add(col.name());
+                        newColumnNames.add(col.name());
+                    }
+                }
+
+                if (!dynamicColumnNames.equals(newColumnNames)) {
+                    java.util.Map<String, Boolean> currentVisibility = new java.util.HashMap<>();
+                    columnVisibilityMap.forEach((col, prop) -> currentVisibility.put(col, prop.get()));
+
+                    columnTasksMap.clear();
+                    columnVisibilityMap.clear();
+                    dynamicColumnNames.clear();
+                    rawColumns.clear();
+
+                    if (config.columnConfig() != null && config.columnConfig().columns() != null) {
+                        rawColumns.addAll(config.columnConfig().columns());
+                        for (BoardColumn col : config.columnConfig().columns()) {
+                            columnTasksMap.put(col.name(), FXCollections.observableArrayList());
+                            boolean isVisible = currentVisibility.getOrDefault(col.name(), true);
+                            columnVisibilityMap.put(col.name(), new SimpleBooleanProperty(isVisible));
+                            dynamicColumnNames.add(col.name());
+                        }
                     }
                 }
 

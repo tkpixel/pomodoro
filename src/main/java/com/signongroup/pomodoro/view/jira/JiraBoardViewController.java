@@ -83,6 +83,16 @@ public class JiraBoardViewController implements Initializable {
             }
         });
 
+        // Attach listeners to any existing columns immediately (to handle cached state)
+        for (Map.Entry<String, javafx.collections.ObservableList<TaskCardViewModel>> entry : viewModel.getColumnTasksMap().entrySet()) {
+            String colName = entry.getKey();
+            entry.getValue().addListener((ListChangeListener.Change<? extends TaskCardViewModel> c) -> {
+                updateTaskListUI(colName, entry.getValue());
+            });
+            // Initial render of cached tasks
+            updateTaskListUI(colName, entry.getValue());
+        }
+
         // Bind Create Issue Modal visibility
         if (createIssueOverlay != null) {
             createIssueOverlay.visibleProperty().bind(viewModel.isCreateModalVisibleProperty());
