@@ -6,11 +6,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record BoardColumn(
-    @JsonProperty("name") String name,
-    @JsonProperty("statuses") List<StatusMapping> statuses
-) {
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public record StatusMapping(
-        @JsonProperty("id") String id
-    ) {}
+    @JsonProperty("name") String name, @JsonProperty("statuses") List<StatusMapping> statuses) {
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public record StatusMapping(@JsonProperty("id") String id) {}
 }

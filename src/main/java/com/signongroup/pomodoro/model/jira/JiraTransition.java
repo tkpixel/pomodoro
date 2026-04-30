@@ -7,5 +7,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record JiraTransition(
     @JsonProperty("id") String id,
     @JsonProperty("name") String name,
-    @JsonProperty("to") Status to
-) {}
+    @JsonProperty("to") Status to) {}

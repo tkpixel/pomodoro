@@ -6,6 +6,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record Project(
-    @JsonProperty("id") String id
-) {}
+public record Project(@JsonProperty("id") String id) {}

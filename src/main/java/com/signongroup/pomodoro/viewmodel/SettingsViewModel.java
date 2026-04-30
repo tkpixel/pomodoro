@@ -17,273 +17,293 @@ import javafx.beans.property.StringProperty;
 @Singleton
 public class SettingsViewModel {
 
-    private final SettingsService settingsService;
-    private final JiraAuthService jiraAuthService;
+  private final SettingsService settingsService;
+  private final JiraAuthService jiraAuthService;
 
-    // Accordion State
-    private final BooleanProperty isDurationExpanded = new SimpleBooleanProperty(false);
-    private final BooleanProperty isJiraExpanded = new SimpleBooleanProperty(false);
+  // Accordion State
+  private final BooleanProperty isDurationExpanded = new SimpleBooleanProperty(false);
+  private final BooleanProperty isJiraExpanded = new SimpleBooleanProperty(false);
 
-    // Duration Settings
-    private final IntegerProperty focusSessionMinutes = new SimpleIntegerProperty();
-    private final IntegerProperty shortBreakMinutes = new SimpleIntegerProperty();
-    private final IntegerProperty longBreakMinutes = new SimpleIntegerProperty();
-    private final IntegerProperty maxSessionCount = new SimpleIntegerProperty();
-    private final BooleanProperty autoStartBreaks = new SimpleBooleanProperty();
-    private final BooleanProperty autoStartSessions = new SimpleBooleanProperty();
-    private final BooleanProperty enableSessionSound = new SimpleBooleanProperty(true);
-    private final BooleanProperty enableBreakSound = new SimpleBooleanProperty(true);
+  // Duration Settings
+  private final IntegerProperty focusSessionMinutes = new SimpleIntegerProperty();
+  private final IntegerProperty shortBreakMinutes = new SimpleIntegerProperty();
+  private final IntegerProperty longBreakMinutes = new SimpleIntegerProperty();
+  private final IntegerProperty maxSessionCount = new SimpleIntegerProperty();
+  private final BooleanProperty autoStartBreaks = new SimpleBooleanProperty();
+  private final BooleanProperty autoStartSessions = new SimpleBooleanProperty();
+  private final BooleanProperty enableSessionSound = new SimpleBooleanProperty(true);
+  private final BooleanProperty enableBreakSound = new SimpleBooleanProperty(true);
 
-    // Jira Connection Settings
-    private final StringProperty url = new SimpleStringProperty("");
-    private final StringProperty email = new SimpleStringProperty("");
-    private final StringProperty token = new SimpleStringProperty("");
-    private final BooleanProperty isConnecting = new SimpleBooleanProperty(false);
-    private final StringProperty statusMessage = new SimpleStringProperty("");
-    private final BooleanProperty isSuccess = new SimpleBooleanProperty(false);
+  // Jira Connection Settings
+  private final StringProperty url = new SimpleStringProperty("");
+  private final StringProperty email = new SimpleStringProperty("");
+  private final StringProperty token = new SimpleStringProperty("");
+  private final BooleanProperty isConnecting = new SimpleBooleanProperty(false);
+  private final StringProperty statusMessage = new SimpleStringProperty("");
+  private final BooleanProperty isSuccess = new SimpleBooleanProperty(false);
 
-    // Validation
-    private final BooleanProperty canConnect = new SimpleBooleanProperty(false);
+  // Validation
+  private final BooleanProperty canConnect = new SimpleBooleanProperty(false);
 
-    @Inject
-    public SettingsViewModel(SettingsService settingsService, JiraAuthService jiraAuthService) {
-        this.settingsService = settingsService;
-        this.jiraAuthService = jiraAuthService;
+  @Inject
+  public SettingsViewModel(SettingsService settingsService, JiraAuthService jiraAuthService) {
+    this.settingsService = settingsService;
+    this.jiraAuthService = jiraAuthService;
 
-        loadSettings();
-        loadJiraCredentials();
+    loadSettings();
+    loadJiraCredentials();
 
-        // Add listeners to auto-save when properties change
-        focusSessionMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
-        shortBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
-        longBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
-        maxSessionCount.addListener((obs, oldVal, newVal) -> saveSettings());
-        autoStartBreaks.addListener((obs, oldVal, newVal) -> saveSettings());
-        autoStartSessions.addListener((obs, oldVal, newVal) -> saveSettings());
-        enableSessionSound.addListener((obs, oldVal, newVal) -> saveSettings());
-        enableBreakSound.addListener((obs, oldVal, newVal) -> saveSettings());
+    // Add listeners to auto-save when properties change
+    focusSessionMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
+    shortBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
+    longBreakMinutes.addListener((obs, oldVal, newVal) -> saveSettings());
+    maxSessionCount.addListener((obs, oldVal, newVal) -> saveSettings());
+    autoStartBreaks.addListener((obs, oldVal, newVal) -> saveSettings());
+    autoStartSessions.addListener((obs, oldVal, newVal) -> saveSettings());
+    enableSessionSound.addListener((obs, oldVal, newVal) -> saveSettings());
+    enableBreakSound.addListener((obs, oldVal, newVal) -> saveSettings());
 
-        // Bind validation
-        canConnect.bind(Bindings.createBooleanBinding(() ->
-                !url.get().isEmpty() && !email.get().isEmpty() && !token.get().isEmpty() && !isConnecting.get(),
-                url, email, token, isConnecting
-        ));
+    // Bind validation
+    canConnect.bind(
+        Bindings.createBooleanBinding(
+            () ->
+                !url.get().isEmpty()
+                    && !email.get().isEmpty()
+                    && !token.get().isEmpty()
+                    && !isConnecting.get(),
+            url,
+            email,
+            token,
+            isConnecting));
+  }
+
+  private void loadJiraCredentials() {
+    String savedUrl = jiraAuthService.getSavedUrl();
+    if (savedUrl != null && !savedUrl.isEmpty()) {
+      url.set(savedUrl);
     }
 
-    private void loadJiraCredentials() {
-        String savedUrl = jiraAuthService.getSavedUrl();
-        if (savedUrl != null && !savedUrl.isEmpty()) {
-            url.set(savedUrl);
-        }
-
-        String savedEmail = jiraAuthService.getSavedEmail();
-        if (savedEmail != null && !savedEmail.isEmpty()) {
-            email.set(savedEmail);
-        }
-
-        String savedToken = jiraAuthService.getSavedToken();
-        if (savedToken != null && !savedToken.isEmpty()) {
-            token.set(savedToken);
-        }
+    String savedEmail = jiraAuthService.getSavedEmail();
+    if (savedEmail != null && !savedEmail.isEmpty()) {
+      email.set(savedEmail);
     }
 
-    private void loadSettings() {
-        DurationSettings settings = settingsService.loadSettings();
-        focusSessionMinutes.set(settings.focusSessionMinutes());
-        shortBreakMinutes.set(settings.shortBreakMinutes());
-        longBreakMinutes.set(settings.longBreakMinutes());
-        maxSessionCount.set(settings.maxSessionCount());
-        autoStartBreaks.set(settings.autoStartBreaks());
-        if (settings.autoStartSessions() != null) {
-            autoStartSessions.set(settings.autoStartSessions());
-        } else {
-            autoStartSessions.set(false);
-        }
-        if (settings.enableSessionSound() != null) {
-            enableSessionSound.set(settings.enableSessionSound());
-        } else {
-            enableSessionSound.set(true);
-        }
-        if (settings.enableBreakSound() != null) {
-            enableBreakSound.set(settings.enableBreakSound());
-        } else {
-            enableBreakSound.set(true);
-        }
+    String savedToken = jiraAuthService.getSavedToken();
+    if (savedToken != null && !savedToken.isEmpty()) {
+      token.set(savedToken);
+    }
+  }
+
+  private void loadSettings() {
+    DurationSettings settings = settingsService.loadSettings();
+    focusSessionMinutes.set(settings.focusSessionMinutes());
+    shortBreakMinutes.set(settings.shortBreakMinutes());
+    longBreakMinutes.set(settings.longBreakMinutes());
+    maxSessionCount.set(settings.maxSessionCount());
+    autoStartBreaks.set(settings.autoStartBreaks());
+    if (settings.autoStartSessions() != null) {
+      autoStartSessions.set(settings.autoStartSessions());
+    } else {
+      autoStartSessions.set(false);
+    }
+    if (settings.enableSessionSound() != null) {
+      enableSessionSound.set(settings.enableSessionSound());
+    } else {
+      enableSessionSound.set(true);
+    }
+    if (settings.enableBreakSound() != null) {
+      enableBreakSound.set(settings.enableBreakSound());
+    } else {
+      enableBreakSound.set(true);
+    }
+  }
+
+  private void saveSettings() {
+    DurationSettings settings =
+        new DurationSettings(
+            focusSessionMinutes.get(),
+            shortBreakMinutes.get(),
+            longBreakMinutes.get(),
+            maxSessionCount.get(),
+            autoStartBreaks.get(),
+            autoStartSessions.get(),
+            enableSessionSound.get(),
+            enableBreakSound.get());
+    settingsService.saveSettings(settings);
+  }
+
+  public void toggleDurationExpanded() {
+    isDurationExpanded.set(!isDurationExpanded.get());
+    if (isDurationExpanded.get()) {
+      isJiraExpanded.set(false);
+    }
+  }
+
+  public void toggleJiraExpanded() {
+    isJiraExpanded.set(!isJiraExpanded.get());
+    if (isJiraExpanded.get()) {
+      isDurationExpanded.set(false);
+    }
+  }
+
+  public void connectAndTestJira() {
+    if (!canConnect.get()) {
+      statusMessage.set("Please fill in all fields.");
+      isSuccess.set(false);
+      return;
     }
 
-    private void saveSettings() {
-        DurationSettings settings = new DurationSettings(
-                focusSessionMinutes.get(),
-                shortBreakMinutes.get(),
-                longBreakMinutes.get(),
-                maxSessionCount.get(),
-                autoStartBreaks.get(),
-                autoStartSessions.get(),
-                enableSessionSound.get(),
-                enableBreakSound.get()
-        );
-        settingsService.saveSettings(settings);
-    }
+    isConnecting.set(true);
+    statusMessage.set("Connecting...");
 
-    public void toggleDurationExpanded() {
-        isDurationExpanded.set(!isDurationExpanded.get());
-        if (isDurationExpanded.get()) {
-            isJiraExpanded.set(false);
-        }
-    }
-
-    public void toggleJiraExpanded() {
-        isJiraExpanded.set(!isJiraExpanded.get());
-        if (isJiraExpanded.get()) {
-            isDurationExpanded.set(false);
-        }
-    }
-
-    public void connectAndTestJira() {
-        if (!canConnect.get()) {
-            statusMessage.set("Please fill in all fields.");
-            isSuccess.set(false);
-            return;
-        }
-
-        isConnecting.set(true);
-        statusMessage.set("Connecting...");
-
-        jiraAuthService.testConnection(url.get(), email.get(), token.get())
-                .thenAccept(success -> Platform.runLater(() -> {
-                    isConnecting.set(false);
-                    isSuccess.set(success);
-                    if (success) {
+    jiraAuthService
+        .testConnection(url.get(), email.get(), token.get())
+        .thenAccept(
+            success ->
+                Platform.runLater(
+                    () -> {
+                      isConnecting.set(false);
+                      isSuccess.set(success);
+                      if (success) {
                         statusMessage.set("Successfully connected to Jira!");
-                    } else {
+                      } else {
                         statusMessage.set("Connection failed. Check credentials.");
-                    }
-                }));
-    }
+                      }
+                    }));
+  }
 
-    // --- Commands ---
+  // --- Commands ---
 
-    public void incrementFocusSession() {
-        if (focusSessionMinutes.get() < 90) {
-            focusSessionMinutes.set(focusSessionMinutes.get() + 1);
-        }
+  public void incrementFocusSession() {
+    if (focusSessionMinutes.get() < 90) {
+      focusSessionMinutes.set(focusSessionMinutes.get() + 1);
     }
+  }
 
-    public void decrementFocusSession() {
-        if (focusSessionMinutes.get() > 1) {
-            focusSessionMinutes.set(focusSessionMinutes.get() - 1);
-        }
+  public void decrementFocusSession() {
+    if (focusSessionMinutes.get() > 1) {
+      focusSessionMinutes.set(focusSessionMinutes.get() - 1);
     }
+  }
 
-    public void incrementShortBreak() {
-        if (shortBreakMinutes.get() < 30) {
-            shortBreakMinutes.set(shortBreakMinutes.get() + 1);
-        }
+  public void incrementShortBreak() {
+    if (shortBreakMinutes.get() < 30) {
+      shortBreakMinutes.set(shortBreakMinutes.get() + 1);
     }
+  }
 
-    public void decrementShortBreak() {
-        if (shortBreakMinutes.get() > 1) {
-            shortBreakMinutes.set(shortBreakMinutes.get() - 1);
-        }
+  public void decrementShortBreak() {
+    if (shortBreakMinutes.get() > 1) {
+      shortBreakMinutes.set(shortBreakMinutes.get() - 1);
     }
+  }
 
-    public void incrementLongBreak() {
-        if (longBreakMinutes.get() < 60) {
-            longBreakMinutes.set(longBreakMinutes.get() + 5);
-        }
+  public void incrementLongBreak() {
+    if (longBreakMinutes.get() < 60) {
+      longBreakMinutes.set(longBreakMinutes.get() + 5);
     }
+  }
 
-    public void decrementLongBreak() {
-        if (longBreakMinutes.get() > 5) {
-            longBreakMinutes.set(longBreakMinutes.get() - 5);
-        }
+  public void decrementLongBreak() {
+    if (longBreakMinutes.get() > 5) {
+      longBreakMinutes.set(longBreakMinutes.get() - 5);
     }
+  }
 
-    public void incrementMaxSessionCount() {
-        if (maxSessionCount.get() < 10) {
-            maxSessionCount.set(maxSessionCount.get() + 1);
-        }
+  public void incrementMaxSessionCount() {
+    if (maxSessionCount.get() < 10) {
+      maxSessionCount.set(maxSessionCount.get() + 1);
     }
+  }
 
-    public void decrementMaxSessionCount() {
-        if (maxSessionCount.get() > 1) {
-            maxSessionCount.set(maxSessionCount.get() - 1);
-        }
+  public void decrementMaxSessionCount() {
+    if (maxSessionCount.get() > 1) {
+      maxSessionCount.set(maxSessionCount.get() - 1);
     }
+  }
 
-    // --- Getters for Properties ---
+  // --- Getters for Properties ---
 
-    public BooleanProperty isDurationExpandedProperty() {
-        return isDurationExpanded;
-    }
-    public BooleanProperty isJiraExpandedProperty() {
-        return isJiraExpanded;
-    }
+  public BooleanProperty isDurationExpandedProperty() {
+    return isDurationExpanded;
+  }
 
-    public IntegerProperty focusSessionMinutesProperty() {
-        return focusSessionMinutes;
-    }
+  public BooleanProperty isJiraExpandedProperty() {
+    return isJiraExpanded;
+  }
 
-    public IntegerProperty shortBreakMinutesProperty() {
-        return shortBreakMinutes;
-    }
+  public IntegerProperty focusSessionMinutesProperty() {
+    return focusSessionMinutes;
+  }
 
-    public IntegerProperty longBreakMinutesProperty() {
-        return longBreakMinutes;
-    }
+  public IntegerProperty shortBreakMinutesProperty() {
+    return shortBreakMinutes;
+  }
 
-    public IntegerProperty maxSessionCountProperty() {
-        return maxSessionCount;
-    }
+  public IntegerProperty longBreakMinutesProperty() {
+    return longBreakMinutes;
+  }
 
+  public IntegerProperty maxSessionCountProperty() {
+    return maxSessionCount;
+  }
 
-    /**
-     * Returns the enableSessionSound property.
-     * @return BooleanProperty
-     */
-    public BooleanProperty enableSessionSoundProperty() {
-        return enableSessionSound;
-    }
+  /**
+   * Returns the enableSessionSound property.
+   *
+   * @return BooleanProperty
+   */
+  public BooleanProperty enableSessionSoundProperty() {
+    return enableSessionSound;
+  }
 
-    /**
-     * Returns the enableBreakSound property.
-     * @return BooleanProperty
-     */
-    public BooleanProperty enableBreakSoundProperty() {
-        return enableBreakSound;
-    }
+  /**
+   * Returns the enableBreakSound property.
+   *
+   * @return BooleanProperty
+   */
+  public BooleanProperty enableBreakSoundProperty() {
+    return enableBreakSound;
+  }
 
-    public BooleanProperty autoStartSessionsProperty() {
-        return autoStartSessions;
-    }
+  public BooleanProperty autoStartSessionsProperty() {
+    return autoStartSessions;
+  }
 
-    /**
-     * Returns the autoStartBreaks property.
-     * @return BooleanProperty
-     */
-    public BooleanProperty autoStartBreaksProperty() {
-        return autoStartBreaks;
-    }
+  /**
+   * Returns the autoStartBreaks property.
+   *
+   * @return BooleanProperty
+   */
+  public BooleanProperty autoStartBreaksProperty() {
+    return autoStartBreaks;
+  }
 
-    public StringProperty urlProperty() {
-        return url;
-    }
-    public StringProperty emailProperty() {
-        return email;
-    }
-    public StringProperty tokenProperty() {
-        return token;
-    }
-    public BooleanProperty isConnectingProperty() {
-        return isConnecting;
-    }
-    public StringProperty statusMessageProperty() {
-        return statusMessage;
-    }
-    public BooleanProperty isSuccessProperty() {
-        return isSuccess;
-    }
-    public BooleanProperty canConnectProperty() {
-        return canConnect;
-    }
+  public StringProperty urlProperty() {
+    return url;
+  }
+
+  public StringProperty emailProperty() {
+    return email;
+  }
+
+  public StringProperty tokenProperty() {
+    return token;
+  }
+
+  public BooleanProperty isConnectingProperty() {
+    return isConnecting;
+  }
+
+  public StringProperty statusMessageProperty() {
+    return statusMessage;
+  }
+
+  public BooleanProperty isSuccessProperty() {
+    return isSuccess;
+  }
+
+  public BooleanProperty canConnectProperty() {
+    return canConnect;
+  }
 }

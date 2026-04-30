@@ -8,10 +8,7 @@ import java.util.List;
 public record BoardConfiguration(
     @JsonProperty("id") Long id,
     @JsonProperty("name") String name,
-    @JsonProperty("columnConfig") ColumnConfig columnConfig
-) {
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public record ColumnConfig(
-        @JsonProperty("columns") List<BoardColumn> columns
-    ) {}
+    @JsonProperty("columnConfig") ColumnConfig columnConfig) {
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public record ColumnConfig(@JsonProperty("columns") List<BoardColumn> columns) {}
 }

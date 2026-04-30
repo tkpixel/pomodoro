@@ -788,3 +788,55 @@
     -fx-border-color: transparent transparent #2C2C2E transparent;
     -fx-border-width: 1px 0 0 0;
 }
+
+/* Overlay / Tab Styles */
+.tab-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-on-surface-variant;
+    -fx-font-family: 'Inter';
+    -fx-font-weight: 500;
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 16px 0;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 2px 0;
+}
+.tab-btn:hover {
+    -fx-text-fill: -fx-on-surface;
+}
+
+.custom-scrollbar .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+.custom-scrollbar .scroll-bar:vertical .track {
+    -fx-background-color: -fx-surface-container-lowest;
+    -fx-border-color: transparent;
+}
+.custom-scrollbar .scroll-bar:vertical .thumb {
+    -fx-background-color: -fx-surface-container-highest;
+    -fx-background-radius: 10px;
+}
+.custom-scrollbar .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: -fx-outline-variant;
+}
+.custom-scrollbar .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+}
+
+.ember-gradient-btn {
+    -fx-background-color: linear-gradient(to bottom right, -fx-primary, -fx-primary-container);
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(255, 143, 112, 0.3), 15, 0, 0, 0);
+}
+.ember-gradient-btn:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.history-timeline {
+    -fx-border-color: transparent transparent transparent rgba(73, 72, 71, 0.2);
+    -fx-border-width: 0 0 0 1px;
+    -fx-padding: 0 0 0 20px; /* offset to the right of the line */
+}

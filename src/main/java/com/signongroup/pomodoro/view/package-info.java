@@ -1,43 +1,43 @@
 /**
  * View-Schicht der MVVM-Architektur.
  *
- * <p>Dieses Paket enthält alle Klassen und FXML-Ressourcen, die unmittelbar für die
- * Darstellung der Benutzeroberfläche verantwortlich sind. In der MVVM-Terminologie
- * entspricht die <em>View</em> dem passiven Präsentationsrahmen:
+ * <p>Dieses Paket enthält alle Klassen und FXML-Ressourcen, die unmittelbar für die Darstellung der
+ * Benutzeroberfläche verantwortlich sind. In der MVVM-Terminologie entspricht die <em>View</em> dem
+ * passiven Präsentationsrahmen:
  *
  * <h2>Verantwortlichkeiten</h2>
+ *
  * <ul>
- *   <li><strong>FXML-Deklaration</strong> – Die Struktur der UI (Layout, Controls, Styles)
- *       wird ausschließlich in {@code *.fxml}-Dateien beschrieben, die vom JavaFX
- *       {@link javafx.fxml.FXMLLoader} geladen werden.</li>
- *   <li><strong>Controller</strong> – Jede FXML-Datei besitzt einen zugehörigen Controller
- *       (z. B. {@link com.signongroup.pomodoro.view.MainViewController}), der:
+ *   <li><strong>FXML-Deklaration</strong> – Die Struktur der UI (Layout, Controls, Styles) wird
+ *       ausschließlich in {@code *.fxml}-Dateien beschrieben, die vom JavaFX {@link
+ *       javafx.fxml.FXMLLoader} geladen werden.
+ *   <li><strong>Controller</strong> – Jede FXML-Datei besitzt einen zugehörigen Controller (z. B.
+ *       {@link com.signongroup.pomodoro.view.MainViewController}), der:
  *       <ol>
- *         <li>Via {@code @FXML} auf UI-Elemente zugreift.</li>
- *         <li>Properties der View an Properties des ViewModels bindet
- *             ({@link javafx.beans.property.Property#bind(javafx.beans.value.ObservableValue)}).</li>
+ *         <li>Via {@code @FXML} auf UI-Elemente zugreift.
+ *         <li>Properties der View an Properties des ViewModels bindet ({@link
+ *             javafx.beans.property.Property#bind(javafx.beans.value.ObservableValue)}).
  *         <li>Benutzeraktionen (Button-Klicks, Eingaben) als Methodenaufrufe an das ViewModel
- *             weiterleitet – <em>ohne eigene Geschäftslogik</em>.</li>
+ *             weiterleitet – <em>ohne eigene Geschäftslogik</em>.
  *       </ol>
- *   </li>
  *   <li><strong>Dependency Injection</strong> – Controller werden von Micronaut als
  *       {@code @Singleton} verwaltet. Das ViewModel wird per Konstruktor-Injektion
- *       ({@code @Inject}) eingebunden; der {@code FXMLLoader} nutzt
- *       {@code context::getBean} als Controller-Factory.</li>
+ *       ({@code @Inject}) eingebunden; der {@code FXMLLoader} nutzt {@code context::getBean} als
+ *       Controller-Factory.
  * </ul>
  *
  * <h2>Erlaubte Abhängigkeiten</h2>
+ *
  * <ul>
- *   <li>{@code com.signongroup.template.viewmodel} – Controller dürfen ViewModels kennen
- *       und an deren Properties binden.</li>
+ *   <li>{@code com.signongroup.template.viewmodel} – Controller dürfen ViewModels kennen und an
+ *       deren Properties binden.
  * </ul>
  *
  * <h2>Verbotene Abhängigkeiten</h2>
+ *
  * <ul>
- *   <li>Direkter Zugriff auf {@code model}- oder {@code service}-Pakete ist
- *       <strong>nicht erlaubt</strong>; diese Schichten werden ausschließlich durch
- *       das ViewModel vermittelt.</li>
+ *   <li>Direkter Zugriff auf {@code model}- oder {@code service}-Pakete ist <strong>nicht
+ *       erlaubt</strong>; diese Schichten werden ausschließlich durch das ViewModel vermittelt.
  * </ul>
  */
 package com.signongroup.pomodoro.view;
-

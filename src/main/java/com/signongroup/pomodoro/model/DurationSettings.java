@@ -10,6 +10,4 @@ public record DurationSettings(
     @JsonProperty("autoStartBreaks") boolean autoStartBreaks,
     @JsonProperty("autoStartSessions") Boolean autoStartSessions,
     @JsonProperty("enableSessionSound") Boolean enableSessionSound,
-    @JsonProperty("enableBreakSound") Boolean enableBreakSound
-) {
-}
+    @JsonProperty("enableBreakSound") Boolean enableBreakSound) {}

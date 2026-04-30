@@ -8,24 +8,19 @@ import java.util.List;
 public record AdfDoc(
     @JsonProperty("type") String type,
     @JsonProperty("version") int version,
-    @JsonProperty("content") List<AdfParagraph> content
-) {
-    public static AdfDoc ofText(String text) {
-        if (text == null || text.isEmpty()) {
-            return null;
-        }
-        return new AdfDoc("doc", 1, List.of(new AdfParagraph("paragraph", List.of(new AdfText("text", text)))));
+    @JsonProperty("content") List<AdfParagraph> content) {
+  public static AdfDoc ofText(String text) {
+    if (text == null || text.isEmpty()) {
+      return null;
     }
+    return new AdfDoc(
+        "doc", 1, List.of(new AdfParagraph("paragraph", List.of(new AdfText("text", text)))));
+  }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public record AdfParagraph(
-        @JsonProperty("type") String type,
-        @JsonProperty("content") List<AdfText> content
-    ) {}
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public record AdfParagraph(
+      @JsonProperty("type") String type, @JsonProperty("content") List<AdfText> content) {}
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public record AdfText(
-        @JsonProperty("type") String type,
-        @JsonProperty("text") String text
-    ) {}
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public record AdfText(@JsonProperty("type") String type, @JsonProperty("text") String text) {}
 }

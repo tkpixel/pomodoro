@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.web.WebView?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.signongroup.pomodoro.view.jira.TaskDetailOverlayViewController"
+           styleClass="overlay-bg"
+           visible="false" managed="false"
+           fx:id="overlayRoot">
+
+    <VBox maxWidth="670.0" maxHeight="750.0" styleClass="settings-bottom-sheet" style="-fx-background-radius: 12; -fx-padding: 0; -fx-background-color: -fx-surface;">
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" style="-fx-padding: 20 24; -fx-background-color: -fx-surface-container-low;">
+            <Label text="MONOLITH" style="-fx-font-family: 'Manrope'; -fx-font-weight: 900; -fx-font-size: 20px; -fx-text-fill: -fx-primary; -fx-letter-spacing: 0.2em;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button onAction="#handleClose" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 8;">
+                <graphic>
+                    <FontIcon iconLiteral="fltfal-dismiss-24" iconSize="24" styleClass="icon-muted"/>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Meta Section -->
+        <VBox style="-fx-padding: 32 32 24 32; -fx-background-color: -fx-surface;">
+            <HBox alignment="TOP_LEFT" spacing="16" style="-fx-padding: 0 0 16 0;">
+                <Label fx:id="taskTitleLabel" wrapText="true" style="-fx-font-family: 'Manrope'; -fx-font-weight: bold; -fx-font-size: 30px; -fx-text-fill: -fx-on-surface;"/>
+                <HBox fx:id="statusBadgeContainer" alignment="CENTER_LEFT" spacing="6" style="-fx-background-color: -fx-surface-container-highest; -fx-padding: 6 12; -fx-background-radius: 9999px;">
+                     <Circle radius="4" style="-fx-fill: -fx-primary;"/>
+                     <Label fx:id="statusLabel" style="-fx-font-family: 'Inter'; -fx-font-weight: 500; -fx-font-size: 12px; -fx-text-fill: -fx-on-surface-variant; -fx-text-transform: uppercase;"/>
+                </HBox>
+            </HBox>
+            <HBox spacing="24" alignment="CENTER_LEFT">
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <FontIcon iconLiteral="fltfal-calendar-20" iconSize="18" styleClass="icon-muted"/>
+                    <Label fx:id="dueDateLabel" style="-fx-font-size: 14px; -fx-text-fill: -fx-on-surface-variant;"/>
+                </HBox>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <FontIcon iconLiteral="fltfal-person-20" iconSize="18" styleClass="icon-muted"/>
+                    <Label fx:id="assigneeLabel" style="-fx-font-size: 14px; -fx-text-fill: -fx-on-surface-variant;"/>
+                </HBox>
+            </HBox>
+        </VBox>
+
+        <!-- Tabs -->
+        <HBox spacing="32" style="-fx-padding: 0 32; -fx-background-color: -fx-surface; -fx-border-color: transparent transparent #49484726 transparent; -fx-border-width: 0 0 1 0;">
+             <Button fx:id="tabDetails" text="Details" onAction="#showDetailsTab" styleClass="tab-btn"/>
+             <Button fx:id="tabComments" text="Comments (0)" onAction="#showCommentsTab" styleClass="tab-btn"/>
+             <Button fx:id="tabHistory" text="History" onAction="#showHistoryTab" styleClass="tab-btn"/>
+        </HBox>
+
+        <!-- Content Area -->
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: -fx-surface-container-lowest; -fx-background: transparent;" hbarPolicy="NEVER" styleClass="custom-scrollbar">
+            <StackPane alignment="TOP_LEFT" style="-fx-padding: 32; -fx-background-color: -fx-surface-container-lowest;">
+                <VBox fx:id="detailsContainer" spacing="40" visible="true">
+                    <VBox spacing="16">
+                        <Label text="DESCRIPTION" style="-fx-font-size: 12px; -fx-font-weight: 600; -fx-text-fill: -fx-on-surface-variant; -fx-letter-spacing: 0.1em;"/>
+                        <WebView fx:id="descriptionWebView" minHeight="200"/>
+                    </VBox>
+                    <VBox spacing="16">
+                        <Label text="ATTACHMENTS" style="-fx-font-size: 12px; -fx-font-weight: 600; -fx-text-fill: -fx-on-surface-variant; -fx-letter-spacing: 0.1em;"/>
+                        <HBox spacing="16">
+                            <!-- Dummy attachment -->
+                            <StackPane prefWidth="150" prefHeight="100" style="-fx-background-color: -fx-surface-container; -fx-background-radius: 8;">
+                                <Label text="File.png" style="-fx-text-fill: -fx-on-surface;"/>
+                            </StackPane>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <VBox fx:id="commentsContainer" spacing="32" visible="false">
+                    <!-- Populated programmatically -->
+                </VBox>
+
+                <VBox fx:id="historyContainer" spacing="32" visible="false" styleClass="history-timeline">
+                    <!-- Populated programmatically -->
+                </VBox>
+            </StackPane>
+        </ScrollPane>
+
+        <!-- Sticky Footer for Comments -->
+        <HBox fx:id="commentFooter" spacing="16" alignment="CENTER" style="-fx-padding: 20 32; -fx-background-color: -fx-surface-container-low; -fx-border-color: #49484726 transparent transparent transparent; -fx-border-width: 1 0 0 0;" visible="false" managed="false">
+            <StackPane prefWidth="40" prefHeight="40" style="-fx-background-color: -fx-surface-variant; -fx-background-radius: 20;">
+                 <FontIcon iconLiteral="fltfal-person-24" iconSize="20" styleClass="icon-muted"/>
+            </StackPane>
+            <StackPane HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
+                <TextField fx:id="commentInput" promptText="Add a comment..." style="-fx-background-color: -fx-surface-container-highest; -fx-text-fill: -fx-on-surface; -fx-prompt-text-fill: -fx-on-surface-variant; -fx-padding: 12 48 12 24; -fx-background-radius: 9999px; -fx-font-size: 14px;" prefWidth="2000"/>
+                <Button onAction="#handlePostComment" styleClass="ember-gradient-btn" style="-fx-background-radius: 20; -fx-min-width: 32; -fx-min-height: 32; -fx-max-width: 32; -fx-max-height: 32; -fx-padding: 0;">
+                     <graphic>
+                         <FontIcon iconLiteral="fltfal-send-20" iconSize="16" style="-fx-icon-color: -fx-on-primary-fixed;"/>
+                     </graphic>
+                     <StackPane.margin>
+                         <Insets right="8"/>
+                     </StackPane.margin>
+                </Button>
+            </StackPane>
+        </HBox>
+    </VBox>
+</StackPane>

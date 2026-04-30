@@ -7,5 +7,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record Priority(
     @JsonProperty("id") String id,
     @JsonProperty("name") String name,
-    @JsonProperty("iconUrl") String iconUrl
-) {}
+    @JsonProperty("iconUrl") String iconUrl) {}
