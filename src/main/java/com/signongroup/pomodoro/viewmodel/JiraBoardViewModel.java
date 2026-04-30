@@ -101,27 +101,44 @@ public class JiraBoardViewModel {
 
     private void fetchBoardConfigurationAndTasks(Long boardId) {
         isLoading.set(true);
-        jiraBoardService.fetchBoardConfiguration(boardId).thenCompose(config -> {
-            Platform.runLater(() -> {
-                columnTasksMap.clear();
-                columnVisibilityMap.clear();
-                dynamicColumnNames.clear();
-                rawColumns.clear();
 
+        var configFuture = jiraBoardService.fetchBoardConfiguration(boardId);
+        var tasksFuture = jiraBoardService.fetchTasks(boardId);
+
+        configFuture.thenCombine(tasksFuture, (config, tasks) -> {
+            Platform.runLater(() -> {
+                List<String> newColumnNames = new ArrayList<>();
                 if (config.columnConfig() != null && config.columnConfig().columns() != null) {
-                    rawColumns.addAll(config.columnConfig().columns());
                     for (BoardColumn col : config.columnConfig().columns()) {
-                        columnTasksMap.put(col.name(), FXCollections.observableArrayList());
-                        columnVisibilityMap.put(col.name(), new SimpleBooleanProperty(true));
-                        dynamicColumnNames.add(col.name());
+                        newColumnNames.add(col.name());
                     }
                 }
+
+                if (!dynamicColumnNames.equals(newColumnNames)) {
+                    java.util.Map<String, Boolean> currentVisibility = new java.util.HashMap<>();
+                    columnVisibilityMap.forEach((col, prop) -> currentVisibility.put(col, prop.get()));
+
+                    columnTasksMap.clear();
+                    columnVisibilityMap.clear();
+                    dynamicColumnNames.clear();
+                    rawColumns.clear();
+
+                    if (config.columnConfig() != null && config.columnConfig().columns() != null) {
+                        rawColumns.addAll(config.columnConfig().columns());
+                        for (BoardColumn col : config.columnConfig().columns()) {
+                            columnTasksMap.put(col.name(), FXCollections.observableArrayList());
+                            boolean isVisible = currentVisibility.getOrDefault(col.name(), true);
+                            columnVisibilityMap.put(col.name(), new SimpleBooleanProperty(isVisible));
+                            dynamicColumnNames.add(col.name());
+                        }
+                    }
+                }
+
+                distributeTasks(tasks);
+                isLoading.set(false);
             });
-            return jiraBoardService.fetchTasks(boardId);
-        }).thenAccept(tasks -> Platform.runLater(() -> {
-            distributeTasks(tasks);
-            isLoading.set(false);
-        })).exceptionally(ex -> {
+            return null;
+        }).exceptionally(ex -> {
             log.error("Failed to fetch board configuration or tasks for board {}", boardId, ex);
             Platform.runLater(() -> isLoading.set(false));
             return null;
