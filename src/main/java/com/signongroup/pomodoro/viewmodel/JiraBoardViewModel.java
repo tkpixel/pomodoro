@@ -101,7 +101,11 @@ public class JiraBoardViewModel {
 
     private void fetchBoardConfigurationAndTasks(Long boardId) {
         isLoading.set(true);
-        jiraBoardService.fetchBoardConfiguration(boardId).thenCompose(config -> {
+
+        var configFuture = jiraBoardService.fetchBoardConfiguration(boardId);
+        var tasksFuture = jiraBoardService.fetchTasks(boardId);
+
+        configFuture.thenCombine(tasksFuture, (config, tasks) -> {
             Platform.runLater(() -> {
                 java.util.Map<String, Boolean> currentVisibility = new java.util.HashMap<>();
                 columnVisibilityMap.forEach((col, prop) -> currentVisibility.put(col, prop.get()));
@@ -120,12 +124,12 @@ public class JiraBoardViewModel {
                         dynamicColumnNames.add(col.name());
                     }
                 }
+
+                distributeTasks(tasks);
+                isLoading.set(false);
             });
-            return jiraBoardService.fetchTasks(boardId);
-        }).thenAccept(tasks -> Platform.runLater(() -> {
-            distributeTasks(tasks);
-            isLoading.set(false);
-        })).exceptionally(ex -> {
+            return null;
+        }).exceptionally(ex -> {
             log.error("Failed to fetch board configuration or tasks for board {}", boardId, ex);
             Platform.runLater(() -> isLoading.set(false));
             return null;

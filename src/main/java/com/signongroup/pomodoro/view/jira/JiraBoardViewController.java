@@ -68,6 +68,11 @@ public class JiraBoardViewController implements Initializable {
             Platform.runLater(this::rebuildColumnsUI);
         });
 
+        // If data is already cached (e.g. returning to the view), render it immediately
+        if (!viewModel.getDynamicColumnNames().isEmpty()) {
+            Platform.runLater(this::rebuildColumnsUI);
+        }
+
         // Listen for task changes in all columns
         viewModel.getColumnTasksMap().addListener((javafx.collections.MapChangeListener.Change<? extends String, ? extends javafx.collections.ObservableList<TaskCardViewModel>> change) -> {
             if (change.wasAdded()) {
@@ -82,6 +87,11 @@ public class JiraBoardViewController implements Initializable {
         if (createIssueOverlay != null) {
             createIssueOverlay.visibleProperty().bind(viewModel.isCreateModalVisibleProperty());
             createIssueOverlay.managedProperty().bind(viewModel.isCreateModalVisibleProperty());
+        }
+
+        // Fetch latest state in the background if a board is selected
+        if (viewModel.getSelectedBoard() != null) {
+            viewModel.refreshTasks();
         }
     }
 
