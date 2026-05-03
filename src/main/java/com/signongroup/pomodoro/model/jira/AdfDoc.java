@@ -2,9 +2,11 @@ package com.signongroup.pomodoro.model.jira;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonDeserialize(using = AdfDocDeserializer.class)
 public record AdfDoc(
     @JsonProperty("type") String type,
     @JsonProperty("version") int version,
