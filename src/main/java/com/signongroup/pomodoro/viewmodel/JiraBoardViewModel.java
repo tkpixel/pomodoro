@@ -45,12 +45,15 @@ public class JiraBoardViewModel {
 
   private final BooleanProperty isLoading = new SimpleBooleanProperty(false);
   private final BooleanProperty isCreateModalVisible = new SimpleBooleanProperty(false);
+  private final BooleanProperty isTaskDetailModalVisible = new SimpleBooleanProperty(false);
+  private final TaskDetailViewModel taskDetailViewModel;
 
   @Inject
   public JiraBoardViewModel(
-      JiraBoardService jiraBoardService, UserPreferencesService userPreferencesService) {
+      JiraBoardService jiraBoardService, UserPreferencesService userPreferencesService, TaskDetailViewModel taskDetailViewModel) {
     this.jiraBoardService = jiraBoardService;
     this.userPreferencesService = userPreferencesService;
+    this.taskDetailViewModel = taskDetailViewModel;
 
     selectedBoard.addListener(
         (obs, oldVal, newVal) -> {
@@ -361,5 +364,13 @@ public class JiraBoardViewModel {
 
   public BooleanProperty isCreateModalVisibleProperty() {
     return isCreateModalVisible;
+  }
+
+  public BooleanProperty isTaskDetailModalVisibleProperty() {
+    return isTaskDetailModalVisible;
+  }
+
+  public TaskDetailViewModel getTaskDetailViewModel() {
+    return taskDetailViewModel;
   }
 }

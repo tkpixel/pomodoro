@@ -42,6 +42,7 @@ public class JiraBoardViewController implements Initializable {
   @FXML private MenuButton filterMenuButton;
   @FXML private VBox columnsContainer;
   @FXML private StackPane createIssueOverlay;
+  @FXML private StackPane taskDetailOverlay;
 
   private final Map<String, VBox> columnListMap = new HashMap<>();
 
@@ -94,6 +95,11 @@ public class JiraBoardViewController implements Initializable {
     if (createIssueOverlay != null) {
       createIssueOverlay.visibleProperty().bind(viewModel.isCreateModalVisibleProperty());
       createIssueOverlay.managedProperty().bind(viewModel.isCreateModalVisibleProperty());
+    }
+
+    if (taskDetailOverlay != null) {
+      taskDetailOverlay.visibleProperty().bind(viewModel.isTaskDetailModalVisibleProperty());
+      taskDetailOverlay.managedProperty().bind(viewModel.isTaskDetailModalVisibleProperty());
     }
   }
 

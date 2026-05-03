@@ -73,4 +73,7 @@
     <!-- Create Issue Modal Overlay -->
     <fx:include fx:id="createIssueOverlay" source="CreateIssueOverlay.fxml"/>
 
+    <!-- Task Detail Modal Overlay -->
+    <fx:include fx:id="taskDetailOverlay" source="TaskDetailOverlay.fxml"/>
+
 </StackPane>

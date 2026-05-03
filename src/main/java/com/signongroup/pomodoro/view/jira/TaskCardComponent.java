@@ -149,7 +149,19 @@ public class TaskCardComponent extends VBox {
           }
         });
 
-    contextMenu.getItems().addAll(moveStatusMenu, setAsActiveItem, separator, assignToMeItem);
+    MenuItem showDetailsItem = new MenuItem("Show Details");
+    FontIcon detailsIcon = IconFactory.create("fltrmz-document-20");
+    detailsIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa"));
+    showDetailsItem.setGraphic(detailsIcon);
+    showDetailsItem.setOnAction(
+        e -> {
+          if (jiraBoardViewModel != null && jiraBoardViewModel.getTaskDetailViewModel() != null) {
+            jiraBoardViewModel.getTaskDetailViewModel().loadTaskDetails(viewModel.taskKeyProperty().get());
+            jiraBoardViewModel.isTaskDetailModalVisibleProperty().set(true);
+          }
+        });
+
+    contextMenu.getItems().addAll(showDetailsItem, separator, moveStatusMenu, setAsActiveItem, assignToMeItem);
 
     this.setOnContextMenuRequested(
         e -> {
