@@ -40,7 +40,7 @@
                     <Label fx:id="dueDateLabel" style="-fx-font-size: 14px; -fx-text-fill: -fx-on-surface-variant;"/>
                 </HBox>
                 <HBox spacing="8" alignment="CENTER_LEFT">
-                    <FontIcon iconLiteral="fltfal-person-20" iconSize="18" styleClass="icon-muted"/>
+                    <FontIcon iconLiteral="fltfmz-person-20" iconSize="18" styleClass="icon-muted"/>
                     <Label fx:id="assigneeLabel" style="-fx-font-size: 14px; -fx-text-fill: -fx-on-surface-variant;"/>
                 </HBox>
             </HBox>
@@ -85,13 +85,13 @@
         <!-- Sticky Footer for Comments -->
         <HBox fx:id="commentFooter" spacing="16" alignment="CENTER" style="-fx-padding: 20 32; -fx-background-color: -fx-surface-container-low; -fx-border-color: #49484726 transparent transparent transparent; -fx-border-width: 1 0 0 0;" visible="false" managed="false">
             <StackPane prefWidth="40" prefHeight="40" style="-fx-background-color: -fx-surface-variant; -fx-background-radius: 20;">
-                 <FontIcon iconLiteral="fltfal-person-24" iconSize="20" styleClass="icon-muted"/>
+                 <FontIcon iconLiteral="fltfmz-person-24" iconSize="20" styleClass="icon-muted"/>
             </StackPane>
             <StackPane HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
                 <TextField fx:id="commentInput" promptText="Add a comment..." style="-fx-background-color: -fx-surface-container-highest; -fx-text-fill: -fx-on-surface; -fx-prompt-text-fill: -fx-on-surface-variant; -fx-padding: 12 48 12 24; -fx-background-radius: 9999px; -fx-font-size: 14px;" prefWidth="2000"/>
                 <Button onAction="#handlePostComment" styleClass="ember-gradient-btn" style="-fx-background-radius: 20; -fx-min-width: 32; -fx-min-height: 32; -fx-max-width: 32; -fx-max-height: 32; -fx-padding: 0;">
                      <graphic>
-                         <FontIcon iconLiteral="fltfal-send-20" iconSize="16" style="-fx-icon-color: -fx-on-primary-fixed;"/>
+                         <FontIcon iconLiteral="fltfmz-send-20" iconSize="16" styleClass="icon-on-primary"/>
                      </graphic>
                      <StackPane.margin>
                          <Insets right="8"/>

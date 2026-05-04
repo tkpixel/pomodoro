@@ -125,7 +125,7 @@ public class TaskDetailOverlayViewController implements Initializable {
       StackPane avatar = new StackPane();
       avatar.setPrefSize(40, 40);
       avatar.setStyle("-fx-background-color: -fx-surface-variant; -fx-background-radius: 20;");
-      FontIcon pIcon = new FontIcon("fltfal-person-24");
+      FontIcon pIcon = new FontIcon("fltfmz-person-24");
       pIcon.setIconSize(20);
       pIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa"));
       avatar.getChildren().add(pIcon);

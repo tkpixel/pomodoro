@@ -150,7 +150,7 @@ public class TaskCardComponent extends VBox {
         });
 
     MenuItem showDetailsItem = new MenuItem("Show Details");
-    FontIcon detailsIcon = IconFactory.create("fltrmz-document-20");
+    FontIcon detailsIcon = IconFactory.create("fltral-document-20");
     detailsIcon.setIconColor(javafx.scene.paint.Color.web("#adaaaa"));
     showDetailsItem.setGraphic(detailsIcon);
     showDetailsItem.setOnAction(
