@@ -43,7 +43,7 @@
                         <FontIcon fx:id="durationIcon" iconLiteral="fltfmz-timer-20" iconSize="24"
                                   styleClass="accordion-icon"/>
                         <Region prefWidth="16"/>
-                        <Label text="POMODORO PREFERENCES" styleClass="accordion-title"/>
+                        <Label text="DURATION PREFERENCES" styleClass="accordion-title"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <FontIcon fx:id="durationExpandIcon" iconLiteral="fltral-chevron-down-20" iconSize="24"
                                   styleClass="accordion-expand-icon"/>
@@ -54,6 +54,30 @@
                         <padding>
                             <Insets top="0" right="24" bottom="24" left="24"/>
                         </padding>
+
+                        <!-- Focus Profile Selector: 2x2 ToggleButton Grid -->
+                        <GridPane hgap="12" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50"/>
+                            </columnConstraints>
+
+                            <fx:define>
+                                <ToggleGroup fx:id="profileToggleGroup"/>
+                            </fx:define>
+
+                            <!-- POMODORO -->
+                            <ToggleButton fx:id="profileBtnPomodoro" text="POMODORO" toggleGroup="$profileToggleGroup" styleClass="profile-btn" maxWidth="Infinity" prefHeight="48" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+
+                            <!-- 52/17 -->
+                            <ToggleButton fx:id="profileBtn5217" text="52/17" toggleGroup="$profileToggleGroup" styleClass="profile-btn" maxWidth="Infinity" prefHeight="48" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                            <!-- 90-MIN -->
+                            <ToggleButton fx:id="profileBtn90Min" text="90-MIN" toggleGroup="$profileToggleGroup" styleClass="profile-btn" maxWidth="Infinity" prefHeight="48" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+                            <!-- CUSTOM -->
+                            <ToggleButton fx:id="profileBtnCustom" text="CUSTOM" toggleGroup="$profileToggleGroup" styleClass="profile-btn" maxWidth="Infinity" prefHeight="48" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        </GridPane>
 
                         <!-- 2x2 Grid for Configuration Cards -->
                         <GridPane hgap="16" vgap="16">
