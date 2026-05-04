@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.signongroup.focus.view.StatisticsOverlayViewController"
+           fx:id="overlayRoot"
+           visible="false">
+
+    <!-- Dark Blur Background -->
+    <Region fx:id="backgroundRegion" styleClass="overlay-bg" onMouseClicked="#handleClose" />
+
+    <!-- Bottom Sheet Content -->
+    <VBox fx:id="bottomSheet" styleClass="settings-bottom-sheet" StackPane.alignment="BOTTOM_CENTER" alignment="TOP_CENTER" maxHeight="-Infinity" translateY="1000">
+
+        <!-- Handle -->
+        <Region styleClass="settings-handle">
+            <VBox.margin>
+                <Insets bottom="32" />
+            </VBox.margin>
+        </Region>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" styleClass="settings-header">
+            <TextFlow>
+                <Text text="TICKET&#10;" styleClass="settings-header-title-white" />
+                <Text text="STATISTICS" styleClass="settings-header-title-orange" />
+            </TextFlow>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button styleClass="fab-icon-button" onAction="#handleClose">
+                <graphic>
+                    <FontIcon iconLiteral="fltfal-dismiss-24" iconSize="24"/>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Stats Grid -->
+        <GridPane hgap="16" vgap="16">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints percentWidth="50" />
+            </columnConstraints>
+
+            <!-- Card 1: Cleared Today -->
+            <VBox styleClass="settings-card, settings-card-active" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="CLEARED TODAY" styleClass="settings-card-label" />
+                <Region VBox.vgrow="ALWAYS" />
+                <HBox alignment="CENTER_LEFT" spacing="4">
+                    <Label fx:id="clearedTodayLabel" text="04" styleClass="settings-card-value" />
+                </HBox>
+            </VBox>
+
+            <!-- Card 2: Week -->
+            <VBox styleClass="settings-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="WEEK" styleClass="settings-card-label-muted" />
+                <Region VBox.vgrow="ALWAYS" />
+                <HBox alignment="CENTER_LEFT" spacing="4">
+                    <Label fx:id="weekLabel" text="28" styleClass="settings-card-value" />
+                </HBox>
+            </VBox>
+
+            <!-- Card 3: Sprint -->
+            <VBox styleClass="settings-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label fx:id="sprintClearedTitleLabel" text="SPRINT CLEARED" styleClass="settings-card-label-muted" />
+                <Region VBox.vgrow="ALWAYS" />
+                <HBox alignment="BOTTOM_LEFT" spacing="4">
+                    <Label fx:id="sprintClearedLabel" text="124" styleClass="settings-card-value" />
+                    <Label fx:id="sprintPlannedLabel" text="/ 200" styleClass="card-value-muted" style="-fx-font-size: 14px;" translateY="-4"/>
+                </HBox>
+            </VBox>
+
+            <!-- Card 4: Overall this year -->
+            <VBox styleClass="settings-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="OVERALL THIS YEAR" styleClass="settings-card-label-muted" />
+                <Region VBox.vgrow="ALWAYS" />
+                <HBox alignment="CENTER_LEFT" spacing="4">
+                    <Label fx:id="yearLabel" text="850" styleClass="settings-card-value" />
+                </HBox>
+            </VBox>
+
+        </GridPane>
+
+    </VBox>
+
+</StackPane>

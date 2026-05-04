@@ -1,7 +1,7 @@
 /**
- * JPMS-Moduldeskriptor für das Pomodoro-Projekt.
+ * JPMS-Moduldeskriptor für das Focus-Projekt.
  */
-module com.signongroup.pomodoro {
+module com.signongroup.focus {
 
     // ── JavaFX ────────────────────────────────────────────────────────────────
     requires javafx.controls;
@@ -52,27 +52,27 @@ module com.signongroup.pomodoro {
     requires com.fasterxml.jackson.databind;
 
     // ── Exports (erforderlich damit Micronauts APT die Klassen zur Compile-Zeit sieht) ──
-    exports com.signongroup.pomodoro;
-    exports com.signongroup.pomodoro.view;
-    exports com.signongroup.pomodoro.view.jira;
-    exports com.signongroup.pomodoro.viewmodel;
-    exports com.signongroup.pomodoro.model;
-    exports com.signongroup.pomodoro.model.jira;
-    exports com.signongroup.pomodoro.service;
-    exports com.signongroup.pomodoro.config;
+    exports com.signongroup.focus;
+    exports com.signongroup.focus.view;
+    exports com.signongroup.focus.view.jira;
+    exports com.signongroup.focus.viewmodel;
+    exports com.signongroup.focus.model;
+    exports com.signongroup.focus.model.jira;
+    exports com.signongroup.focus.service;
+    exports com.signongroup.focus.config;
 
 
     // ── Reflection-Öffnungen für FXMLLoader ──────────────────────────────────
-    opens com.signongroup.pomodoro.view to javafx.fxml, io.micronaut.micronaut_inject;
-    opens com.signongroup.pomodoro.view.jira to javafx.fxml, io.micronaut.micronaut_inject;
+    opens com.signongroup.focus.view to javafx.fxml, io.micronaut.micronaut_inject;
+    opens com.signongroup.focus.view.jira to javafx.fxml, io.micronaut.micronaut_inject;
 
     // ── Reflection-Öffnungen für Micronaut & JavaFX ───────────────────────────
-    opens com.signongroup.pomodoro to javafx.graphics, io.micronaut.micronaut_inject;
-    opens com.signongroup.pomodoro.viewmodel to io.micronaut.micronaut_inject;
-    opens com.signongroup.pomodoro.service to io.micronaut.micronaut_inject;
-    opens com.signongroup.pomodoro.model to io.micronaut.micronaut_inject, com.fasterxml.jackson.databind;
-    opens com.signongroup.pomodoro.model.jira to io.micronaut.micronaut_inject, com.fasterxml.jackson.databind;
-    opens com.signongroup.pomodoro.config to io.micronaut.micronaut_inject;
+    opens com.signongroup.focus to javafx.graphics, io.micronaut.micronaut_inject;
+    opens com.signongroup.focus.viewmodel to io.micronaut.micronaut_inject;
+    opens com.signongroup.focus.service to io.micronaut.micronaut_inject;
+    opens com.signongroup.focus.model to io.micronaut.micronaut_inject, com.fasterxml.jackson.databind;
+    opens com.signongroup.focus.model.jira to io.micronaut.micronaut_inject, com.fasterxml.jackson.databind;
+    opens com.signongroup.focus.config to io.micronaut.micronaut_inject;
 }
 
 
