@@ -15,6 +15,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import com.signongroup.focus.model.FocusProfile;
 
 import javafx.css.PseudoClass;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -30,6 +33,12 @@ public class SettingsViewController implements Initializable {
     // --- Window Dependencies ---
     private final SettingsViewModel viewModel;
     private final WindowManager windowManager;
+
+    @FXML private ToggleGroup profileToggleGroup;
+    @FXML private ToggleButton profileBtnPomodoro;
+    @FXML private ToggleButton profileBtn5217;
+    @FXML private ToggleButton profileBtn90Min;
+    @FXML private ToggleButton profileBtnCustom;
 
     // --- Accordion UI Elements ---
     @FXML private StackPane enableSessionSoundToggleTrack;
@@ -73,6 +82,34 @@ public class SettingsViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // ViewModel -> ToggleGroup
+        viewModel.selectedProfileProperty().addListener((obs, oldVal, newVal) -> {
+            switch (newVal) {
+                case POMODORO  -> profileToggleGroup.selectToggle(profileBtnPomodoro);
+                case RULE_52_17 -> profileToggleGroup.selectToggle(profileBtn5217);
+                case DEEP_WORK -> profileToggleGroup.selectToggle(profileBtn90Min);
+                case CUSTOM    -> profileToggleGroup.selectToggle(profileBtnCustom);
+            }
+        });
+
+        // ToggleGroup -> ViewModel
+        profileToggleGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == profileBtnPomodoro)  viewModel.selectedProfileProperty().set(FocusProfile.POMODORO);
+            else if (newVal == profileBtn5217) viewModel.selectedProfileProperty().set(FocusProfile.RULE_52_17);
+            else if (newVal == profileBtn90Min) viewModel.selectedProfileProperty().set(FocusProfile.DEEP_WORK);
+            else if (newVal == profileBtnCustom) viewModel.selectedProfileProperty().set(FocusProfile.CUSTOM);
+        });
+
+        // Set initial state
+        FocusProfile currentProfile = viewModel.selectedProfileProperty().get();
+        switch (currentProfile) {
+            case POMODORO  -> profileToggleGroup.selectToggle(profileBtnPomodoro);
+            case RULE_52_17 -> profileToggleGroup.selectToggle(profileBtn5217);
+            case DEEP_WORK -> profileToggleGroup.selectToggle(profileBtn90Min);
+            case CUSTOM    -> profileToggleGroup.selectToggle(profileBtnCustom);
+            default        -> profileToggleGroup.selectToggle(profileBtnPomodoro);
+        }
+
         // Bind Accordion Panels
         durationContent.visibleProperty().bind(viewModel.isDurationExpandedProperty());
 

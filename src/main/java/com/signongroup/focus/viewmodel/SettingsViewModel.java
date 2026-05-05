@@ -260,6 +260,14 @@ public class SettingsViewModel {
 
     // --- Getters for Properties ---
 
+    /**
+     * Gets the selected profile property.
+     * @return the selected profile property
+     */
+    public ObjectProperty<FocusProfile> selectedProfileProperty() {
+        return selectedProfile;
+    }
+
     public BooleanProperty isDurationExpandedProperty() {
         return isDurationExpanded;
     }
