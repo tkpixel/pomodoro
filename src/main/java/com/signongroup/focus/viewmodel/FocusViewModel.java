@@ -85,11 +85,23 @@ public class FocusViewModel {
             updateSettingsFromViewModel();
             if (timerState.get() == TimerState.READY) {
                 timeRemainingSeconds = focusTimeSeconds;
-                updateUI();
             }
+            updateUI();
         });
-        this.settingsViewModel.shortBreakMinutesProperty().addListener((obs, oldVal, newVal) -> updateSettingsFromViewModel());
-        this.settingsViewModel.longBreakMinutesProperty().addListener((obs, oldVal, newVal) -> updateSettingsFromViewModel());
+        this.settingsViewModel.shortBreakMinutesProperty().addListener((obs, oldVal, newVal) -> {
+            updateSettingsFromViewModel();
+            if (!isRunning.get() && timerState.get() == TimerState.BREAK_SHORT && timeRemainingSeconds == oldVal.intValue() * 60) {
+                timeRemainingSeconds = newVal.intValue() * 60;
+            }
+            updateUI();
+        });
+        this.settingsViewModel.longBreakMinutesProperty().addListener((obs, oldVal, newVal) -> {
+            updateSettingsFromViewModel();
+            if (!isRunning.get() && timerState.get() == TimerState.BREAK_LONG && timeRemainingSeconds == oldVal.intValue() * 60) {
+                timeRemainingSeconds = newVal.intValue() * 60;
+            }
+            updateUI();
+        });
         this.settingsViewModel.maxSessionCountProperty().addListener((obs, oldVal, newVal) -> {
             updateSettingsFromViewModel();
             updateUI();
