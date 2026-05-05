@@ -384,9 +384,11 @@
 .toggle-track {
     -fx-cursor: hand;
     -fx-padding: 4px;
+    -fx-background-radius: 9999px;
 }
 .toggle-thumb {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0, 0, 1);
+    -fx-background-radius: 9999px;
 }
 
 /* Jira Flat Form Styles */
