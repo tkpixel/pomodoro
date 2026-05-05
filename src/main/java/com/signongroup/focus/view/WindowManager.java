@@ -7,6 +7,8 @@ import jakarta.inject.Singleton;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -66,20 +68,20 @@ public class WindowManager {
         if (primaryStage == null) return;
         if (isMini) {
             primaryStage.setMinWidth(288);
-            primaryStage.setMinHeight(125);
+            primaryStage.setMinHeight(157); // 125 + 32px title bar
             primaryStage.setMaxWidth(288);
-            primaryStage.setMaxHeight(125);
+            primaryStage.setMaxHeight(157);
             primaryStage.setWidth(288);
-            primaryStage.setHeight(125);
+            primaryStage.setHeight(157);
             showMiniTimerView();
             primaryStage.setAlwaysOnTop(true);
         } else {
             primaryStage.setMinWidth(684);
-            primaryStage.setMinHeight(552);
+            primaryStage.setMinHeight(584); // 552 + 32px title bar
             primaryStage.setMaxWidth(Double.MAX_VALUE);
             primaryStage.setMaxHeight(Double.MAX_VALUE);
             primaryStage.setWidth(684);
-            primaryStage.setHeight(552);
+            primaryStage.setHeight(584);
             showActiveTimerView();
             primaryStage.setAlwaysOnTop(false);
         }
@@ -99,7 +101,14 @@ public class WindowManager {
             loader.setClassLoader(getClass().getClassLoader());
             loader.setControllerFactory(context::getBean);
             Parent root = loader.load();
-            scene.setRoot(root);
+
+            VBox windowRoot = new VBox();
+            windowRoot.setStyle("-fx-background-color: #0e0e0e;");
+            CustomTitleBar titleBar = new CustomTitleBar(primaryStage, this);
+            VBox.setVgrow(root, Priority.ALWAYS);
+            windowRoot.getChildren().addAll(titleBar, root);
+
+            scene.setRoot(windowRoot);
         } catch (Exception e) {
             log.error("Failed to load view: {}", fxmlPath, e);
             throw new RuntimeException("Failed to load view: " + fxmlPath, e);

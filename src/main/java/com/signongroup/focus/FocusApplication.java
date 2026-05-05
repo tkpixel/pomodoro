@@ -60,6 +60,7 @@ public class FocusApplication extends Application {
         primaryStage.setTitle("Focus Timer");
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Logo.png"))));
 
+        primaryStage.initStyle(javafx.stage.StageStyle.UNDECORATED);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
