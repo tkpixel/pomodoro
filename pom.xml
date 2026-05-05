@@ -425,8 +425,9 @@
                     <appVersion>${project.version}</appVersion>
                     <vendor>SignonGroup</vendor>
                     <destination>${project.build.directory}/installer</destination>
-                    <module>${app.module.name}/${app.main.class}</module>
-                    <runtimeImage>${project.build.directory}/jlink-image</runtimeImage>
+                    <mainJar>${project.build.finalName}.jar</mainJar>
+                    <mainClass>${app.main.class}</mainClass>
+                    <input>${project.build.directory}/libs</input>
 
                     <!-- Windows specific configuration -->
                     <winMenu>true</winMenu>
