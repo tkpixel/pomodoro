@@ -60,9 +60,11 @@ public class FocusApplication extends Application {
         primaryStage.setTitle("Focus Timer");
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Logo.png"))));
 
-        primaryStage.initStyle(javafx.stage.StageStyle.UNDECORATED);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Apply native Windows 11 title bar styling (requires HWND, so call after show())
+        com.signongroup.focus.view.WindowsTitleBar.applyCustomColors(primaryStage);
     }
 
     @Override

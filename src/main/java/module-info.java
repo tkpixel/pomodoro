@@ -46,6 +46,10 @@ module com.signongroup.focus {
     // ── java-keyring (Credentials) ────────────────────────────────────────
     requires java.keyring;
 
+    // ── JNA for Native Titlebar Styling ──────────────────────────────────────
+    requires com.sun.jna;
+    requires com.sun.jna.platform;
+
     requires java.net.http;
     requires java.prefs;
     requires com.fasterxml.jackson.annotation;
