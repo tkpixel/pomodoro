@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.signongroup</groupId>
-    <artifactId>pomodoro</artifactId>
+    <artifactId>focus</artifactId>
     <version>0.1.0</version>
 
     <properties>
 
-        <app.main.class>com.signongroup.pomodoro.PomodoroApplication</app.main.class>
-        <app.module.name>com.signongroup.pomodoro</app.module.name>
+        <app.main.class>com.signongroup.focus.FocusApplication</app.main.class>
+        <app.module.name>com.signongroup.focus</app.module.name>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
@@ -310,7 +310,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.signongroup.pomodoro.Launcher</mainClass>
+                                    <mainClass>com.signongroup.focus.Launcher</mainClass>
                                     <manifestEntries>
                                         <Implementation-Title>${project.artifactId}</Implementation-Title>
                                         <Implementation-Version>${project.version}</Implementation-Version>
@@ -404,7 +404,7 @@
                 <version>3.2.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <launcher>pomodorotool=${app.module.name}/${app.main.class}</launcher>
+                    <launcher>focustool=${app.module.name}/${app.main.class}</launcher>
                     <compress>2</compress>
                     <stripDebug>true</stripDebug>
                     <noHeaderFiles>true</noHeaderFiles>
@@ -421,7 +421,7 @@
                 <artifactId>jpackage-maven-plugin</artifactId>
                 <version>1.7.4</version>
                 <configuration>
-                    <name>PomodoroTool</name>
+                    <name>FocusTool</name>
                     <appVersion>${project.version}</appVersion>
                     <vendor>SignonGroup</vendor>
                     <destination>${project.build.directory}/installer</destination>
@@ -598,7 +598,7 @@
                                 <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
                                 <arg>-XDcompilePolicy=simple</arg>
                                 <arg>--should-stop=ifError=FLOW</arg>
-                                <arg>-Xplugin:ErrorProne -Xep:MissingSummary:OFF -XepOpt:NullAway:AnnotatedPackages=com.signongroup.pomodoro -XepOpt:NullAway:CustomNullableAnnotations=io.micronaut.core.annotation.Nullable -XepOpt:NullAway:HandleTestAssertionLibraries=true</arg>
+                                <arg>-Xplugin:ErrorProne -Xep:MissingSummary:OFF -XepOpt:NullAway:AnnotatedPackages=com.signongroup.focus -XepOpt:NullAway:CustomNullableAnnotations=io.micronaut.core.annotation.Nullable -XepOpt:NullAway:HandleTestAssertionLibraries=true</arg>
                             </compilerArgs>
                             <annotationProcessorPaths>
                                 <path>

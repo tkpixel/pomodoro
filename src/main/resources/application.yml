@@ -1,4 +1,4 @@
-pomodoro:
+focus:
   defaults:
     focus-duration-minutes: 25
     short-break-duration-minutes: 5
