@@ -62,6 +62,9 @@ public class FocusApplication extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Apply native Windows 11 title bar styling (requires HWND, so call after show())
+        com.signongroup.focus.view.WindowsTitleBar.applyCustomColors(primaryStage);
     }
 
     @Override
