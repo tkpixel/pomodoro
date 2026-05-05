@@ -79,6 +79,19 @@
                             <ToggleButton fx:id="profileBtnCustom" text="CUSTOM" toggleGroup="$profileToggleGroup" styleClass="profile-btn" maxWidth="Infinity" prefHeight="48" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                         </GridPane>
 
+                        <!-- Profile Description Callout -->
+                        <HBox style="-fx-background-color: -fx-surface-container-low; -fx-background-radius: 12;"
+                              spacing="12">
+                            <padding>
+                                <Insets top="16" right="16" bottom="16" left="16"/>
+                            </padding>
+                            <Region minWidth="4" maxWidth="4"
+                                    style="-fx-background-color: -fx-primary; -fx-background-radius: 4px;"/>
+                            <Label fx:id="profileDescriptionLabel"
+                                wrapText="true"
+                                style="-fx-text-fill: -fx-on-surface-variant; -fx-font-size: 12px; -fx-font-weight: 600;"/>
+                        </HBox>
+
                         <!-- 2x2 Grid for Configuration Cards -->
                         <GridPane hgap="16" vgap="16">
                             <columnConstraints>

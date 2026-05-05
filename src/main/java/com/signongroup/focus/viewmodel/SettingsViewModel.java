@@ -24,6 +24,7 @@ public class SettingsViewModel {
     private final JiraAuthService jiraAuthService;
 
     private final ObjectProperty<FocusProfile> selectedProfile = new SimpleObjectProperty<>(FocusProfile.POMODORO);
+    private final StringProperty profileDescription = new SimpleStringProperty("");
     private boolean isUpdatingFromProfile = false;
 
     // Accordion State
@@ -60,7 +61,7 @@ public class SettingsViewModel {
         loadJiraCredentials();
 
         selectedProfile.addListener((obs, oldVal, newVal) -> {
-            if (newVal != FocusProfile.CUSTOM) {
+            if (!isUpdatingFromProfile) {
                 isUpdatingFromProfile = true;
                 focusSessionMinutes.set(newVal.getFocusMinutes());
                 shortBreakMinutes.set(newVal.getShortBreakMinutes());
@@ -68,31 +69,40 @@ public class SettingsViewModel {
                 maxSessionCount.set(newVal.getIntervals());
                 isUpdatingFromProfile = false;
             }
+            updateProfileDescription(newVal);
             saveSettings();
         });
 
         // Add listeners to auto-save when properties change
         focusSessionMinutes.addListener((obs, oldVal, newVal) -> {
             if (!isUpdatingFromProfile && selectedProfile.get() != FocusProfile.CUSTOM) {
+                isUpdatingFromProfile = true;
                 selectedProfile.set(FocusProfile.CUSTOM);
+                isUpdatingFromProfile = false;
             }
             saveSettings();
         });
         shortBreakMinutes.addListener((obs, oldVal, newVal) -> {
             if (!isUpdatingFromProfile && selectedProfile.get() != FocusProfile.CUSTOM) {
+                isUpdatingFromProfile = true;
                 selectedProfile.set(FocusProfile.CUSTOM);
+                isUpdatingFromProfile = false;
             }
             saveSettings();
         });
         longBreakMinutes.addListener((obs, oldVal, newVal) -> {
             if (!isUpdatingFromProfile && selectedProfile.get() != FocusProfile.CUSTOM) {
+                isUpdatingFromProfile = true;
                 selectedProfile.set(FocusProfile.CUSTOM);
+                isUpdatingFromProfile = false;
             }
             saveSettings();
         });
         maxSessionCount.addListener((obs, oldVal, newVal) -> {
             if (!isUpdatingFromProfile && selectedProfile.get() != FocusProfile.CUSTOM) {
+                isUpdatingFromProfile = true;
                 selectedProfile.set(FocusProfile.CUSTOM);
+                isUpdatingFromProfile = false;
             }
             saveSettings();
         });
@@ -125,6 +135,38 @@ public class SettingsViewModel {
         }
     }
 
+    private void updateProfileDescription(FocusProfile profile) {
+        switch (profile) {
+            case POMODORO:
+                profileDescription.set("The classic Pomodoro technique uses 25-minute work intervals followed by 5-minute "
+                        + "short breaks. After four consecutive cycles, you take a longer 15-minute break to fully recharge. "
+                        + "This profile is perfect for tackling a series of smaller tasks, maintaining a steady rhythm, "
+                        + "and effectively overcoming procrastination.");
+                break;
+            case RULE_52_17:
+                profileDescription.set("Based on research analyzing the habits of highly productive individuals, this profile "
+                        + "champions 52 minutes of intense work followed by a 17-minute break. This specific ratio prevents "
+                        + "cognitive fatigue while allowing for a truly meaningful recovery period. It is an excellent choice "
+                        + "for structured daily routines and sustaining high focus throughout the entire workday.");
+                break;
+            case DEEP_WORK:
+                profileDescription.set("Inspired by the human body's natural ultradian rhythms, this profile locks you in "
+                        + "for 90 minutes of absolute, uninterrupted focus. It is specifically designed for complex "
+                        + "problem-solving, deep coding sessions, or demanding creative work. Extended breaks of 20 to "
+                        + "30 minutes ensure your brain has enough time to fully recover between these heavy cognitive sprints.");
+                break;
+            case CUSTOM:
+                profileDescription.set("Take full control of your temporal workflow by defining your own customized "
+                        + "intervals. Whether you need a quick 10-minute sprint or an unconventional marathon session, "
+                        + "this profile adapts entirely to your unique requirements. It empowers you to fine-tune your "
+                        + "focus and break durations exactly how your current task or environment demands.");
+                break;
+            default:
+                profileDescription.set("");
+                break;
+        }
+    }
+
     private void loadSettings() {
         DurationSettings settings = settingsService.loadSettings();
         if (settings.activeProfile() != null) {
@@ -132,6 +174,7 @@ public class SettingsViewModel {
         } else {
             selectedProfile.set(FocusProfile.POMODORO);
         }
+        updateProfileDescription(selectedProfile.get());
         focusSessionMinutes.set(settings.focusSessionMinutes());
         shortBreakMinutes.set(settings.shortBreakMinutes());
         longBreakMinutes.set(settings.longBreakMinutes());
@@ -208,7 +251,8 @@ public class SettingsViewModel {
     // --- Commands ---
 
     public void incrementFocusSession() {
-        if (focusSessionMinutes.get() < 90) {
+        int max = selectedProfile.get() == FocusProfile.CUSTOM ? 180 : 90;
+        if (focusSessionMinutes.get() < max) {
             focusSessionMinutes.set(focusSessionMinutes.get() + 1);
         }
     }
@@ -266,6 +310,14 @@ public class SettingsViewModel {
      */
     public ObjectProperty<FocusProfile> selectedProfileProperty() {
         return selectedProfile;
+    }
+
+    /**
+     * Gets the profile description property.
+     * @return the profile description property
+     */
+    public StringProperty profileDescriptionProperty() {
+        return profileDescription;
     }
 
     public BooleanProperty isDurationExpandedProperty() {

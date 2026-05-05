@@ -39,6 +39,7 @@ public class SettingsViewController implements Initializable {
     @FXML private ToggleButton profileBtn5217;
     @FXML private ToggleButton profileBtn90Min;
     @FXML private ToggleButton profileBtnCustom;
+    @FXML private Label profileDescriptionLabel;
 
     // --- Accordion UI Elements ---
     @FXML private StackPane enableSessionSoundToggleTrack;
@@ -109,6 +110,8 @@ public class SettingsViewController implements Initializable {
             case CUSTOM    -> profileToggleGroup.selectToggle(profileBtnCustom);
             default        -> profileToggleGroup.selectToggle(profileBtnPomodoro);
         }
+
+        profileDescriptionLabel.textProperty().bind(viewModel.profileDescriptionProperty());
 
         // Bind Accordion Panels
         durationContent.visibleProperty().bind(viewModel.isDurationExpandedProperty());
