@@ -5,19 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.signongroup</groupId>
-    <artifactId>pomodoro</artifactId>
+    <artifactId>focus</artifactId>
     <version>0.1.0</version>
 
     <properties>
 
-        <app.main.class>com.signongroup.pomodoro.PomodoroApplication</app.main.class>
-        <app.module.name>com.signongroup.pomodoro</app.module.name>
+        <app.main.class>com.signongroup.focus.FocusApplication</app.main.class>
+        <app.module.name>com.signongroup.focus</app.module.name>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <javafx.version>25.0.2</javafx.version>
+        <javafx.version>21.0.6</javafx.version>
         <micronaut.version>4.10.9</micronaut.version>
         <atlantafx.version>2.1.0</atlantafx.version>
         <ikonli.version>12.4.0</ikonli.version>
@@ -34,6 +34,7 @@
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
         <!--<poi.version>5.5.1</poi.version>-->
+        <jna.version>5.14.0</jna.version>
 
     </properties>
 
@@ -51,6 +52,13 @@
 
     <dependencies>
 
+        <!-- java-keyring for OS Credential Manager -->
+        <dependency>
+            <groupId>com.github.javakeyring</groupId>
+            <artifactId>java-keyring</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
         <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -60,11 +68,6 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>jfx-incubator-richtext</artifactId>
             <version>${javafx.version}</version>
         </dependency>
 
@@ -164,6 +167,29 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.27.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>4.0.18</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>4.0.18</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut.test</groupId>
+            <artifactId>micronaut-test-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- JetBrains Annotations (@NotNull, @Nullable for IDE support) -->
         <!-- scope=compile (nicht provided), da JPMS requires org.jetbrains.annotations -->
@@ -173,27 +199,21 @@
         <!--        <version>26.0.2</version>-->
         <!--    </dependency>-->
 
-        <!-- Jackson XML for parsing XML files -->
-        <!--    <dependency>-->
-        <!--        <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--        <artifactId>jackson-core</artifactId>-->
-        <!--        <version>${jackson.version}</version>-->
-        <!--    </dependency>-->
-        <!--    <dependency>-->
-        <!--        <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--        <artifactId>jackson-databind</artifactId>-->
-        <!--        <version>${jackson.version}</version>-->
-        <!--    </dependency>-->
-        <!--    <dependency>-->
-        <!--        <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--        <artifactId>jackson-annotations</artifactId>-->
-        <!--        <version>${jackson-annotations.version}</version>-->
-        <!--    </dependency>-->
-        <!--    <dependency>-->
-        <!--        <groupId>com.fasterxml.jackson.dataformat</groupId>-->
-        <!--        <artifactId>jackson-dataformat-xml</artifactId>-->
-        <!--        <version>${jackson.version}</version>-->
-        <!--    </dependency>-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-annotations.version}</version>
+        </dependency>
 
         <!-- Apache POI for Excel files -->
         <!--    <dependency>-->
@@ -207,6 +227,31 @@
         <!--        <version>${poi.version}</version>-->
         <!--    </dependency>-->
 
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-http-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- JNA for native Windows API calls (Window Title Bar styling) -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -244,11 +289,16 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.15.0</version>
                 <configuration>
-                    <release>25</release>
+                    <release>21</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>io.micronaut</groupId>
                             <artifactId>micronaut-inject-java</artifactId>
+                            <version>${micronaut.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.micronaut</groupId>
+                            <artifactId>micronaut-http-validation</artifactId>
                             <version>${micronaut.version}</version>
                         </path>
                     </annotationProcessorPaths>
@@ -273,7 +323,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.signongroup.pomodoro.Launcher</mainClass>
+                                    <mainClass>com.signongroup.focus.Launcher</mainClass>
                                     <manifestEntries>
                                         <Implementation-Title>${project.artifactId}</Implementation-Title>
                                         <Implementation-Version>${project.version}</Implementation-Version>
@@ -367,7 +417,7 @@
                 <version>3.2.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <launcher>pomodorotool=${app.module.name}/${app.main.class}</launcher>
+                    <launcher>focustool=${app.module.name}/${app.main.class}</launcher>
                     <compress>2</compress>
                     <stripDebug>true</stripDebug>
                     <noHeaderFiles>true</noHeaderFiles>
@@ -384,12 +434,13 @@
                 <artifactId>jpackage-maven-plugin</artifactId>
                 <version>1.7.4</version>
                 <configuration>
-                    <name>PomodoroTool</name>
+                    <name>FocusTool</name>
                     <appVersion>${project.version}</appVersion>
                     <vendor>SignonGroup</vendor>
                     <destination>${project.build.directory}/installer</destination>
-                    <module>${app.module.name}/${app.main.class}</module>
-                    <runtimeImage>${project.build.directory}/jlink-image</runtimeImage>
+                    <mainJar>${project.build.finalName}.jar</mainJar>
+                    <mainClass>${app.main.class}</mainClass>
+                    <input>${project.build.directory}/libs</input>
 
                     <!-- Windows specific configuration -->
                     <winMenu>true</winMenu>
@@ -416,6 +467,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.5</version>
+                <configuration>
+                    <argLine>
+                        @{argLine}
+                        --add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                        --add-opens=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
 
             <!-- License Maven Plugin -->
@@ -537,7 +595,7 @@
                         <version>${maven-compiler-plugin.version}</version>
                         <configuration>
                             <fork>true</fork>
-                            <release>25</release>
+                            <release>21</release>
                             <encoding>UTF-8</encoding>
                             <compilerArgs>
                                 <arg>-parameters</arg>
@@ -554,14 +612,19 @@
                                 <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
                                 <arg>-XDcompilePolicy=simple</arg>
                                 <arg>--should-stop=ifError=FLOW</arg>
-                                <arg>-Xplugin:ErrorProne -Xep:MissingSummary:OFF -XepOpt:NullAway:AnnotatedPackages=com.signongroup.pomodoro -XepOpt:NullAway:CustomNullableAnnotations=io.micronaut.core.annotation.Nullable -XepOpt:NullAway:HandleTestAssertionLibraries=true</arg>
+                                <arg>-Xplugin:ErrorProne -Xep:MissingSummary:OFF -XepOpt:NullAway:AnnotatedPackages=com.signongroup.focus -XepOpt:NullAway:CustomNullableAnnotations=io.micronaut.core.annotation.Nullable -XepOpt:NullAway:HandleTestAssertionLibraries=true</arg>
                             </compilerArgs>
                             <annotationProcessorPaths>
                                 <path>
                                     <groupId>io.micronaut</groupId>
                                     <artifactId>micronaut-inject-java</artifactId>
-                                    <version>${micronaut.version}</version>
-                                </path>
+                            <version>${micronaut.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.micronaut</groupId>
+                            <artifactId>micronaut-http-validation</artifactId>
+                            <version>${micronaut.version}</version>
+                        </path>
                                 <path>
                                     <groupId>com.google.errorprone</groupId>
                                     <artifactId>error_prone_core</artifactId>

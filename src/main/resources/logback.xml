@@ -36,7 +36,7 @@
     </root>
 
     <!-- Eigene Anwendungsklassen standardmäßig auf DEBUG für Entwicklung -->
-    <logger name="com.signongroup.pomodoro" level="DEBUG" />
+    <logger name="com.signongroup.focus" level="DEBUG" />
 
     <!--
       Apache POI generiert sehr viele Log-Meldungen auf DEBUG/TRACE (z.B. XML-Parsing).
